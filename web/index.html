@@ -1,16 +1,45 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="js/jquery-3.3.1.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/bootstrap.bundle.js"></script>
+        <script> 
+            $(function(){
+                $("#header").load("header.html"); 
+                $("#footer").load("footer.html"); 
+            });
+        </script>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-grid.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-reboot.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        <title>Callua System</title>
     </head>
     <body>
-        <div>TODO write content</div>
+        <div id="header"></div>
+        <main role="main">
+            <div class="py-5 bg-light">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 order-md-1">
+                            <h4 class="mb-3">Serviços oferecidos:</h4>
+                            <div class="row menu-options">
+                                <button type="button" class="btn btn-light"><i class="fas fa-3x fa-mobile-alt"></i>Troca de tela de celular</button>
+                            </div>
+                            <div class="row menu-options">
+                                <button type="button" class="btn btn-light"><i class="fab fa-3x fa-apple"></i>Assistencia Apple</button>
+                            </div>
+                            <div class="row menu-options abrir-chamado">
+                                <button type="button" class="btn btn-secondary">Abrir chamado</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div id="footer"></div>
     </body>
 </html>

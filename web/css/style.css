@@ -1,0 +1,36 @@
+body{
+    background-color: #f8f9fa;
+}
+header .navbar{
+    padding: 1rem 1rem;
+}
+div#footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+footer{
+    padding: 1.5rem 1rem;
+    color: white;
+}
+footer .row div{
+    text-align: center;
+}
+
+.menu-options{
+    padding-top: 10px;
+}
+
+.menu-options button{
+    font-size: 22px;
+}
+
+.menu-options i{
+    padding: 10px;
+    vertical-align: middle;
+}
+
+.menu-options.abrir-chamado{
+    margin-top: 50px;
+}
