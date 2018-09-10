@@ -2,7 +2,12 @@ body{
     background-color: #f8f9fa;
 }
 header .navbar{
-    padding: 1rem 1rem;
+    padding: 0.6rem 1rem;
+    min-height: 90px;
+}
+header .titulo-header{
+    font-size: 36px;
+    color: white !important;
 }
 div#footer{
     position: fixed;
@@ -16,6 +21,10 @@ footer{
 }
 footer .row div{
     text-align: center;
+}
+fieldset.login{
+    width: 300px;
+    margin: auto;
 }
 
 .menu-options{
