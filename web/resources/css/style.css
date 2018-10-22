@@ -1,0 +1,58 @@
+body{
+    background-color: #f8f9fa;
+}
+body > main {
+    min-height: calc(100vh - 90px - 72px);/*header height, footer height*/
+    /*calc(100vh - 70px - 70px - 100px - 20px - 4px);*/
+}
+header .navbar{
+    padding: 0.6rem 1rem;
+    min-height: 90px;
+}
+header .titulo-header{
+    font-size: 36px;
+    color: white !important;
+}
+div#footer{
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+footer{
+    padding: 1.5rem 1rem;
+    color: white;
+}
+a {
+  color: white;
+  text-decoration: none;
+}
+a:hover {
+  
+  color: white;
+  text-decoration: underline;
+}
+footer .row div{
+    text-align: center;
+}
+fieldset.login{
+    width: 300px;
+    margin: auto;
+}
+
+.menu-options{
+    padding-top: 10px;
+}
+
+.menu-options button{
+    font-size: 22px;
+}
+
+.menu-options i{
+    padding: 10px;
+    vertical-align: middle;
+}
+
+.menu-options.abrir-chamado{
+    margin-top: 50px;
+}
