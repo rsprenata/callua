@@ -66,7 +66,6 @@
                         type: '${mensagemTipo}',
                         confirmButtonText: 'Ok'
                     });
-                    getCidades();
                 </c:if>
             });
         </script>

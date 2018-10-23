@@ -57,7 +57,7 @@ public class ClienteServlet extends HttpServlet {
                 String mensagem = formValido(request);
                 Cliente cliente = carregarCliente(request);
                 if (mensagem == null) {
-                    //ClienteFacade.adicionarUm(cliente);
+                    ClienteFacade.adicionarUm(cliente);
                     request.setAttribute("mensagem", "Cadastrado com sucesso !!!");
                     request.setAttribute("mensagemTipo", "success");
                     RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/login.jsp");

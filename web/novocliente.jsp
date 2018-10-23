@@ -104,69 +104,8 @@
             });
             
             jQuery.validator.addMethod("cpfValido", function(value, element) {
-                console.log(value.cleanVal());
-                console.log(element);
-                console.log($(element)[0]);
-                console.log(element.cleanVal());
-                console.log($(element).cleanVal());
                 var cpf = $(element).cleanVal();
-                if(cpf <= 11){
-                    // considera-se erro CPF's formados por uma sequencia de numeros iguais
-                    if (cpf == "00000000000" ||
-                        cpf == "11111111111" ||
-                        cpf == "22222222222" || cpf == "33333333333" ||
-                        cpf == "44444444444" || cpf == "55555555555" ||
-                        cpf == "66666666666" || cpf == "77777777777" ||
-                        cpf == "88888888888" || cpf == "99999999999" ||
-                        (cpf.length != 11))
-                        return(false);
-
-                    var dig10, dig11;
-                    var sm, i, r, num, peso;
-
-                    // Calculo do 1o. Digito Verificador
-                    sm = 0;
-                    peso = 10;
-                    for (i=0; i<9; i++) {              
-                        // converte o i-esimo caractere do cpf em um numero:
-                        // por exemplo, transforma o caractere '0' no inteiro 0         
-                        // (48 eh a posicao de '0' na tabela ASCII)         
-                        num = (int)(cpf.charAt(i) - 48); 
-                        sm = sm + (num * peso);
-                        peso = peso - 1;
-                    }
-
-                    r = 11 - (sm % 11);
-                    if ((r == 10) || (r == 11))
-                        dig10 = '0';
-                    else dig10 = (char)(r + 48); // converte no respectivo caractere numerico
-
-                    // Calculo do 2o. Digito Verificador
-                    sm = 0;
-                    peso = 11;
-                    for(i=0; i<10; i++) {
-                    num = cpf.charAt(i) - 48;
-                    sm = sm + (num * peso);
-                    peso = peso - 1;
-                    }
-
-                    r = 11 - (sm % 11);
-                    if ((r == 10) || (r == 11))
-                         dig11 = '0';
-                    else dig11 = r + 48;
-
-                    // Verifica se os digitos calculados conferem com os digitos informados.
-                    if ((dig10 == cpf.charAt(9)) && (dig11 == cpf.charAt(10)))
-                         return true;
-                    else return false;
-
-                    /**************************/
-
-                    /*value = jQuery.trim(value);
-
-                    value = value.replace('.','');
-                    value = value.replace('.','');
-                    cpf = value.replace('-','');
+                if(cpf.length <= 11){
                     while(cpf.length < 11) cpf = "0"+ cpf;
                     var expReg = /^0+$|^1+$|^2+$|^3+$|^4+$|^5+$|^6+$|^7+$|^8+$|^9+$/;
                     var a = [];
@@ -185,7 +124,7 @@
                     var retorno = true;
                     if ((cpf.charAt(9) != a[9]) || (cpf.charAt(10) != a[10]) || cpf.match(expReg)) retorno = false;
 
-                    return this.optional(element) || retorno;*/
+                    return this.optional(element) || retorno;
                 } else {
                     return true;
                 }
@@ -193,59 +132,55 @@
             
             jQuery.validator.addMethod("cnpjValido", function(value, element) {
                 var cnpj = $(element).cleanVal();
-                if(cnpj > 11){
-                // considera-se erro CNPJ's formados por uma sequencia de numeros iguais
-                    if (cnpj == "00000000000000" || cnpj == "11111111111111" ||
-                        cnpj == "22222222222222" || cnpj == "33333333333333" ||
-                        cnpj == "44444444444444" || cnpj == "55555555555555" ||
-                        cnpj == "66666666666666" || cnpj == "77777777777777" ||
-                        cnpj == "88888888888888" || cnpj == "99999999999999" ||
-                       (cnpj.length != 14))
-                       return(false);
+                if(cnpj.length > 11){
+                    if(cnpj == '') return false;
 
-                    var dig13, dig14;
-                    var sm, i, r, num, peso;
+                    if (cnpj.length != 14)
+                        return false;
 
-                // Calculo do 1o. Digito Verificador
-                    sm = 0;
-                    peso = 2;
-                    for (i=11; i>=0; i--) {
-                // converte o i-ésimo caractere do cnpj em um número:
-                // por exemplo, transforma o caractere '0' no inteiro 0
-                // (48 eh a posição de '0' na tabela ASCII)
-                        num = cnpj.charAt(i) - 48;
-                        sm = sm + (num * peso);
-                        peso = peso + 1;
-                        if (peso == 10)
-                           peso = 2;
+                    // Elimina CNPJs invalidos conhecidos
+                    if (cnpj == "00000000000000" || 
+                        cnpj == "11111111111111" || 
+                        cnpj == "22222222222222" || 
+                        cnpj == "33333333333333" || 
+                        cnpj == "44444444444444" || 
+                        cnpj == "55555555555555" || 
+                        cnpj == "66666666666666" || 
+                        cnpj == "77777777777777" || 
+                        cnpj == "88888888888888" || 
+                        cnpj == "99999999999999")
+                        return false;
+
+                    // Valida DVs
+                    tamanho = cnpj.length - 2
+                    numeros = cnpj.substring(0,tamanho);
+                    digitos = cnpj.substring(tamanho);
+                    soma = 0;
+                    pos = tamanho - 7;
+                    for (i = tamanho; i >= 1; i--) {
+                      soma += numeros.charAt(tamanho - i) * pos--;
+                      if (pos < 2)
+                            pos = 9;
                     }
+                    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+                    if (resultado != digitos.charAt(0))
+                        return false;
 
-                    r = sm % 11;
-                    if ((r == 0) || (r == 1))
-                        dig13 = '0';
-                    else dig13 = (11-r) + 48;
-
-                // Calculo do 2o. Digito Verificador
-                    sm = 0;
-                    peso = 2;
-                    for (i=12; i>=0; i--) {
-                        num = (int)(cnpj.charAt(i)- 48);
-                        sm = sm + (num * peso);
-                        peso = peso + 1;
-                        if (peso == 10)
-                            peso = 2;
+                    tamanho = tamanho + 1;
+                    numeros = cnpj.substring(0,tamanho);
+                    soma = 0;
+                    pos = tamanho - 7;
+                    for (i = tamanho; i >= 1; i--) {
+                      soma += numeros.charAt(tamanho - i) * pos--;
+                      if (pos < 2)
+                            pos = 9;
                     }
+                    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+                    if (resultado != digitos.charAt(1))
+                          return false;
 
-                    r = sm % 11;
-                    if ((r == 0) || (r == 1))
-                        dig14 = '0';
-                    else dig14 = (char)((11-r) + 48);
-
-                // Verifica se os dígitos calculados conferem com os dígitos informados.
-                    if ((dig13 == cnpj.charAt(12)) && (dig14 == cnpj.charAt(13)))
-                        return true ;
-                    else return false;
-                }else{
+                    return true;
+                } else {
                     return true;
                 }
             }, "CNPJ inválido !!!");
@@ -292,9 +227,8 @@
                         },
                         telefoneCelular : {
                             required: true,
-                            minlength: 11,
-                            maxlength: 11,
-                            digits: true
+                            minlength: 16,
+                            maxlength: 16
                         },
                         email:  {
                             required: true,
@@ -317,8 +251,7 @@
                         cep: {
                             required: true,
                             minlength: 9,
-                            maxlength: 9,
-                            digits: true
+                            maxlength: 9
                         },
                         uf: "required",
                         cidade: "required"
@@ -334,8 +267,7 @@
                         telefoneCelular : {
                             required: "Telefone/Celular é obrigatório !!!",
                             minlength: "Telefone/Celular inválido !!!",
-                            maxlength: "Telefone/Celular inválido !!!",
-                            digits: "Telefone/Celular inválido !!!"
+                            maxlength: "Telefone/Celular inválido !!!"
                         },
                         email : {
                             required: "Email é obrigatório !!!",
@@ -358,14 +290,13 @@
                         cep: {
                             required: "CEP é obrigatório !!!",
                             minlength: "CEP inválido !!!",
-                            maxlength: "CEP inválido !!!",
-                            digits: "CEP inválido !!!"
+                            maxlength: "CEP inválido !!!"
                         },
                         uf: "UF é obrigatório !!!",
                         cidade: "Cidade é obrigatória !!!"
                     },
                     submitHandler: function(form) {
-                        //form.submit();
+                        form.submit();
                     }
                 });
         
@@ -376,7 +307,6 @@
                         type: '${mensagemTipo}',
                         confirmButtonText: 'Ok'
                     });
-                    getCidades();
                 </c:if>
             });
             
@@ -412,6 +342,7 @@
                     });
                 }
             } 
+            getCidades();
         </script>
     </body>
 </html>
