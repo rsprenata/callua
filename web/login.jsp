@@ -5,27 +5,15 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script src="${pageContext.request.contextPath}/resources/js/jquery-3.3.1.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/js/bootstrap.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.js"></script>
-        <script> 
-            $(function(){
-                $("#header").load("header.jsp"); 
-                $("#footer").load("footer.jsp");
-                setTimeout(() => {
-                    $('header .titulo-header').text('Login');
-                }, 100);
-            });
-        </script>
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap-grid.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap-reboot.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/fontawesome-free-5.4.1-web/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/fontawesome-free-5.4.1-web/css/all.min.css">
         <title>Callua System</title>
     </head>
     <body>
@@ -36,7 +24,7 @@
                     <div class="row">
                         <fieldset class="login">
                             <div class="form-group text-center">
-                                <a type="submit" class="btn btn-default btn-light" id="novo" name="novo" href="novocliente.jsp" style="background-color: #e68f39;">Sou novo aqui</a>
+                                <a class="btn btn-default btn-light" href="${pageContext.request.contextPath}/Cliente?op=cadastrarForm" style="background-color: #e68f39;" data-toggle="tooltip" data-placement="right" title="Clique para se cadastrar">Sou novo aqui</a>
                             </div>
                             <div class="form-group">
                                 <label for="login">CPF/CNPJ</label>
@@ -55,5 +43,32 @@
             </div>
         </main>
         <div id="footer"></div>
+        
+        <script src="${pageContext.request.contextPath}/resources/jquery-3.3.1/jquery-3.3.1.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/popper.js/popper.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/js/bootstrap.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.js"></script>
+        <script> 
+            $(function(){
+                $('[data-toggle="tooltip"]').tooltip();
+                $("#header").load("header.jsp"); 
+                $("#footer").load("footer.jsp");
+                setTimeout(() => {
+                    $('header .titulo-header').text('Login');
+                }, 100);
+            });
+
+            $(document).ready(function(){
+                <c:if test="${not empty mensagem}">
+                    swal({
+                        title: '${mensagemTipo == "error" ? "Erro" : "Sucesso"}!',
+                        text: '${mensagem}',
+                        type: '${mensagemTipo}',
+                        confirmButtonText: 'Ok'
+                    });
+                    getCidades();
+                </c:if>
+            });
+        </script>
     </body>
 </html>

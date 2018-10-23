@@ -12,7 +12,6 @@ package com.callua.bean;
 public class Cliente extends Pessoa {
     private String endereco;
     private String cep;
-    private String uf;
     private Cidade cidade;
     
     public Cliente() {}
@@ -31,14 +30,6 @@ public class Cliente extends Pessoa {
 
     public void setCep(String cep) {
         this.cep = cep;
-    }
-
-    public String getUf() {
-        return uf;
-    }
-
-    public void setUf(String uf) {
-        this.uf = uf;
     }
 
     public Cidade getCidade() {

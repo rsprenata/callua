@@ -20,10 +20,11 @@ CREATE TABLE Cidade (
 
 CREATE TABLE Pessoa (
 	id INT AUTO_INCREMENT,
+	nome VARCHAR(128),
 	cpfCnpj VARCHAR(14),
 	telefoneCelular VARCHAR(11),
-	email VARCHAR(64),
-	senha VARCHAR(128),
+	email VARCHAR(128),
+	senha VARCHAR(32),
 	
 	PRIMARY KEY (id)
 );

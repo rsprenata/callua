@@ -9,23 +9,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script src="${pageContext.request.contextPath}/resources/js/jquery-3.3.1.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/js/bootstrap.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.js"></script>
-        <script> 
-            $(function(){
-                $("#header").load("header.jsp"); 
-                $("#footer").load("footer.jsp");
-                setTimeout(() => {
-                    $('header .titulo-header').text('Novo Chamado');
-                }, 100);
-            });
-        </script>
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap-grid.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap-reboot.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/fontawesome-free-5.4.1-web/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/fontawesome-free-5.4.1-web/css/all.min.css">
         <title>Callua - Novo chamado</title>
     </head>
     <body>
@@ -83,5 +69,18 @@
 
         </main>
         <div id="footer"></div>
+        
+        <script src="${pageContext.request.contextPath}/resources/jquery-3.3.1/jquery-3.3.1.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/popper.js/popper.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/js/bootstrap.min.js"></script>
+        <script> 
+            $(function(){
+                $("#header").load("header.jsp"); 
+                $("#footer").load("footer.jsp");
+                setTimeout(() => {
+                    $('header .titulo-header').text('Novo Chamado');
+                }, 100);
+            });
+        </script>
     </body>
 </html>
