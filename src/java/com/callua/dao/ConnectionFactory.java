@@ -9,8 +9,10 @@ import java.util.logging.Logger;
 public class ConnectionFactory {
     public Connection getConnection() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            return DriverManager.getConnection("jdbc:mysql://localhost/callua", "root", "root");
+            //Class.forName("com.mysql.jdbc.Driver");
+            //return DriverManager.getConnection("jdbc:mysql://localhost/callua", "root", "root");
+            Class.forName("org.postgresql.Driver");
+            return DriverManager.getConnection("jdbc:postgres://localhost/callua", "postgres", "postgres");
         } catch (SQLException exception) { 
             System.out.println("Erro ao conectar no banco: " + exception);
         } catch (ClassNotFoundException ex) {
