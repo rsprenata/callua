@@ -3,6 +3,9 @@ package com.callua.dao;
 import com.callua.facade.ClienteFacade;
 import com.callua.facade.UsuarioFacade;
 import com.callua.util.Login;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,6 +23,10 @@ public class LoginDao {
         
         try {
             connection.setAutoCommit(false);
+            
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(senha.getBytes(), 0, senha.length());
+            senha = new BigInteger(1, md.digest()).toString(16);
             
             //VERIFICA SE É CLIENTE
             stmt = connection.prepareStatement("SELECT * FROM Cliente "
@@ -47,7 +54,7 @@ public class LoginDao {
             }
 
             connection.commit();
-        } catch (SQLException exception) {
+        } catch (Exception exception) {
             try {
                 connection.rollback();
             } catch (SQLException ex) {

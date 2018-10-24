@@ -2,10 +2,15 @@ package com.callua.dao;
 
 import com.callua.bean.Cliente;
 import com.callua.facade.CidadeFacade;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClienteDao {
     public void adicionarUm(Cliente cliente) {
@@ -13,7 +18,13 @@ public class ClienteDao {
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
         
-        try {stmt = connection.prepareStatement("INSERT INTO Cliente (nome, cpfCnpj, telefoneCelular, email, senha, endereco, cep, idCidade) VALUES "
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(cliente.getSenha().getBytes(), 0, cliente.getSenha().length());
+            cliente.setSenha(new BigInteger(1, md.digest()).toString(16));
+        
+        
+            stmt = connection.prepareStatement("INSERT INTO Cliente (nome, cpfCnpj, telefoneCelular, email, senha, endereco, cep, idCidade) VALUES "
                 + "(?, ?, ?, ?, ?, ?, ?, ?)");
             stmt.setString(1, cliente.getNome());
             stmt.setString(2, cliente.getCpfCnpj());
@@ -24,7 +35,7 @@ public class ClienteDao {
             stmt.setString(7, cliente.getCep());
             stmt.setInt(8, cliente.getCidade().getId());
             stmt.executeUpdate();
-        } catch (SQLException exception) {
+        } catch (Exception exception) {
             throw new RuntimeException("Erro. Origem="+exception.getMessage());
         } finally {
             if (stmt != null)
