@@ -43,7 +43,7 @@ public class ClienteServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        request.setCharacterEncoding("UTF-8");
         
         String op = request.getParameter("op");
         
@@ -56,19 +56,20 @@ public class ClienteServlet extends HttpServlet {
                 rd.forward(request, response);
                 break;
             case "cadastrar":
-                //String mensagem = formValido(request);
-                Mensagem mensagem = null;
+                Mensagem mensagem = formValido(request);
                 Cliente cliente = carregarCliente(request);
+                System.out.println(cliente.getEndereco());
                 if (mensagem == null) {
-                    //ClienteFacade.adicionarUm(cliente);
-                    request.setAttribute("mensagem", "Cadastrado com sucesso !!!");
-                    request.setAttribute("mensagemTipo", "success");
+                    ClienteFacade.adicionarUm(cliente);
+                    mensagem = new Mensagem("Cadastrado com sucesso !!!");
+                    mensagem.setTipo("success");
                     HttpSession session = request.getSession(false);
-                    session.setAttribute("mensagem", "Hello world");
-                    response.sendRedirect("/login.jsp");
+                    session.setAttribute("mensagem", mensagem);
+                    response.sendRedirect("login.jsp");
                 } else {
                     mensagem.setTipo("error");
-                    request.setAttribute("mensagem", mensagem);
+                    HttpSession session = request.getSession(false);
+                    session.setAttribute("mensagem", mensagem);
                     request.setAttribute("cliente", cliente);
                     request.setAttribute("idEstado", request.getParameter("uf"));
                     RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/Cliente?op=cadastrarForm");

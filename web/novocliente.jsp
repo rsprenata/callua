@@ -32,7 +32,7 @@
                                     <div class="row">
                                         <div class="form-group col-md-4">
                                             <label for="cpf">CPF/CNPJ</label>
-                                            <input type="text" name="cpfCnpj" class="form-control cpfCnpj" value="${cliente.cpfCnpj}" placeholder="CPF/CNPJ">
+                                            <input type="text" id="cpfCnpj" name="cpfCnpj" class="form-control cpfCnpj" value="${cliente.cpfCnpj}" placeholder="CPF/CNPJ">
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label for="telefone">Telefone/Celular</label>
@@ -94,6 +94,9 @@
         <script src="${pageContext.request.contextPath}/resources/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/jquery-validation-1.17.0/dist/jquery.validate.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/customValidations.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/masks.js"></script>
+        <%@ include file="initializeJS.jsp" %>
         <script> 
             $(function(){
                 $("#header").load("header.jsp"); 
@@ -103,118 +106,12 @@
                 }, 100);
             });
             
-            jQuery.validator.addMethod("cpfValido", function(value, element) {
-                var cpf = $(element).cleanVal();
-                if(cpf.length <= 11){
-                    while(cpf.length < 11) cpf = "0"+ cpf;
-                    var expReg = /^0+$|^1+$|^2+$|^3+$|^4+$|^5+$|^6+$|^7+$|^8+$|^9+$/;
-                    var a = [];
-                    var b = new Number;
-                    var c = 11;
-                    for (i=0; i<11; i++){
-                        a[i] = cpf.charAt(i);
-                        if (i < 9) b += (a[i] * --c);
-                    }
-                    if ((x = b % 11) < 2) { a[9] = 0 } else { a[9] = 11-x }
-                    b = 0;
-                    c = 11;
-                    for (y=0; y<10; y++) b += (a[y] * c--);
-                    if ((x = b % 11) < 2) { a[10] = 0; } else { a[10] = 11-x; }
-
-                    var retorno = true;
-                    if ((cpf.charAt(9) != a[9]) || (cpf.charAt(10) != a[10]) || cpf.match(expReg)) retorno = false;
-
-                    return this.optional(element) || retorno;
-                } else {
-                    return true;
-                }
-            }, "CPF inválido !!!");
-            
-            jQuery.validator.addMethod("cnpjValido", function(value, element) {
-                var cnpj = $(element).cleanVal();
-                if(cnpj.length > 11){
-                    if(cnpj == '') return false;
-
-                    if (cnpj.length != 14)
-                        return false;
-
-                    // Elimina CNPJs invalidos conhecidos
-                    if (cnpj == "00000000000000" || 
-                        cnpj == "11111111111111" || 
-                        cnpj == "22222222222222" || 
-                        cnpj == "33333333333333" || 
-                        cnpj == "44444444444444" || 
-                        cnpj == "55555555555555" || 
-                        cnpj == "66666666666666" || 
-                        cnpj == "77777777777777" || 
-                        cnpj == "88888888888888" || 
-                        cnpj == "99999999999999")
-                        return false;
-
-                    // Valida DVs
-                    tamanho = cnpj.length - 2
-                    numeros = cnpj.substring(0,tamanho);
-                    digitos = cnpj.substring(tamanho);
-                    soma = 0;
-                    pos = tamanho - 7;
-                    for (i = tamanho; i >= 1; i--) {
-                      soma += numeros.charAt(tamanho - i) * pos--;
-                      if (pos < 2)
-                            pos = 9;
-                    }
-                    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-                    if (resultado != digitos.charAt(0))
-                        return false;
-
-                    tamanho = tamanho + 1;
-                    numeros = cnpj.substring(0,tamanho);
-                    soma = 0;
-                    pos = tamanho - 7;
-                    for (i = tamanho; i >= 1; i--) {
-                      soma += numeros.charAt(tamanho - i) * pos--;
-                      if (pos < 2)
-                            pos = 9;
-                    }
-                    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-                    if (resultado != digitos.charAt(1))
-                          return false;
-
-                    return true;
-                } else {
-                    return true;
-                }
-            }, "CNPJ inválido !!!");
-            
             $(document).ready(function(){
                 $("#uf").change(function() {
                   getCidades();
                 });
                 
-                $('.cep').mask('00000-000');
-                
-                $('.telefoneCelular').mask('(00) 0 0000-0000');
-                
-                $(".cpfCnpj").keydown(function(){
-                    $(this).unmask();
-
-                    var tamanho = $(this).val().length;
-
-                    if(tamanho < 11){
-                        $(this).mask("999.999.999-99");
-                    } else {
-                        $(this).mask("99.999.999/9999-99");
-                    }
-
-                    var elem = this;
-                    setTimeout(function(){
-                        elem.selectionStart = elem.selectionEnd = 10000;
-                    }, 0);
-                    var currentValue = $(this).val();
-                    $(this).val('');
-                    $(this).val(currentValue);
-                });
-                
-                /*$("#formCadastro").validate({
+                $("#formCadastro").validate({
                     rules: {
                         nome: {
                             required: true,
@@ -298,16 +195,7 @@
                     submitHandler: function(form) {
                         form.submit();
                     }
-                });*/
-        
-                <c:if test="${not empty mensagem}">
-                    swal({
-                        title: '${mensagem.tipo == "error" ? "Erro" : "Sucesso"}!',
-                        text: '${mensagem}',
-                        type: '${mensagem.tipo}',
-                        confirmButtonText: 'Ok'
-                    });
-                </c:if>
+                });
             });
             
             function getCidades(){

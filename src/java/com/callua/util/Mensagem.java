@@ -11,19 +11,19 @@ package com.callua.util;
  * Classe auxiliar para as mensagens mostradas no sistema através do sweet alert.
  */
 public class Mensagem {
-    private String mensagem;
+    private String texto;
     private String tipo;
 
-    public Mensagem(String mensagem) {
-        this.mensagem = mensagem;
+    public Mensagem(String texto) {
+        this.texto = texto;
     }
 
-    public String getMensagem() {
-        return mensagem;
+    public String getTexto() {
+        return texto;
     }
 
-    public void setMensagem(String mensagem) {
-        this.mensagem = mensagem;
+    public void setTexto(String texto) {
+        this.texto = texto;
     }
 
     public String getTipo() {
