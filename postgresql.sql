@@ -39,6 +39,13 @@ CREATE TABLE Cliente (
 	FOREIGN KEY (idCidade) REFERENCES Cidade (id)
 );
 
+CREATE TABLE Usuario (
+	idPessoa INT,
+	administrador BOOLEAN,
+	
+	FOREIGN KEY (idPessoa) REFERENCES Pessoa (id)
+);
+
 /*********************
 * INSERÇÃO DOS DADOS *
 **********************/

@@ -16,6 +16,8 @@ public class Pessoa {
     private String telefoneCelular;
     private String email;
     private String senha;
+    private boolean cliente;
+    private boolean usuario;
     
     public Pessoa() {}
 
@@ -65,5 +67,21 @@ public class Pessoa {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public boolean isCliente() {
+        return cliente;
+    }
+
+    public void setCliente(boolean cliente) {
+        this.cliente = cliente;
+    }
+
+    public boolean isUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(boolean usuario) {
+        this.usuario = usuario;
     }
 }

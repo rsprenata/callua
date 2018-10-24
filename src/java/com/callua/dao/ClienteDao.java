@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ClienteDao {
-	public void adicionarUm(Cliente cliente) {
+    public void adicionarUm(Cliente cliente) {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;

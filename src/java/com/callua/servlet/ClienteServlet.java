@@ -54,12 +54,16 @@ public class ClienteServlet extends HttpServlet {
                 rd.forward(request, response);
                 break;
             case "cadastrar":
-                String mensagem = formValido(request);
+                //String mensagem = formValido(request);
+                String mensagem = null;
                 Cliente cliente = carregarCliente(request);
                 if (mensagem == null) {
-                    ClienteFacade.adicionarUm(cliente);
+                    //ClienteFacade.adicionarUm(cliente);
                     request.setAttribute("mensagem", "Cadastrado com sucesso !!!");
                     request.setAttribute("mensagemTipo", "success");
+                    HttpSession session = request.getSession(false);
+                    //save message in session
+                    session.setAttribute("mensagem", "Hello world");
                     RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/login.jsp");
                     requestDispatcher.forward(request, response);
                 } else {

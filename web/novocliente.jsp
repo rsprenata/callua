@@ -32,7 +32,7 @@
                                     <div class="row">
                                         <div class="form-group col-md-4">
                                             <label for="cpf">CPF/CNPJ</label>
-                                            <input type="text" name="cpfCnpj" class="form-control cpfcnpj" value="${cliente.cpfCnpj}" placeholder="CPF/CNPJ">
+                                            <input type="text" name="cpfCnpj" class="form-control cpfCnpj" value="${cliente.cpfCnpj}" placeholder="CPF/CNPJ">
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label for="telefone">Telefone/Celular</label>
@@ -194,7 +194,7 @@
                 
                 $('.telefoneCelular').mask('(00) 0 0000-0000');
                 
-                $(".cpfcnpj").keydown(function(){
+                $(".cpfCnpj").keydown(function(){
                     $(this).unmask();
 
                     var tamanho = $(this).val().length;
