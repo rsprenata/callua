@@ -9,7 +9,7 @@ package com.callua.bean;
  *
  * @author renata
  */
-public class Usuario extends Pessoa {
+public class Usuario extends Pessoa implements java.io.Serializable {
     private boolean administrador;
     
     public Usuario() {}

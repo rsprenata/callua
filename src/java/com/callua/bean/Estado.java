@@ -2,7 +2,7 @@ package com.callua.bean;
 
 import java.util.List;
 
-public class Estado {
+public class Estado implements java.io.Serializable {
     private Integer id;
     private String uf;
     private List<Cidade> cidades;

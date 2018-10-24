@@ -9,7 +9,7 @@ package com.callua.bean;
  *
  * @author renata
  */
-public abstract class Pessoa {
+public abstract class Pessoa implements java.io.Serializable {
     private Integer id;
     private String nome;
     private String cpfCnpj;

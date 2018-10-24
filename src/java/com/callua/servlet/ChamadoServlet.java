@@ -5,6 +5,7 @@
  */
 package com.callua.servlet;
 
+import com.callua.bean.Chamado;
 import com.callua.bean.Cliente;
 import com.callua.bean.Endereco;
 import com.callua.bean.Estado;
@@ -27,10 +28,10 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author juniorrek
+ * @author renata
  */
-@WebServlet(name = "ClienteServlet", urlPatterns = {"/Cliente"})
-public class ClienteServlet extends HttpServlet {
+@WebServlet(name = "ChamadoServlet", urlPatterns = {"/Chamado"})
+public class ChamadoServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,15 +49,15 @@ public class ClienteServlet extends HttpServlet {
         String op = request.getParameter("op");
         
         switch(op) {
-            case "cadastrarForm":
+            case "abrirForm":
                 List<Estado> estados = EstadoFacade.buscarTodos();
                 
                 request.setAttribute("estados", estados);
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/novocliente.jsp");
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/abrirchamado.jsp");
                 rd.forward(request, response);
                 break;
-            case "cadastrar":
-                Cliente cliente = carregarCliente(request);
+            case "abrir":
+                Chamado chamado = carregarChamado(request);
                 Mensagem mensagem = formValido(request, cliente);
                 if (mensagem == null) {
                     ClienteFacade.adicionarUm(cliente);
@@ -78,16 +79,14 @@ public class ClienteServlet extends HttpServlet {
         }
     }
     
-    private Cliente carregarCliente(HttpServletRequest request) {
-        Cliente cliente = new Cliente();
+    private Chamado carregarChamado(HttpServletRequest request) {
+        Chamado chamado = new Chamado();
         
-        cliente.setNome(request.getParameter("nome"));
-        cliente.setCpfCnpj(request.getParameter("cpfCnpj"));
-        if (cliente.getCpfCnpj() != null) cliente.setCpfCnpj(cliente.getCpfCnpj().replaceAll("\\W", ""));
-        cliente.setTelefoneCelular(request.getParameter("telefoneCelular"));
-        if (cliente.getTelefoneCelular() != null) cliente.setTelefoneCelular(cliente.getTelefoneCelular().replaceAll("\\W", ""));
-        cliente.setEmail(request.getParameter("email"));
-        cliente.setSenha(request.getParameter("senha"));
+        chamado.setTitulo(request.getParameter("titulo"));
+        chamado.setDescricao(request.getParameter("descricao"));
+        chamado.setTitulo(request.getParameter("titulo"));
+        chamado.setTitulo(request.getParameter("titulo"));
+        chamado.setTitulo(request.getParameter("titulo"));
         Endereco endereco = new Endereco();
         endereco.setEndereco(request.getParameter("endereco"));
         endereco.setCep(request.getParameter("cep"));
@@ -97,12 +96,12 @@ public class ClienteServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             endereco.setCidade(null);
         }
-        cliente.setEndereco(endereco);
+        chamado.setEndereco(endereco);
            
-        return cliente;
+        return chamado;
     }
     
-    private Mensagem formValido(HttpServletRequest request, Cliente cliente) {
+    private Mensagem formValido(Chamado chamado) {
         Mensagem mensagem = null;
         
         if (cliente.getNome() == null || "".equals(cliente.getNome())) {

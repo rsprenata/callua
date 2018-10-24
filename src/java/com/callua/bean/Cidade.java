@@ -1,6 +1,6 @@
 package com.callua.bean;
 
-public class Cidade {
+public class Cidade implements java.io.Serializable {
     private Integer id;
     private String nome;
     private Estado estado;

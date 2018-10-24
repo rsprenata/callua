@@ -9,34 +9,16 @@ package com.callua.bean;
  *
  * @author renata
  */
-public class Cliente extends Pessoa {
-    private String endereco;
-    private String cep;
-    private Cidade cidade;
+public class Cliente extends Pessoa implements java.io.Serializable {
+    private Endereco endereco;
     
     public Cliente() {}
 
-    public String getEndereco() {
+    public Endereco getEndereco() {
         return endereco;
     }
 
-    public void setEndereco(String endereco) {
+    public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public Cidade getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(Cidade cidade) {
-        this.cidade = cidade;
     }
 }
