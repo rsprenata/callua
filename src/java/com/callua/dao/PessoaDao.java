@@ -43,7 +43,7 @@ public class PessoaDao {
                 stmt.setInt(1, pessoa.getId());
                 rs = stmt.executeQuery();
                 
-                if (rs.next()) {
+                /*if (rs.next()) {
                     pessoa.setCliente(true);
                 } else {
                     pessoa.setCliente(false);
@@ -60,7 +60,7 @@ public class PessoaDao {
                     pessoa.setUsuario(true);
                 } else {
                     pessoa.setUsuario(false);
-                }
+                }*/
             }
 
             connection.commit();

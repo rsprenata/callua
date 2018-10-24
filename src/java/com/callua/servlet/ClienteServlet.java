@@ -10,6 +10,7 @@ import com.callua.bean.Estado;
 import com.callua.facade.CidadeFacade;
 import com.callua.facade.ClienteFacade;
 import com.callua.facade.EstadoFacade;
+import com.callua.util.Mensagem;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.InputMismatchException;
@@ -22,6 +23,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -55,20 +57,18 @@ public class ClienteServlet extends HttpServlet {
                 break;
             case "cadastrar":
                 //String mensagem = formValido(request);
-                String mensagem = null;
+                Mensagem mensagem = null;
                 Cliente cliente = carregarCliente(request);
                 if (mensagem == null) {
                     //ClienteFacade.adicionarUm(cliente);
                     request.setAttribute("mensagem", "Cadastrado com sucesso !!!");
                     request.setAttribute("mensagemTipo", "success");
                     HttpSession session = request.getSession(false);
-                    //save message in session
                     session.setAttribute("mensagem", "Hello world");
-                    RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/login.jsp");
-                    requestDispatcher.forward(request, response);
+                    response.sendRedirect("/login.jsp");
                 } else {
+                    mensagem.setTipo("error");
                     request.setAttribute("mensagem", mensagem);
-                    request.setAttribute("mensagemTipo", "error");
                     request.setAttribute("cliente", cliente);
                     request.setAttribute("idEstado", request.getParameter("uf"));
                     RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/Cliente?op=cadastrarForm");
@@ -100,52 +100,52 @@ public class ClienteServlet extends HttpServlet {
         return cliente;
     }
     
-    private String formValido(HttpServletRequest request) {
+    private Mensagem formValido(HttpServletRequest request) {
         Cliente cliente = carregarCliente(request);
-        String mensagem = null;
+        Mensagem mensagem = null;
         
         if (cliente.getNome() == null || "".equals(cliente.getNome())) {
-            mensagem = "Nome é obrigatório !!!";
+            mensagem = new Mensagem("Nome é obrigatório !!!");
         } else if (cliente.getNome().length() > 128) {
-            mensagem = "No máximo 128 caracteres no nome !!!";
+            mensagem = new Mensagem("No máximo 128 caracteres no nome !!!");
         } else if (cliente.getCpfCnpj() == null || "".equals(cliente.getCpfCnpj())) {
-            mensagem = "CPF/CNPJ é obrigatório !!!";
+            mensagem = new Mensagem("CPF/CNPJ é obrigatório !!!");
         } else if (cliente.getCpfCnpj().length() <= 11 && !cpfValido(cliente.getCpfCnpj())) {
-            mensagem = "CPF inválido !!!";
+            mensagem = new Mensagem("CPF inválido !!!");
         } else if (cliente.getCpfCnpj().length() > 11 && !cnpjValido(cliente.getCpfCnpj())) {
-            mensagem = "CNPJ inválido !!!";
+            mensagem = new Mensagem("CNPJ inválido !!!");
         } else if (cliente.getTelefoneCelular()== null || "".equals(cliente.getTelefoneCelular())) {
-            mensagem = "Telefone/Celular é obrigatório !!!";
+            mensagem = new Mensagem("Telefone/Celular é obrigatório !!!");
         } else if (cliente.getTelefoneCelular().length() != 11  || !ehInteiro(cliente.getCep())) {
-            mensagem = "Telefone/Celular inválido !!!";
+            mensagem = new Mensagem("Telefone/Celular inválido !!!");
         } else if (cliente.getEmail()== null || "".equals(cliente.getEmail())) {
-            mensagem = "Email é obrigatório !!!";
+            mensagem = new Mensagem("Email é obrigatório !!!");
         } else if (cliente.getEmail().length() > 128) {
-            mensagem = "No máximo 128 caracteres no email !!!";
+            mensagem = new Mensagem("No máximo 128 caracteres no email !!!");
         } else if (!emailValido(cliente.getEmail())) {
-            mensagem = "Email inválido !!!";
+            mensagem = new Mensagem("Email inválido !!!");
         } else if (cliente.getSenha()== null || "".equals(cliente.getSenha())) {
-            mensagem = "Senha é obrigatória !!!";
+            mensagem = new Mensagem("Senha é obrigatória !!!");
         } else if (cliente.getSenha().length() > 128) {
-            mensagem = "No máximo 128 caracteres na senha !!!";
+            mensagem = new Mensagem("No máximo 128 caracteres na senha !!!");
         } else if (request.getParameter("confirmacaoSenha") == null || "".equals(request.getParameter("confirmacaoSenha"))) {
-            mensagem = "Confirmação de senha é obrigatória !!!";
+            mensagem = new Mensagem("Confirmação de senha é obrigatória !!!");
         } else if (request.getParameter("confirmacaoSenha").length() > 128) {
-            mensagem = "No máximo 128 caracteres na confirmação da senha !!!";
+            mensagem = new Mensagem("No máximo 128 caracteres na confirmação da senha !!!");
         } else if (!cliente.getSenha().equals(request.getParameter("confirmacaoSenha"))) {
-            mensagem = "Senha e confirmação diferentes !!!";
+            mensagem = new Mensagem("Senha e confirmação diferentes !!!");
         } else if (cliente.getEndereco()== null || "".equals(cliente.getEndereco())) {
-            mensagem = "Endereço é obrigatório !!!";
+            mensagem = new Mensagem("Endereço é obrigatório !!!");
         } else if (cliente.getEndereco().length() > 128) {
-            mensagem = "No máximo 128 caracteres no endereço !!!";
+            mensagem = new Mensagem("No máximo 128 caracteres no endereço !!!");
         } else if (cliente.getCep()== null || "".equals(cliente.getCep())) {
-            mensagem = "CEP é obrigatório !!!";
+            mensagem = new Mensagem("CEP é obrigatório !!!");
         } else if (cliente.getCep().length() != 8 || !ehInteiro(cliente.getCep())) {
-            mensagem = "CEP inválido !!!";
+            mensagem = new Mensagem("CEP inválido !!!");
         } else if (request.getParameter("uf") == null || "".equals(request.getParameter("uf"))) {
-            mensagem = "UF é obrigatório !!!";
+            mensagem = new Mensagem("UF é obrigatório !!!");
         } else if (cliente.getCidade() == null) {
-            mensagem = "Cidade é obrigatória !!!";
+            mensagem = new Mensagem("Cidade é obrigatória !!!");
         }
         
         return mensagem;

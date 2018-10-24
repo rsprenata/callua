@@ -50,7 +50,7 @@ public class PessoaServlet extends HttpServlet {
                 String mensagem = formValido(request);
                 if (mensagem == null) {
                     Pessoa pessoa = PessoaFacade.validaLogin(request.getParameter("cpfCnpj"), request.getParameter("senha"));
-                    if (pessoa != null && (pessoa.isCliente() || pessoa.isUsuario())) {
+                    /*if (pessoa != null && (pessoa.isCliente() || pessoa.isUsuario())) {
                         if (pessoa.isCliente() && pessoa.isUsuario()) {
                             //É CLIENTE E USUÁRIO
                         } else if (pessoa.isCliente()) {
@@ -61,7 +61,7 @@ public class PessoaServlet extends HttpServlet {
                         }
                     } else {
                         mensagem = "Usuário não encontrado.";
-                    }
+                    }*/
                 } 
                 
                 if (mensagem != null) {

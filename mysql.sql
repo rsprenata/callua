@@ -18,25 +18,33 @@ CREATE TABLE Cidade (
         FOREIGN KEY (idEstado) REFERENCES Estado (id)
 );
 
-CREATE TABLE Pessoa (
+CREATE TABLE Cliente (
 	id INT AUTO_INCREMENT,
 	nome VARCHAR(128),
 	cpfCnpj VARCHAR(14),
 	telefoneCelular VARCHAR(11),
 	email VARCHAR(128),
 	senha VARCHAR(32),
-	
-	PRIMARY KEY (id)
-);
-
-CREATE TABLE Cliente (
-	idPessoa INT,
 	endereco VARCHAR(128),
 	cep VARCHAR(8),
 	idCidade INT,
 	
-	FOREIGN KEY (idPessoa) REFERENCES Pessoa (id),
+	PRIMARY KEY (id),
+	UNIQUE (cpfCnpj), 
 	FOREIGN KEY (idCidade) REFERENCES Cidade (id)
+);
+
+CREATE TABLE Usuario (
+	id INT AUTO_INCREMENT,
+	nome VARCHAR(128),
+	cpfCnpj VARCHAR(14),
+	telefoneCelular VARCHAR(11),
+	email VARCHAR(128),
+	senha VARCHAR(32),
+	administrador BOOLEAN,
+
+	PRIMARY KEY (id),
+	UNIQUE (cpfCnpj)
 );
 
 /*********************

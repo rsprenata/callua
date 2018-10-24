@@ -8,6 +8,6 @@ public class PessoaFacade {
     private static final PessoaDao PDAO = new PessoaDao();
 
     public static Pessoa validaLogin(String cpfCnpj, String senha) {
-        PDAO.validaLogin(cpfCnpj, senha);
+        return PDAO.validaLogin(cpfCnpj, senha);
     }
 }

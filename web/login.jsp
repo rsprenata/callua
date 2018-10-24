@@ -193,9 +193,9 @@
                 
                 <c:if test="${not empty mensagem}">
                     swal({
-                        title: '${mensagemTipo == "error" ? "Erro" : "Sucesso"}!',
+                        title: '${mensagem.tipo == "error" ? "Erro" : "Sucesso"}!',
                         text: '${mensagem}',
-                        type: '${mensagemTipo}',
+                        type: '${mensagem.tipo}',
                         confirmButtonText: 'Ok'
                     });
                 </c:if>
