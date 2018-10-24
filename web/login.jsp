@@ -23,7 +23,7 @@
                 <div class="container">
                     <div class="row">
                         <fieldset class="login">
-                            <form id="formLogin" action="${pageContext.request.contextPath}/Pessoa?op=logar" method="POST">
+                            <form id="formLogin" action="${pageContext.request.contextPath}/Login?op=logar" method="POST">
                                 <div class="form-group text-center">
                                     <a class="btn btn-default btn-light" href="${pageContext.request.contextPath}/Cliente?op=cadastrarForm" style="background-color: #e68f39;" data-toggle="tooltip" data-placement="right" title="Clique para se cadastrar">Sou novo aqui</a>
                                 </div>

@@ -10,4 +10,8 @@ public class ClienteFacade {
     public static void adicionarUm(Cliente c) {
         CDAO.adicionarUm(c);
     }
+
+    public static Cliente carregarUm(Integer id) {
+        return CDAO.carregarUm(id);
+    }
 }

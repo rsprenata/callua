@@ -14,6 +14,8 @@ public class Mensagem {
     private String texto;
     private String tipo;
 
+    public Mensagem() {}
+
     public Mensagem(String texto) {
         this.texto = texto;
     }

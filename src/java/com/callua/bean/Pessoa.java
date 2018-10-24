@@ -9,7 +9,7 @@ package com.callua.bean;
  *
  * @author renata
  */
-public class Pessoa {
+public abstract class Pessoa {
     private Integer id;
     private String nome;
     private String cpfCnpj;

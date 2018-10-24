@@ -5,13 +5,23 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8" errorPage="erro.jsp"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${sessionScope.logado == null || sessionScope.logado.cliente == null}">
+    <jsp:useBean id="mensagem" class="com.callua.util.Mensagem">
+        <jsp:setProperty name="mensagem" property="texto" value="Acesso não autorizado"/>
+        <jsp:setProperty name="mensagem" property="tipo" value="error"/>
+    </jsp:useBean>
+    <c:set var="mensagem" value="${mensagem}" scope="session" />
+    <jsp:forward page="Login?op=dashboard" />
+</c:if>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/fontawesome-free-5.4.1-web/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css">
         <title>Callua System</title>
     </head>
     <body>
@@ -41,6 +51,8 @@
         <script src="${pageContext.request.contextPath}/resources/jquery-3.3.1/jquery-3.3.1.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/popper.js/popper.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/js/bootstrap.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.js"></script>
+        <%@ include file="initializeJS.jsp" %>
         <script> 
             $(function(){
                 $("#header").load("header.jsp"); 

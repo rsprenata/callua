@@ -11,7 +11,9 @@ import com.callua.bean.Pessoa;
 import com.callua.facade.CidadeFacade;
 import com.callua.facade.ClienteFacade;
 import com.callua.facade.EstadoFacade;
-import com.callua.facade.PessoaFacade;
+import com.callua.facade.LoginFacade;
+import com.callua.util.Login;
+import com.callua.util.Mensagem;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.InputMismatchException;
@@ -24,13 +26,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author juniorrek
  */
-@WebServlet(name = "PessoaServlet", urlPatterns = {"/Pessoa"})
-public class PessoaServlet extends HttpServlet {
+@WebServlet(name = "LoginServlet", urlPatterns = {"/Login"})
+public class LoginServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,43 +47,64 @@ public class PessoaServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String op = request.getParameter("op");
+        HttpSession session = request.getSession(false);
+        Mensagem mensagem = null;
         
         switch(op) {
             case "logar":
-                String mensagem = formValido(request);
+                mensagem = formValido(request);
                 if (mensagem == null) {
-                    Pessoa pessoa = PessoaFacade.validaLogin(request.getParameter("cpfCnpj"), request.getParameter("senha"));
-                    /*if (pessoa != null && (pessoa.isCliente() || pessoa.isUsuario())) {
-                        if (pessoa.isCliente() && pessoa.isUsuario()) {
-                            //É CLIENTE E USUÁRIO
-                        } else if (pessoa.isCliente()) {
-                            //SÓ É CLIENTE
-                            response.sendRedirect("dashboardcliente.jsp");
-                        } else {
-                            //SÓ É USUÁRIO
-                        }
+                    Login login = LoginFacade.carregarLogin(request.getParameter("cpfCnpj").replaceAll("\\W", "")
+                                                            , request.getParameter("senha"));
+                    if (login != null && (login.getCliente() != null || login.getUsuario() != null)) {
+                        session.setAttribute("logado", login);
+                        response.sendRedirect("Login?op=dashboard");
                     } else {
-                        mensagem = "Usuário não encontrado.";
-                    }*/
+                        mensagem = new Mensagem("Usuário não encontrado.");
+                    }
                 } 
                 
                 if (mensagem != null) {
-                    request.setAttribute("mensagem", mensagem);
-                    request.setAttribute("mensagemTipo", "error");
+                    mensagem.setTipo("error");
+                    session.setAttribute("mensagem", mensagem);
                     RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/login.jsp");
                     requestDispatcher.forward(request, response);
                 }
                 break;
+            case "dashboard":
+                Login logado = (Login)session.getAttribute("logado");
+                if (logado != null && (logado.getCliente() != null || logado.getUsuario() != null)) {
+                    if (logado.getCliente() != null && logado.getUsuario() != null) {
+                        //É CLIENTE E USUÁRIO
+                    } else if (logado.getCliente() != null) {
+                        //SÓ É CLIENTE
+                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/dashboardcliente.jsp");
+                        rd.forward(request, response);
+                    } else {
+                        //SÓ É USUÁRIO
+                    }
+                } else {
+                    mensagem = new Mensagem("Usuário deve se autenticar para acessar o sistema");
+                    mensagem.setTipo("error");
+                    session.setAttribute("mensagem", mensagem);
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
+                    rd.forward(request, response);
+                }
+                break;
+            case "logout":
+                if (session != null) session.invalidate();
+                response.sendRedirect("index.jsp");
+                break;
         }
     }
     
-    private String formValido(HttpServletRequest request) {
-        String mensagem = null;
+    private Mensagem formValido(HttpServletRequest request) {
+        Mensagem mensagem = null;
         
         if (request.getParameter("cpfCnpj") == null || "".equals(request.getParameter("cpfCnpj"))) {
-            mensagem = "Digite um CPF/CNPJ !!!";
+            mensagem = new Mensagem("Digite um CPF/CNPJ !!!");
         } else if (request.getParameter("senha") == null || "".equals(request.getParameter("senha"))) {
-            mensagem = "Digite uma senha !!!";
+            mensagem = new Mensagem("Digite uma senha !!!");
         }
         
         return mensagem;

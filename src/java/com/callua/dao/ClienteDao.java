@@ -1,8 +1,10 @@
 package com.callua.dao;
 
 import com.callua.bean.Cliente;
+import com.callua.facade.CidadeFacade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ClienteDao {
@@ -32,5 +34,44 @@ public class ClienteDao {
                 try { connection.close(); }
                 catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
         }
+    }
+    
+    public Cliente carregarUm(Integer id) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Cliente cliente = null;
+        
+        try {stmt = connection.prepareStatement("SELECT * FROM Cliente WHERE id = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+                
+            if (rs.next()) {
+                cliente = new Cliente();
+                cliente.setId(rs.getInt("id"));
+                cliente.setNome(rs.getString("nome"));
+                cliente.setCpfCnpj(rs.getString("cpfCnpj"));
+                cliente.setTelefoneCelular(rs.getString("telefoneCelular"));
+                cliente.setEmail(rs.getString("email"));
+                cliente.setEndereco(rs.getString("endereco"));
+                cliente.setCep(rs.getString("cep"));
+                cliente.setCidade(CidadeFacade.carregarUma(rs.getInt("idCidade")));
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return cliente;
     }
 }

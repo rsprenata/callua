@@ -5,6 +5,15 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8" errorPage="erro.jsp"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${sessionScope.logado == null || sessionScope.logado.usuario == null}">
+    <jsp:useBean id="mensagem" class="com.callua.util.Mensagem">
+        <jsp:setProperty name="mensagem" property="texto" value="Acesso não autorizado"/>
+        <jsp:setProperty name="mensagem" property="tipo" value="error"/>
+    </jsp:useBean>
+    <c:set var="mensagem" value="${mensagem}" scope="session" />
+    <jsp:forward page="Login?op=dashboard" />
+</c:if>
 <!DOCTYPE html>
 <html>
     <head>

@@ -12,7 +12,6 @@ import com.callua.facade.ClienteFacade;
 import com.callua.facade.EstadoFacade;
 import com.callua.util.Mensagem;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -56,9 +55,8 @@ public class ClienteServlet extends HttpServlet {
                 rd.forward(request, response);
                 break;
             case "cadastrar":
-                Mensagem mensagem = formValido(request);
                 Cliente cliente = carregarCliente(request);
-                System.out.println(cliente.getEndereco());
+                Mensagem mensagem = formValido(request, cliente);
                 if (mensagem == null) {
                     ClienteFacade.adicionarUm(cliente);
                     mensagem = new Mensagem("Cadastrado com sucesso !!!");
@@ -101,8 +99,7 @@ public class ClienteServlet extends HttpServlet {
         return cliente;
     }
     
-    private Mensagem formValido(HttpServletRequest request) {
-        Cliente cliente = carregarCliente(request);
+    private Mensagem formValido(HttpServletRequest request, Cliente cliente) {
         Mensagem mensagem = null;
         
         if (cliente.getNome() == null || "".equals(cliente.getNome())) {
