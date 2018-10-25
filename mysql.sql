@@ -47,6 +47,17 @@ CREATE TABLE Usuario (
 	UNIQUE (cpfCnpj)
 );
 
+CREATE TABLE Chamado (
+	id INT AUTO_INCREMENT,
+	titulo VARCHAR(128),
+	descricao VARCHAR(1024),
+	endereco VARCHAR(128),
+	cep VARCHAR(8),
+	idCidade INT,
+
+	PRIMARY KEY (id)
+);
+
 /*********************
 * INSERÇÃO DOS DADOS *
 **********************/

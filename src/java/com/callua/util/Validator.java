@@ -51,12 +51,12 @@ public class Validator {
             mensagem = new Mensagem("CEP é obrigatório !!!");
         } else if (endereco.getCep().length() != 8 || !Validator.ehInteiro(endereco.getCep())) {
             mensagem = new Mensagem("CEP inválido !!!");
+        }  else if (endereco.getCidade() == null) {
+            mensagem = new Mensagem("Cidade é obrigatória !!!");
         } else if (endereco.getCidade().getEstado() == null 
                     || endereco.getCidade().getEstado().getUf() == null 
                     || "".equals(endereco.getCidade().getEstado().getUf())) {
             mensagem = new Mensagem("UF é obrigatório !!!");
-        } else if (endereco.getCidade() == null) {
-            mensagem = new Mensagem("Cidade é obrigatória !!!");
         }
         
         return mensagem;

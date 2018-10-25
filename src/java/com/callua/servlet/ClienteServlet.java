@@ -11,6 +11,7 @@ import com.callua.bean.Estado;
 import com.callua.facade.CidadeFacade;
 import com.callua.facade.ClienteFacade;
 import com.callua.facade.EstadoFacade;
+import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
 import java.io.IOException;
@@ -47,13 +48,14 @@ public class ClienteServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         
         String op = request.getParameter("op");
+        RequestDispatcher rd = null;
         
         switch(op) {
             case "cadastrarForm":
                 List<Estado> estados = EstadoFacade.buscarTodos();
                 
                 request.setAttribute("estados", estados);
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/novocliente.jsp");
+                rd = getServletContext().getRequestDispatcher("/novocliente.jsp");
                 rd.forward(request, response);
                 break;
             case "cadastrar":
@@ -71,9 +73,8 @@ public class ClienteServlet extends HttpServlet {
                     HttpSession session = request.getSession(false);
                     session.setAttribute("mensagem", mensagem);
                     request.setAttribute("cliente", cliente);
-                    request.setAttribute("idEstado", request.getParameter("uf"));
-                    RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/Cliente?op=cadastrarForm");
-                    requestDispatcher.forward(request, response);
+                    rd = getServletContext().getRequestDispatcher("/Cliente?op=cadastrarForm");
+                    rd.forward(request, response);
                 }
                 break;
         }

@@ -55,19 +55,19 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="endereco">Endereço</label>
-                                        <input type="text" id="endereco" name="endereco" class="form-control" value="${cliente.endereco}" placeholder="Endereço">
+                                        <input type="text" id="endereco" name="endereco" class="form-control" value="${cliente.endereco.endereco}" placeholder="Endereço">
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="cep">CEP</label>
-                                            <input type="text" name="cep" class="form-control cep" value="${cliente.cep}" placeholder="CEP">
+                                            <input type="text" name="cep" class="form-control cep" value="${cliente.endereco.cep}" placeholder="CEP">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="selectUf">UF</label>
                                             <select class="form-control" id="uf" name="uf">
                                                 <option value="">UF</option>
                                                 <c:forEach items="${estados}" var="estado">
-                                                    <option value="${estado.id}" ${estado.id == idEstado ? 'selected' : ''}>${estado.uf}</option>
+                                                    <option value="${estado.id}" ${estado.id == cliente.endereco.cidade.estado.id ? 'selected' : ''}>${estado.uf}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
@@ -106,6 +106,8 @@
                     $('header .titulo-header').text('Novo Cliente');
                 }, 100);
             });
+            
+            getCidades('${not empty cliente.endereco.cidade.id ? cliente.endereco.cidade.id: 0}');
             
             $(document).ready(function(){
                 $("#formCadastro").validate({

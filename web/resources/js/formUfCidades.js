@@ -1,10 +1,10 @@
 $(document).ready(function(){
     $("#uf").change(function() {
-      getCidades();
+      getCidades(0);
     });
 });
 
-function getCidades(){
+function getCidades(cidadeSelecionada){
     var idEstado = $("#uf").val();
     if (idEstado) {
         var url = "AJAXServlet";
@@ -22,8 +22,7 @@ function getCidades(){
                 $("#cidade").append('<option value="">Cidade</option>');
                 $.each(data, function(i, obj) {
                     var option = '<option value=' + obj.id;
-                    var clienteCidadeId = '${cliente.cidade.id}';
-                    if (clienteCidadeId != '' && obj.id == clienteCidadeId) {
+                    if (cidadeSelecionada != '' && obj.id == cidadeSelecionada) {
                         option += ' selected ';
                     }
                     option += '>' + obj.nome + '</option>';
@@ -36,5 +35,4 @@ function getCidades(){
             }
         });
     }
-} 
-getCidades();
+}

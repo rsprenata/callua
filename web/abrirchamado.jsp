@@ -37,11 +37,11 @@
                         <fieldset>
                             <div class="form-group">
                                 <label for="titulo">Título</label>
-                                <input type="text" id="titulo" name="titulo" class="form-control" placeholder="Título">
+                                <input type="text" id="titulo" name="titulo" class="form-control" placeholder="Título" autofocus value="${chamado.titulo}">
                             </div>
                             <div class="form-group">
                                 <label for="descricao">Descrição</label>
-                                <textarea type="text" id="descricao" name="descricao" class="form-control" placeholder="Descrição" rows="3"></textarea>
+                                <textarea type="text" id="descricao" name="descricao" class="form-control" placeholder="Descrição" rows="3">${chamado.descricao}</textarea>
                             </div>
                             <div class="form-group">
                                 <label for="endereco">Endereço do serviço</label>
@@ -49,19 +49,19 @@
                                     <input class="form-check-input" type="checkbox" id="checkendereco" name="checkendereco">
                                     <label class="form-check-label" for="checkendereco">Endereço cadastrado</label>
                                 </div>
-                                <input type="text" id="endereco" class="form-control" placeholder="Endereço">
+                                <input type="text" id="endereco" name="endereco" class="form-control" placeholder="Endereço" value="${chamado.endereco.endereco}">
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-3">
                                     <label for="cep">CEP</label>
-                                    <input type="text" id="cep" name="cep" class="form-control cep" placeholder="CEP">
+                                    <input type="text" id="cep" name="cep" class="form-control cep" placeholder="CEP" value="${chamado.endereco.cep}">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="uf">UF</label>
                                     <select class="form-control" id="uf" name="uf">
                                         <option value="">UF</option>
                                         <c:forEach items="${estados}" var="estado">
-                                            <option value="${estado.id}" ${estado.id == idEstado ? 'selected' : ''}>${estado.uf}</option>
+                                            <option value="${estado.id}" ${estado.id == chamado.endereco.cidade.estado.id ? 'selected' : ''}>${estado.uf}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -102,16 +102,18 @@
                 }, 100);
             });
             
+            getCidades('${not empty chamado.endereco.cidade.id ? chamado.endereco.cidade.id: 0}');
+            
             $(document).ready(function(){
                 $('#checkendereco').change(function() {
                     if ($(this).is(':checked')) {
                         $("#endereco").val('${logado.cliente.endereco.endereco}');
                         $("#cep").val('${logado.cliente.endereco.cep}').trigger('input');
                         $("#uf").val('${logado.cliente.endereco.cidade.estado.id}');
-                        getCidades();
-                        setTimeout(() => {
+                        getCidades('${logado.cliente.endereco.cidade.id}');
+                        /*setTimeout(() => {
                             $("#cidade").val('${logado.cliente.endereco.cidade.id}');
-                        }, 100);
+                        }, 100);*/
                         $('#endereco').attr('readonly', true);
                         $('#cep').attr('readonly', true);
                         $('#uf').attr('readonly', true);
@@ -124,7 +126,7 @@
                     }
                 });
                 
-                /*$("#formAbrirChamado").validate({
+                $("#formAbrirChamado").validate({
                     rules: {
                         titulo: {
                             required: true,
@@ -132,27 +134,7 @@
                         },
                         descricao: {
                             required: true,
-                            cpfValido: true,
-                            cnpjValido: true
-                        },
-                        telefoneCelular : {
-                            required: true,
-                            minlength: 16,
-                            maxlength: 16
-                        },
-                        email:  {
-                            required: true,
-                            email: true,
-                            maxlength: 128
-                        },
-                        senha: {
-                            required: true,
-                            maxlength: 128
-                        },
-                        confirmacaoSenha: {
-                            equalTo: "#senha",
-                            required: true,
-                            maxlength: 128
+                            maxlength: 1024
                         },
                         endereco: {
                             required: true,
@@ -167,31 +149,13 @@
                         cidade: "required"
                     },
                     messages: {
-                        nome: {
-                            required: "Nome é obrigatório !!!",
-                            maxlength: "No máximo 128 caracteres no nome !!!"
+                        titulo: {
+                            required: "Título é obrigatório !!!",
+                            maxlength: "No máximo 128 caracteres no título !!!"
                         },
-                        cpfCnpj: {
-                            required: "CPF/CNPJ é obrigatório !!!"
-                        },
-                        telefoneCelular : {
-                            required: "Telefone/Celular é obrigatório !!!",
-                            minlength: "Telefone/Celular inválido !!!",
-                            maxlength: "Telefone/Celular inválido !!!"
-                        },
-                        email : {
-                            required: "Email é obrigatório !!!",
-                            email: "Email inválido !!!",
-                            maxlength: "No máximo 128 caracteres no email !!!"
-                        },
-                        senha: {
-                            required: "Senha é obrigatória !!!",
-                            maxlength: "No máximo 128 caracteres na senha !!!"
-                        },
-                        confirmacaoSenha: {
-                            equalTo: "Senha e confirmação diferentes !!!",
-                            required: "Confirmação de senha é obrigatória !!!",
-                            maxlength: "No máximo 128 caracteres na confirmação da senha !!!"
+                        descricao: {
+                            required: "Descrição é obrigatória !!!",
+                            maxlength: "No máximo 1024 caracteres na descrição !!!"
                         },
                         endereco: {
                             required: "Endereço é obrigatório !!!",
@@ -208,7 +172,7 @@
                     submitHandler: function(form) {
                         form.submit();
                     }
-                });*/
+                });
             });
         </script>
     </body>

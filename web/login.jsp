@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="login">CPF/CNPJ</label>
-                                    <input type="text" name="cpfCnpj" class="form-control cpfCnpj">
+                                    <input type="text" name="cpfCnpj" class="form-control cpfCnpj" autofocus>
                                 </div>
                                 <div class="form-group">
                                     <label for="senha">Senha</label>

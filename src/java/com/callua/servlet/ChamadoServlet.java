@@ -6,19 +6,16 @@
 package com.callua.servlet;
 
 import com.callua.bean.Chamado;
-import com.callua.bean.Cliente;
 import com.callua.bean.Endereco;
 import com.callua.bean.Estado;
+import com.callua.facade.ChamadoFacade;
 import com.callua.facade.CidadeFacade;
-import com.callua.facade.ClienteFacade;
 import com.callua.facade.EstadoFacade;
+import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
 import java.io.IOException;
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,35 +45,48 @@ public class ChamadoServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         
         String op = request.getParameter("op");
+        RequestDispatcher rd = null;
+        Mensagem mensagem = null;
+        HttpSession session = request.getSession(false);
         
-        switch(op) {
-            case "abrirForm":
-                List<Estado> estados = EstadoFacade.buscarTodos();
-                
-                request.setAttribute("estados", estados);
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/abrirchamado.jsp");
-                rd.forward(request, response);
-                break;
-            case "abrir":
-                Chamado chamado = carregarChamado(request);
-                Mensagem mensagem = formValido(request, chamado);
-                if (mensagem == null) {
-                    ClienteFacade.adicionarUm(cliente);
-                    mensagem = new Mensagem("Cadastrado com sucesso !!!");
-                    mensagem.setTipo("success");
-                    HttpSession session = request.getSession(false);
-                    session.setAttribute("mensagem", mensagem);
-                    response.sendRedirect("login.jsp");
-                } else {
-                    mensagem.setTipo("error");
-                    HttpSession session = request.getSession(false);
-                    session.setAttribute("mensagem", mensagem);
-                    request.setAttribute("cliente", cliente);
-                    request.setAttribute("idEstado", request.getParameter("uf"));
-                    RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/Cliente?op=cadastrarForm");
-                    requestDispatcher.forward(request, response);
-                }
-                break;
+        Login logado = null;
+        if (session != null)
+            logado = (Login)session.getAttribute("logado");
+        
+        if (logado == null || (logado.getUsuario() == null || !logado.getUsuario().isAdministrador()) && (logado.getCliente() == null)) {
+            mensagem = new Mensagem("Acesso não autorizado !!!");
+            mensagem.setTipo("error");
+            session = request.getSession();
+            session.setAttribute("mensagem", mensagem);
+            rd = getServletContext().getRequestDispatcher("/Login?op=dashboard");
+            rd.forward(request, response);
+        } else {
+            switch(op) {
+                case "abrirForm":
+                    List<Estado> estados = EstadoFacade.buscarTodos();
+
+                    request.setAttribute("estados", estados);
+                    rd = getServletContext().getRequestDispatcher("/abrirchamado.jsp");
+                    rd.forward(request, response);
+                    break;
+                case "abrir":
+                    Chamado chamado = carregarChamado(request);
+                    mensagem = formValido(request, chamado);
+                    if (mensagem == null) {
+                        ChamadoFacade.abrirUm(chamado);
+                        mensagem = new Mensagem("Chamado aberto com sucesso !!!");
+                        mensagem.setTipo("success");
+                        session.setAttribute("mensagem", mensagem);
+                        response.sendRedirect("Login?op=dashboard");
+                    } else {
+                        mensagem.setTipo("error");
+                        session.setAttribute("mensagem", mensagem);
+                        request.setAttribute("chamado", chamado);
+                        rd = getServletContext().getRequestDispatcher("/Chamado?op=abrirForm");
+                        rd.forward(request, response);
+                    }
+                    break;
+            }
         }
     }
     
