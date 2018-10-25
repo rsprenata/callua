@@ -11,6 +11,9 @@
     </session-config>
     <error-page>
   	<error-code>500</error-code>
-        <location>/erro.jsp</location>
+        <location>/view/erro.jsp</location>
     </error-page>
+    <welcome-file-list>
+        <welcome-file>/view/index.jsp</welcome-file>
+    </welcome-file-list>
 </web-app>

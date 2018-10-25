@@ -66,7 +66,7 @@ public class ChamadoServlet extends HttpServlet {
                     List<Estado> estados = EstadoFacade.buscarTodos();
 
                     request.setAttribute("estados", estados);
-                    rd = getServletContext().getRequestDispatcher("/abrirchamado.jsp");
+                    rd = getServletContext().getRequestDispatcher("/view/abrirchamado.jsp");
                     rd.forward(request, response);
                     break;
                 case "abrir":

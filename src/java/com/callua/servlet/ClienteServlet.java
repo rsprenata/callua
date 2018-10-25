@@ -55,7 +55,7 @@ public class ClienteServlet extends HttpServlet {
                 List<Estado> estados = EstadoFacade.buscarTodos();
                 
                 request.setAttribute("estados", estados);
-                rd = getServletContext().getRequestDispatcher("/novocliente.jsp");
+                rd = getServletContext().getRequestDispatcher("/view/novocliente.jsp");
                 rd.forward(request, response);
                 break;
             case "cadastrar":
@@ -67,7 +67,7 @@ public class ClienteServlet extends HttpServlet {
                     mensagem.setTipo("success");
                     HttpSession session = request.getSession(false);
                     session.setAttribute("mensagem", mensagem);
-                    response.sendRedirect("login.jsp");
+                    response.sendRedirect("view/login.jsp");
                 } else {
                     mensagem.setTipo("error");
                     HttpSession session = request.getSession(false);

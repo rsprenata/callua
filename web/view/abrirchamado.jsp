@@ -12,7 +12,7 @@
         <jsp:setProperty name="mensagem" property="tipo" value="error"/>
     </jsp:useBean>
     <c:set var="mensagem" value="${mensagem}" scope="session" />
-    <jsp:forward page="Login?op=dashboard" />
+    <jsp:forward page="/Login?op=dashboard" />
 </c:if>
 <!DOCTYPE html>
 <html>
@@ -25,7 +25,7 @@
         <title>Callua - Novo chamado</title>
     </head>
     <body>
-        <div id="header"></div>
+        <div id="header"><%@ include file="header.jsp" %></div>
 
         <main role="main">
             <div class="py-5 bg-light">
@@ -81,7 +81,7 @@
             </div>
 
         </main>
-        <div id="footer"></div>
+        <div id="footer"><%@ include file="footer.jsp" %></div>
         
         <script src="${pageContext.request.contextPath}/resources/jquery-3.3.1/jquery-3.3.1.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/popper.js/popper.min.js"></script>
@@ -95,8 +95,6 @@
         <%@ include file="initializeJS.jsp" %>
         <script> 
             $(function(){
-                $("#header").load("header.jsp"); 
-                $("#footer").load("footer.jsp");
                 setTimeout(() => {
                     $('header .titulo-header').text('Novo Chamado');
                 }, 100);

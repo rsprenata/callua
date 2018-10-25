@@ -17,7 +17,7 @@
         <title>Callua - Novo Cliente</title>
     </head>
     <body>
-        <div id="header"></div>
+        <div id="header"><%@ include file="header.jsp" %></div>
         <main role="main">
             <div class="py-5 bg-light">
                 <div class="container">
@@ -86,7 +86,7 @@
                 </div>
             </div>
         </main>
-        <div id="footer"></div>
+        <div id="footer"><%@ include file="footer.jsp" %></div>
         
         <script src="${pageContext.request.contextPath}/resources/jquery-3.3.1/jquery-3.3.1.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/popper.js/popper.min.js"></script>
@@ -100,8 +100,6 @@
         <%@ include file="initializeJS.jsp" %>
         <script> 
             $(function(){
-                $("#header").load("header.jsp"); 
-                $("#footer").load("footer.jsp");
                 setTimeout(() => {
                     $('header .titulo-header').text('Novo Cliente');
                 }, 100);

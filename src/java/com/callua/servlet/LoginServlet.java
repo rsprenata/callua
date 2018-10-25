@@ -67,7 +67,7 @@ public class LoginServlet extends HttpServlet {
                 if (mensagem != null) {
                     mensagem.setTipo("error");
                     session.setAttribute("mensagem", mensagem);
-                    RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/login.jsp");
+                    RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/view/login.jsp");
                     requestDispatcher.forward(request, response);
                 }
                 break;
@@ -78,7 +78,7 @@ public class LoginServlet extends HttpServlet {
                         //É CLIENTE E USUÁRIO
                     } else if (logado.getCliente() != null) {
                         //SÓ É CLIENTE
-                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/dashboardcliente.jsp");
+                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/dashboardcliente.jsp");
                         rd.forward(request, response);
                     } else {
                         //SÓ É USUÁRIO
@@ -87,13 +87,13 @@ public class LoginServlet extends HttpServlet {
                     mensagem = new Mensagem("Usuário deve se autenticar para acessar o sistema");
                     mensagem.setTipo("error");
                     session.setAttribute("mensagem", mensagem);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/login.jsp");
                     rd.forward(request, response);
                 }
                 break;
             case "logout":
                 if (session != null) session.invalidate();
-                response.sendRedirect("index.jsp");
+                response.sendRedirect("view/index.jsp");
                 break;
         }
     }

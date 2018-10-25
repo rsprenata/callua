@@ -24,7 +24,7 @@
         <title>Callua - Novo Técnico</title>
     </head>
     <body>
-        <div id="header"></div>
+        <div id="header"><%@ include file="header.jsp" %></div>
         <main role="main">
             <div class="py-5 bg-light">
                 <div class="container">
@@ -64,15 +64,13 @@
                 </div>
             </div>
         </main>
-        <div id="footer"></div>
+        <div id="footer"><%@ include file="footer.jsp" %></div>
         
         <script src="${pageContext.request.contextPath}/resources/jquery-3.3.1/jquery-3.3.1.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/popper.js/popper.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/js/bootstrap.min.js"></script>
         <script> 
             $(function(){
-                $("#header").load("header.jsp"); 
-                $("#footer").load("footer.jsp");
                 setTimeout(() => {
                     $('header .titulo-header').text('Novo Técnico');
                 }, 100);
