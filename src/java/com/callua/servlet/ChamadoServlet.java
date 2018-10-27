@@ -83,7 +83,7 @@ public class ChamadoServlet extends HttpServlet {
                     Chamado chamado = carregarChamado(request);
                     mensagem = formValido(request, chamado);
                     if (mensagem == null) {
-                        ChamadoFacade.abrirUm(chamado, request.getServletContext().getRealPath(""));
+                        ChamadoFacade.abrirUm(chamado, getServletContext().getInitParameter("upload.location"));
                         mensagem = new Mensagem("Chamado aberto com sucesso !!!");
                         mensagem.setTipo("success");
                         session.setAttribute("mensagem", mensagem);
