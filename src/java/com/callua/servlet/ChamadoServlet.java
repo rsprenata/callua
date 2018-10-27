@@ -14,21 +14,31 @@ import com.callua.facade.EstadoFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 /**
  *
  * @author renata
  */
 @WebServlet(name = "ChamadoServlet", urlPatterns = {"/Chamado"})
+@MultipartConfig(location = "/",fileSizeThreshold=1024*1024*10, 	// 10 MB 
+                 maxFileSize=1024*1024*50,      	// 50 MB
+                 maxRequestSize=1024*1024*100)
 public class ChamadoServlet extends HttpServlet {
 
     /**
@@ -73,7 +83,7 @@ public class ChamadoServlet extends HttpServlet {
                     Chamado chamado = carregarChamado(request);
                     mensagem = formValido(request, chamado);
                     if (mensagem == null) {
-                        ChamadoFacade.abrirUm(chamado);
+                        ChamadoFacade.abrirUm(chamado, request.getServletContext().getRealPath(""));
                         mensagem = new Mensagem("Chamado aberto com sucesso !!!");
                         mensagem.setTipo("success");
                         session.setAttribute("mensagem", mensagem);
@@ -107,6 +117,13 @@ public class ChamadoServlet extends HttpServlet {
             endereco.setCidade(null);
         }
         chamado.setEndereco(endereco);
+        
+        try {
+            chamado.setPartArquivos(request.getParts().stream().filter(part -> "arquivos".equals(part.getName()) && !"".equals(part.getSubmittedFileName())).collect(Collectors.toList()));
+        } catch (Exception ex) {
+            chamado.setPartArquivos(null);
+            Logger.getLogger(ChamadoServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
            
         return chamado;
     }

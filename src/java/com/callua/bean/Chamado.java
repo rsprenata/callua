@@ -5,6 +5,9 @@
  */
 package com.callua.bean;
 
+import java.util.List;
+import javax.servlet.http.Part;
+
 /**
  *
  * @author renata
@@ -14,6 +17,7 @@ public class Chamado implements java.io.Serializable {
     private String titulo;
     private String descricao;
     private Endereco endereco;
+    private List <Part> partArquivos;
     
     public Chamado() {}
 
@@ -48,4 +52,13 @@ public class Chamado implements java.io.Serializable {
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
     }
+
+    public List<Part> getPartArquivos() {
+        return partArquivos;
+    }
+
+    public void setPartArquivos(List<Part> partArquivos) {
+        this.partArquivos = partArquivos;
+    }
+    
 }

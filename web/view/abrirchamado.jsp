@@ -33,7 +33,7 @@
                 <div class="row">
                 <div class="col-md-12 order-md-1">
                     <!-- <h4 class="mb-3">Novo Chamado</h4> -->
-                    <form id="formAbrirChamado" action="${pageContext.request.contextPath}/Chamado?op=abrir" method="POST">
+                    <form id="formAbrirChamado" action="${pageContext.request.contextPath}/Chamado?op=abrir" method="POST" enctype="multipart/form-data">
                         <fieldset>
                             <div class="form-group">
                                 <label for="titulo">Título</label>
@@ -42,6 +42,11 @@
                             <div class="form-group">
                                 <label for="descricao">Descrição</label>
                                 <textarea type="text" id="descricao" name="descricao" class="form-control" placeholder="Descrição" rows="3">${chamado.descricao}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleFormControlFile1">Example file input</label>
+                                <input type="file" name="arquivos" class="form-control-file" id="exampleFormControlFile1" multiple>
+                                <small class="text-info">Segure CTRL e selecione os arquivos</small>
                             </div>
                             <div class="form-group">
                                 <label for="endereco">Endereço do serviço</label>

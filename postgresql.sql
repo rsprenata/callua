@@ -58,6 +58,8 @@ CREATE TABLE Chamado (
 	PRIMARY KEY (id)
 );
 
+ALTER TABLE chamado ADD COLUMN files_path VARCHAR(128);
+
 /*********************
 * INSERÇÃO DOS DADOS *
 **********************/
