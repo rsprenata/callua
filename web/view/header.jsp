@@ -21,7 +21,7 @@
                         <a class="nav-link dropdown-toggle" href="#" id="logadoDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${logado.cliente.nome}</a>
                         <div class="dropdown-menu" aria-labelledby="logadoDropdown">
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/Chamado?op=abrirForm">Abrir chamado</a>
-                            <a class="dropdown-item" href="#">Dados cadastrais</a>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/Cliente?op=dadosForm">Dados cadastrais</a>
                             <a class="dropdown-item" href="#">Meus chamados</a>
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/Login?op=logout">Sair</a>
                         </div>

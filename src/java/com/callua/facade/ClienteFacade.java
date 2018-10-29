@@ -14,4 +14,12 @@ public class ClienteFacade {
     public static Cliente carregarUm(Integer id) {
         return CDAO.carregarUm(id);
     }
+
+    public static boolean senhaAtualValida(Cliente cliente, String senhaAtual) {
+        return CDAO.senhaAtualValida(cliente, senhaAtual);
+    }
+
+    public static void editarUm(Cliente cliente) {
+        CDAO.editarUm(cliente);
+    }
 }

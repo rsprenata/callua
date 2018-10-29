@@ -63,14 +63,7 @@ public class ChamadoServlet extends HttpServlet {
         if (session != null)
             logado = (Login)session.getAttribute("logado");
         
-        if (logado == null || (logado.getUsuario() == null || !logado.getUsuario().isAdministrador()) && (logado.getCliente() == null)) {
-            mensagem = new Mensagem("Acesso não autorizado !!!");
-            mensagem.setTipo("error");
-            session = request.getSession();
-            session.setAttribute("mensagem", mensagem);
-            rd = getServletContext().getRequestDispatcher("/Login?op=dashboard");
-            rd.forward(request, response);
-        } else {
+        if (logado != null && ((logado.getUsuario() != null && logado.getUsuario().isAdministrador()) || (logado.getCliente() != null))) {
             switch(op) {
                 case "abrirForm":
                     List<Estado> estados = EstadoFacade.buscarTodos();
@@ -86,10 +79,12 @@ public class ChamadoServlet extends HttpServlet {
                         ChamadoFacade.abrirUm(chamado, getServletContext().getInitParameter("upload.location"));
                         mensagem = new Mensagem("Chamado aberto com sucesso !!!");
                         mensagem.setTipo("success");
+                        session = request.getSession();
                         session.setAttribute("mensagem", mensagem);
                         response.sendRedirect("Login?op=dashboard");
                     } else {
                         mensagem.setTipo("error");
+                        session = request.getSession();
                         session.setAttribute("mensagem", mensagem);
                         request.setAttribute("chamado", chamado);
                         rd = getServletContext().getRequestDispatcher("/Chamado?op=abrirForm");
@@ -97,6 +92,13 @@ public class ChamadoServlet extends HttpServlet {
                     }
                     break;
             }
+        } else {
+            mensagem = new Mensagem("Acesso não autorizado !!!");
+            mensagem.setTipo("error");
+            session = request.getSession();
+            session.setAttribute("mensagem", mensagem);
+            rd = getServletContext().getRequestDispatcher("/Login?op=dashboard");
+            rd.forward(request, response);
         }
     }
     

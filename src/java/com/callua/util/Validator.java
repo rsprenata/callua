@@ -5,7 +5,9 @@
  */
 package com.callua.util;
 
+import com.callua.bean.Cliente;
 import com.callua.bean.Endereco;
+import com.callua.facade.ClienteFacade;
 import java.util.InputMismatchException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -75,6 +77,18 @@ public class Validator {
             mensagem = new Mensagem("No máximo 128 caracteres na confirmação da senha !!!");
         } else if (!senha.equals(confirmacaoSenha)) {
             mensagem = new Mensagem("Senha e confirmação diferentes !!!");
+        }
+        
+        return mensagem;
+    }
+    
+    public static Mensagem validarSenhaAtual(Cliente cliente, String senhaAtual) {
+        Mensagem mensagem = null;
+        
+        if (senhaAtual.length() > 128) {
+            mensagem = new Mensagem("No máximo 128 caracteres na senha atual !!!");
+        } else if (!ClienteFacade.senhaAtualValida(cliente, senhaAtual)) {
+            mensagem = new Mensagem("Senha atual inválida !!!");
         }
         
         return mensagem;

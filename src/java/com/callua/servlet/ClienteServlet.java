@@ -49,34 +49,89 @@ public class ClienteServlet extends HttpServlet {
         
         String op = request.getParameter("op");
         RequestDispatcher rd = null;
+        List<Estado> estados = null;
+        Mensagem mensagem = null;
+        HttpSession session = request.getSession(false);
+        Cliente cliente = null;
         
-        switch(op) {
-            case "cadastrarForm":
-                List<Estado> estados = EstadoFacade.buscarTodos();
-                
-                request.setAttribute("estados", estados);
-                rd = getServletContext().getRequestDispatcher("/view/novocliente.jsp");
-                rd.forward(request, response);
-                break;
-            case "cadastrar":
-                Cliente cliente = carregarCliente(request);
-                Mensagem mensagem = formValido(request, cliente);
-                if (mensagem == null) {
-                    ClienteFacade.adicionarUm(cliente);
-                    mensagem = new Mensagem("Cadastrado com sucesso !!!");
-                    mensagem.setTipo("success");
-                    HttpSession session = request.getSession(false);
-                    session.setAttribute("mensagem", mensagem);
-                    response.sendRedirect("view/login.jsp");
-                } else {
-                    mensagem.setTipo("error");
-                    HttpSession session = request.getSession(false);
-                    session.setAttribute("mensagem", mensagem);
-                    request.setAttribute("cliente", cliente);
-                    rd = getServletContext().getRequestDispatcher("/Cliente?op=cadastrarForm");
+        Login logado = null;
+        if (session != null)
+            logado = (Login)session.getAttribute("logado");
+        
+        //Em cima são os links que são publicos, sem validação de login
+        if ("cadastrarForm".equals(op) || "cadastrar".equals(op) ||
+            logado != null && logado.getCliente() != null) {
+            switch(op) {
+                case "cadastrarForm":
+                    estados = EstadoFacade.buscarTodos();
+
+                    request.setAttribute("estados", estados);
+                    rd = getServletContext().getRequestDispatcher("/view/novocliente.jsp");
                     rd.forward(request, response);
-                }
-                break;
+                    break;
+                case "cadastrar":
+                    cliente = carregarCliente(request);
+                    mensagem = formValido(request, cliente);
+                    mensagem = Validator.validarSenha(cliente.getSenha(), request.getParameter("confirmacaoSenha"));
+                    if (mensagem == null) {
+                        ClienteFacade.adicionarUm(cliente);
+                        mensagem = new Mensagem("Cadastrado com sucesso !!!");
+                        mensagem.setTipo("success");
+                        session = request.getSession();
+                        session.setAttribute("mensagem", mensagem);
+                        response.sendRedirect("view/login.jsp");
+                    } else {
+                        mensagem.setTipo("error");
+                        session = request.getSession();
+                        session.setAttribute("mensagem", mensagem);
+                        request.setAttribute("cliente", cliente);
+                        rd = getServletContext().getRequestDispatcher("/Cliente?op=cadastrarForm");
+                        rd.forward(request, response);
+                    }
+                    break;
+                case "dadosForm":
+                    estados = EstadoFacade.buscarTodos();
+                    logado.setCliente(ClienteFacade.carregarUm(logado.getCliente().getId()));//Atualiza o cliente pro mais atual
+                    session = request.getSession();
+                    session.setAttribute("logado", logado);
+
+                    request.setAttribute("estados", estados);
+                    rd = getServletContext().getRequestDispatcher("/view/dadoscliente.jsp");
+                    rd.forward(request, response);
+                    break;
+                case "editarDados":
+                    cliente = carregarCliente(request);
+                    mensagem = formValido(request, cliente);
+                    if (request.getParameter("senhaAtual") != null && request.getParameter("senhaAtual").length() >= 1) {//Se preencheu senha atual, então quer alterar senha
+                        mensagem = Validator.validarSenhaAtual(logado.getCliente(), request.getParameter("senhaAtual"));
+                        if (mensagem == null)
+                            mensagem = Validator.validarSenha(cliente.getSenha(), request.getParameter("confirmacaoSenha"));
+                    } else cliente.setSenha("");//Seta senha vazia, pra não cair no update de senha la na frente, ou seja, só vai editar senha se passar pelo teste de senha atual acima.
+                    if (mensagem == null) {
+                        cliente.setId(logado.getCliente().getId());
+                        ClienteFacade.editarUm(cliente);
+                        mensagem = new Mensagem("Editado com sucesso !!!");
+                        mensagem.setTipo("success");
+                        session = request.getSession();
+                        session.setAttribute("mensagem", mensagem);
+                        response.sendRedirect("Cliente?op=dadosForm");
+                    } else {
+                        mensagem.setTipo("error");
+                        session = request.getSession();
+                        session.setAttribute("mensagem", mensagem);
+                        request.setAttribute("cliente", cliente);
+                        rd = getServletContext().getRequestDispatcher("/Cliente?op=dadosForm");
+                        rd.forward(request, response);
+                    }
+                    break;
+            }
+        } else {
+            mensagem = new Mensagem("Acesso não autorizado !!!");
+            mensagem.setTipo("error");
+            session = request.getSession();
+            session.setAttribute("mensagem", mensagem);
+            rd = getServletContext().getRequestDispatcher("/Login?op=dashboard");
+            rd.forward(request, response);
         }
     }
     
@@ -115,10 +170,7 @@ public class ClienteServlet extends HttpServlet {
                 if (mensagem == null) {
                     mensagem = Validator.validarEmail(cliente.getEmail());
                     if (mensagem == null) {
-                        mensagem = Validator.validarSenha(cliente.getSenha(), request.getParameter("confirmacaoSenha"));
-                        if (mensagem == null) {
-                            mensagem = Validator.validarEndereco(cliente.getEndereco());
-                        }
+                        mensagem = Validator.validarEndereco(cliente.getEndereco());
                     }
                 }
             }
