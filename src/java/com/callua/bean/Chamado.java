@@ -18,6 +18,8 @@ public class Chamado implements java.io.Serializable {
     private String descricao;
     private Endereco endereco;
     private List <Part> partArquivos;
+    private StatusChamado status;
+    private Cliente cliente;
     
     public Chamado() {}
 
@@ -60,5 +62,20 @@ public class Chamado implements java.io.Serializable {
     public void setPartArquivos(List<Part> partArquivos) {
         this.partArquivos = partArquivos;
     }
-    
+
+    public StatusChamado getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusChamado status) {
+        this.status = status;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 }

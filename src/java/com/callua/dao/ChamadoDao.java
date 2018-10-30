@@ -1,12 +1,19 @@
 package com.callua.dao;
 
 import com.callua.bean.Chamado;
+import com.callua.bean.Cliente;
+import com.callua.bean.Endereco;
+import com.callua.bean.StatusChamado;
+import com.callua.facade.CidadeFacade;
+import com.callua.facade.ClienteFacade;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.Part;
@@ -19,14 +26,16 @@ public class ChamadoDao {
         File uploadFolder = null;
         try {
             connection.setAutoCommit(false);
-            stmt = connection.prepareStatement("INSERT INTO Chamado (titulo, descricao, endereco, cep, idCidade) VALUES "
-                + "(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            stmt = connection.prepareStatement("INSERT INTO Chamado (titulo, descricao, endereco, cep, idCidade, status, idCliente) VALUES "
+                + "(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             
             stmt.setString(1, chamado.getTitulo());
             stmt.setString(2, chamado.getDescricao());
             stmt.setString(3, chamado.getEndereco().getEndereco());
             stmt.setString(4, chamado.getEndereco().getCep());
             stmt.setInt(5, chamado.getEndereco().getCidade().getId());
+            stmt.setString(6, "ABERTO");
+            stmt.setInt(7, chamado.getCliente().getId());
             
             int affectedRows = stmt.executeUpdate();
 
@@ -87,5 +96,93 @@ public class ChamadoDao {
                 try { connection.close(); }
                 catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
         }
+    }
+    
+    public List<Chamado> buscarTodosByCliente(Cliente cliente) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Chamado> chamados = new ArrayList<Chamado>();
+        
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM Chamado WHERE idCliente = ?");
+            stmt.setInt(1, cliente.getId());
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Chamado chamado = new Chamado();
+                
+                chamado.setId(rs.getInt("id"));
+                chamado.setTitulo(rs.getString("titulo"));
+                chamado.setDescricao(rs.getString("descricao"));
+                Endereco endereco = new Endereco();
+                endereco.setEndereco(rs.getString("endereco"));
+                endereco.setCep(rs.getString("cep"));
+                endereco.setCidade(CidadeFacade.carregarUma(rs.getInt("idCidade")));
+                chamado.setEndereco(endereco);
+                chamado.setStatus(StatusChamado.valueOf(rs.getString("status")));
+                chamado.setCliente(cliente);
+                
+                chamados.add(chamado);
+            }
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return chamados;
+    }
+    
+    public Chamado carregarById(Integer id) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Chamado chamado = null;
+        
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM Chamado WHERE id = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                chamado = new Chamado();
+                
+                chamado.setId(rs.getInt("id"));
+                chamado.setTitulo(rs.getString("titulo"));
+                chamado.setDescricao(rs.getString("descricao"));
+                Endereco endereco = new Endereco();
+                endereco.setEndereco(rs.getString("endereco"));
+                endereco.setCep(rs.getString("cep"));
+                endereco.setCidade(CidadeFacade.carregarUma(rs.getInt("idCidade")));
+                chamado.setEndereco(endereco);
+                chamado.setStatus(StatusChamado.valueOf(rs.getString("status")));
+                chamado.setCliente(ClienteFacade.carregarUm(rs.getInt("idCliente")));
+            }
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return chamado;
     }
 }

@@ -61,7 +61,6 @@
         <%@ include file="initializeJS.jsp" %>
         <script> 
             $(function(){
-                $('[data-toggle="tooltip"]').tooltip();
                 setTimeout(() => {
                     $('header .titulo-header').text('Login');
                 }, 100);

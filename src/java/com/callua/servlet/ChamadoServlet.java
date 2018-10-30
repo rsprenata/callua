@@ -8,12 +8,14 @@ package com.callua.servlet;
 import com.callua.bean.Chamado;
 import com.callua.bean.Endereco;
 import com.callua.bean.Estado;
+import com.callua.bean.StatusChamado;
 import com.callua.facade.ChamadoFacade;
 import com.callua.facade.CidadeFacade;
 import com.callua.facade.EstadoFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
+import com.google.gson.Gson;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,12 +60,13 @@ public class ChamadoServlet extends HttpServlet {
         RequestDispatcher rd = null;
         Mensagem mensagem = null;
         HttpSession session = request.getSession(false);
+        Chamado chamado = null;
         
         Login logado = null;
         if (session != null)
             logado = (Login)session.getAttribute("logado");
         
-        if (logado != null && ((logado.getUsuario() != null && logado.getUsuario().isAdministrador()) || (logado.getCliente() != null))) {
+        if ((logado != null && logado.getCliente() != null)) {
             switch(op) {
                 case "abrirForm":
                     List<Estado> estados = EstadoFacade.buscarTodos();
@@ -73,9 +76,10 @@ public class ChamadoServlet extends HttpServlet {
                     rd.forward(request, response);
                     break;
                 case "abrir":
-                    Chamado chamado = carregarChamado(request);
+                    chamado = carregarChamado(request);
                     mensagem = formValido(request, chamado);
                     if (mensagem == null) {
+                        chamado.setCliente(logado.getCliente());
                         ChamadoFacade.abrirUm(chamado, getServletContext().getInitParameter("upload.location"));
                         mensagem = new Mensagem("Chamado aberto com sucesso !!!");
                         mensagem.setTipo("success");
@@ -90,6 +94,27 @@ public class ChamadoServlet extends HttpServlet {
                         rd = getServletContext().getRequestDispatcher("/Chamado?op=abrirForm");
                         rd.forward(request, response);
                     }
+                    break;
+                case "list":
+                    List<Chamado> chamados = ChamadoFacade.buscarTodosByCliente(logado.getCliente());
+
+                    request.setAttribute("chamadosAbertos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.ABERTO).collect(Collectors.toList()));
+                    request.setAttribute("chamadosResolvidos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.RESOLVIDO).collect(Collectors.toList()));
+                    rd = getServletContext().getRequestDispatcher("/view/meuschamados.jsp");
+                    rd.forward(request, response);
+                    break;
+                case "caregarViaAjax":
+                    String idChamado = request.getParameter("idChamado");
+        
+                    chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
+
+                    // transforma o MAP em JSON
+                    String json = new Gson().toJson(chamado);   
+
+                    // retorna o JSON
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(json);
                     break;
             }
         } else {

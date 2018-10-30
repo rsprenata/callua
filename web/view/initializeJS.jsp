@@ -9,5 +9,6 @@
             });
             <c:remove var="mensagem" scope="session" />
         </c:if>
+        $('[data-toggle="tooltip"]').tooltip();
     });
 </script>

@@ -60,6 +60,14 @@ CREATE TABLE Chamado (
 
 ALTER TABLE Chamado ADD COLUMN files_path VARCHAR(128);
 
+ALTER TABLE Chamado ADD COLUMN status ENUM ('ABERTO', 'RESOLVIDO');
+UPDATE Chamado SET status = 'ABERTO';
+ALTER TABLE Chamado MODIFY COLUMN status enum('ABERTO','RESOLVIDO') NOT NULL;
+
+ALTER TABLE Chamado ADD COLUMN idCliente BIGINT(20) NOT NULL;
+UPDATE Chamado SET idCliente = 1;
+/*ALTER TABLE Chamado ADD CONSTRAINT Chamado_Cliente_FK FOREIGN KEY (id) REFERENCES Cliente(id);*/
+
 /*********************
 * INSERÇÃO DOS DADOS *
 **********************/

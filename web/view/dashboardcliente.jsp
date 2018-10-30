@@ -39,7 +39,7 @@
                                 <button type="button" class="btn btn-light"><i class="fab fa-3x fa-apple"></i>Assistencia Apple</button>
                             </div>
                             <div class="row menu-options abrir-chamado">
-                                <button type="button" class="btn btn-secondary" id="abrir" name="abrir">Abrir chamado</button>
+                                <a type="button" class="btn btn-secondary" href="${pageContext.request.contextPath}/Chamado?op=abrirForm">Abrir chamado</a>
                             </div>
                         </div>
                     </div>
