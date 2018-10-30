@@ -23,22 +23,26 @@
                 <div class="container">
                     <div class="row">
                         <fieldset class="login">
-                            <form id="formLogin" action="${pageContext.request.contextPath}/Login?op=logar" method="POST">
-                                <div class="form-group text-center">
-                                    <a class="btn btn-default btn-light" href="${pageContext.request.contextPath}/Cliente?op=cadastrarForm" style="background-color: #e68f39;" data-toggle="tooltip" data-placement="right" title="Clique para se cadastrar">Sou novo aqui</a>
+                            <div class="card">
+                                <div class="card-body">
+                                    <form id="formLogin" action="${pageContext.request.contextPath}/Login?op=logar" method="POST">
+                                        <div class="form-group text-center">
+                                            <a class="btn btn-default btn-light" href="${pageContext.request.contextPath}/Cliente?op=cadastrarForm" style="background-color: #e68f39;" data-toggle="tooltip" data-placement="right" title="Clique para se cadastrar">Sou novo aqui</a>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="login">CPF/CNPJ</label>
+                                            <input type="text" name="cpfCnpj" class="form-control cpfCnpj" autofocus>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="senha">Senha</label>
+                                            <input type="password" name="senha" class="form-control">
+                                        </div>
+                                        <div class="form-group text-center">
+                                            <button type="submit" class="btn btn-success" id="entrar" name="entrar">Entrar</button>
+                                        </div>
+                                    </form>
                                 </div>
-                                <div class="form-group">
-                                    <label for="login">CPF/CNPJ</label>
-                                    <input type="text" name="cpfCnpj" class="form-control cpfCnpj" autofocus>
-                                </div>
-                                <div class="form-group">
-                                    <label for="senha">Senha</label>
-                                    <input type="password" name="senha" class="form-control">
-                                </div>
-                                <div class="form-group text-center">
-                                    <button type="submit" class="btn btn-success" id="entrar" name="entrar">Entrar</button>
-                                </div>
-                            </form>
+                            </div>
                         </fieldset>
                     </div>
                 </div>

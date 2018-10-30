@@ -23,64 +23,68 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 order-md-1">
-                            <form id="formCadastro" action="${pageContext.request.contextPath}/Cliente?op=cadastrar" method="POST">
-                                <fieldset>
-                                    <div class="form-group">
-                                        <label for="nome">Nome</label>
-                                        <input type="text" name="nome" class="form-control" placeholder="Nome" value="${cliente.nome}" autofocus>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-md-4">
-                                            <label for="cpf">CPF/CNPJ</label>
-                                            <input type="text" id="cpfCnpj" name="cpfCnpj" class="form-control cpfCnpj" value="${cliente.cpfCnpj}" placeholder="CPF/CNPJ">
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label for="telefone">Telefone/Celular</label>
-                                            <input type="text" name="telefoneCelular" class="form-control telefoneCelular" value="${cliente.telefoneCelular}" placeholder="Telefone/Celular">
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label for="email">Email</label>
-                                            <input type="email" name="email" class="form-control" value="${cliente.email}" placeholder="Email">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <label for="senha">Senha</label>
-                                            <input type="password" id="senha" name="senha" class="form-control" placeholder="Senha">
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="senha">Confirmação de senha</label>
-                                            <input type="password" name="confirmacaoSenha" class="form-control" placeholder="Confirmação de senha">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="endereco">Endereço</label>
-                                        <input type="text" id="endereco" name="endereco" class="form-control" value="${cliente.endereco.endereco}" placeholder="Endereço">
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-md-3">
-                                            <label for="cep">CEP</label>
-                                            <input type="text" name="cep" class="form-control cep" value="${cliente.endereco.cep}" placeholder="CEP">
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <label for="selectUf">UF</label>
-                                            <select class="form-control" id="uf" name="uf">
-                                                <option value="">UF</option>
-                                                <c:forEach items="${estados}" var="estado">
-                                                    <option value="${estado.id}" ${estado.id == cliente.endereco.cidade.estado.id ? 'selected' : ''}>${estado.uf}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="cidade">Cidade</label>
-                                            <select class="form-control" id="cidade" name="cidade">
-                                                <option value="">Cidade</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="btn btn-success float-right" id="cadastrar" name="cadastrar">Cadastrar</button>
-                                </fieldset>
-                            </form>
+                            <div class="card">
+                                <div class="card-body">
+                                    <form id="formCadastro" action="${pageContext.request.contextPath}/Cliente?op=cadastrar" method="POST">
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label for="nome">Nome</label>
+                                                <input type="text" name="nome" class="form-control" placeholder="Nome" value="${cliente.nome}" autofocus>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <label for="cpf">CPF/CNPJ</label>
+                                                    <input type="text" id="cpfCnpj" name="cpfCnpj" class="form-control cpfCnpj" value="${cliente.cpfCnpj}" placeholder="CPF/CNPJ">
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="telefone">Telefone/Celular</label>
+                                                    <input type="text" name="telefoneCelular" class="form-control telefoneCelular" value="${cliente.telefoneCelular}" placeholder="Telefone/Celular">
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="email">Email</label>
+                                                    <input type="email" name="email" class="form-control" value="${cliente.email}" placeholder="Email">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="senha">Senha</label>
+                                                    <input type="password" id="senha" name="senha" class="form-control" placeholder="Senha">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="senha">Confirmação de senha</label>
+                                                    <input type="password" name="confirmacaoSenha" class="form-control" placeholder="Confirmação de senha">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="endereco">Endereço</label>
+                                                <input type="text" id="endereco" name="endereco" class="form-control" value="${cliente.endereco.endereco}" placeholder="Endereço">
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-3">
+                                                    <label for="cep">CEP</label>
+                                                    <input type="text" name="cep" class="form-control cep" value="${cliente.endereco.cep}" placeholder="CEP">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="selectUf">UF</label>
+                                                    <select class="form-control" id="uf" name="uf">
+                                                        <option value="">UF</option>
+                                                        <c:forEach items="${estados}" var="estado">
+                                                            <option value="${estado.id}" ${estado.id == cliente.endereco.cidade.estado.id ? 'selected' : ''}>${estado.uf}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="cidade">Cidade</label>
+                                                    <select class="form-control" id="cidade" name="cidade">
+                                                        <option value="">Cidade</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-success float-right" id="cadastrar" name="cadastrar">Cadastrar</button>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

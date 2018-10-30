@@ -22,7 +22,7 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/fontawesome-free-5.4.1-web/css/all.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css">
-        <title>Callua - Novo chamado</title>
+        <title>Callua - Meus chamados</title>
     </head>
     <body>
         <div id="header"><%@ include file="header.jsp" %></div>
@@ -98,88 +98,12 @@
         <script src="${pageContext.request.contextPath}/resources/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/jquery-validation-1.17.0/dist/jquery.validate.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/js/customValidations.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/js/masks.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/js/formUfCidades.js"></script>
         <%@ include file="initializeJS.jsp" %>
         <script> 
             $(function(){
                 setTimeout(() => {
-                    $('header .titulo-header').text('Novo Chamado');
+                    $('header .titulo-header').text('Meus chamados');
                 }, 100);
-            });
-            
-            getCidades('${not empty chamado.endereco.cidade.id ? chamado.endereco.cidade.id: 0}');
-            
-            $(document).ready(function(){
-                $('#checkendereco').change(function() {
-                    if ($(this).is(':checked')) {
-                        $("#endereco").val('${logado.cliente.endereco.endereco}');
-                        $("#cep").val('${logado.cliente.endereco.cep}').trigger('input');
-                        $("#uf").val('${logado.cliente.endereco.cidade.estado.id}');
-                        getCidades('${logado.cliente.endereco.cidade.id}');
-                        /*setTimeout(() => {
-                            $("#cidade").val('${logado.cliente.endereco.cidade.id}');
-                        }, 100);*/
-                        $('#endereco').attr('readonly', true);
-                        $('#cep').attr('readonly', true);
-                        $('#uf').attr('readonly', true);
-                        $('#cidade').attr('readonly', true);
-                    } else {
-                        $('#endereco').attr('readonly', false);
-                        $('#cep').attr('readonly', false);
-                        $('#uf').attr('readonly', false);
-                        $('#cidade').attr('readonly', false);
-                    }
-                });
-                
-                $("#formAbrirChamado").validate({
-                    rules: {
-                        titulo: {
-                            required: true,
-                            maxlength: 128
-                        },
-                        descricao: {
-                            required: true,
-                            maxlength: 1024
-                        },
-                        endereco: {
-                            required: true,
-                            maxlength: 128
-                        },
-                        cep: {
-                            required: true,
-                            minlength: 9,
-                            maxlength: 9
-                        },
-                        uf: "required",
-                        cidade: "required"
-                    },
-                    messages: {
-                        titulo: {
-                            required: "Título é obrigatório !!!",
-                            maxlength: "No máximo 128 caracteres no título !!!"
-                        },
-                        descricao: {
-                            required: "Descrição é obrigatória !!!",
-                            maxlength: "No máximo 1024 caracteres na descrição !!!"
-                        },
-                        endereco: {
-                            required: "Endereço é obrigatório !!!",
-                            maxlength: "No máximo 128 caracteres no endereço !!!"
-                        },
-                        cep: {
-                            required: "CEP é obrigatório !!!",
-                            minlength: "CEP inválido !!!",
-                            maxlength: "CEP inválido !!!"
-                        },
-                        uf: "UF é obrigatório !!!",
-                        cidade: "Cidade é obrigatória !!!"
-                    },
-                    submitHandler: function(form) {
-                        form.submit();
-                    }
-                });
             });
         </script>
     </body>
