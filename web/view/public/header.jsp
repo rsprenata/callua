@@ -22,7 +22,7 @@
                         <div class="dropdown-menu" aria-labelledby="logadoDropdown">
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/Chamado?op=abrirForm">Abrir chamado</a>
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/Cliente?op=dadosForm">Dados cadastrais</a>
-                            <a class="dropdown-item" href="${pageContext.request.contextPath}/Chamado?op=list">Meus chamados</a>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/Chamado?op=meus">Meus chamados</a>
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/Login?op=logout">Sair</a>
                         </div>
                     </li>

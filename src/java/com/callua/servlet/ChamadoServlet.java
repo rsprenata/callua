@@ -57,77 +57,92 @@ public class ChamadoServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         
         String op = request.getParameter("op");
-        RequestDispatcher rd = null;
-        Mensagem mensagem = null;
         HttpSession session = request.getSession(false);
-        Chamado chamado = null;
         
         Login logado = null;
         if (session != null)
             logado = (Login)session.getAttribute("logado");
         
-        if ((logado != null && logado.getCliente() != null)) {
+        if (logado != null && logado.getCliente() != null) {
             switch(op) {
                 case "abrirForm":
-                    List<Estado> estados = EstadoFacade.buscarTodos();
-
-                    request.setAttribute("estados", estados);
-                    rd = getServletContext().getRequestDispatcher("/view/cliente/abrirchamado.jsp");
-                    rd.forward(request, response);
+                    abrirForm(request, response);
                     break;
                 case "abrir":
-                    chamado = carregarChamado(request);
-                    mensagem = formValido(request, chamado);
-                    if (mensagem == null) {
-                        chamado.setCliente(logado.getCliente());
-                        ChamadoFacade.abrirUm(chamado, getServletContext().getInitParameter("upload.location"));
-                        mensagem = new Mensagem("Chamado aberto com sucesso !!!");
-                        mensagem.setTipo("success");
-                        session = request.getSession();
-                        session.setAttribute("mensagem", mensagem);
-                        response.sendRedirect("Chamado?op=list");
-                    } else {
-                        mensagem.setTipo("error");
-                        session = request.getSession();
-                        session.setAttribute("mensagem", mensagem);
-                        request.setAttribute("chamado", chamado);
-                        rd = getServletContext().getRequestDispatcher("/Chamado?op=abrirForm");
-                        rd.forward(request, response);
-                    }
+                    abrir(request, response);
                     break;
-                case "list":
-                    List<Chamado> chamados = ChamadoFacade.buscarTodosByCliente(logado.getCliente());
-
-                    request.setAttribute("chamadosAbertos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.ABERTO).collect(Collectors.toList()));
-                    request.setAttribute("chamadosResolvidos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.RESOLVIDO).collect(Collectors.toList()));
-                    rd = getServletContext().getRequestDispatcher("/view/cliente/meuschamados.jsp");
-                    rd.forward(request, response);
+                case "meus":
+                    meus(request, response);
                     break;
-                case "caregarViaAjax":
-                    String idChamado = request.getParameter("idChamado");
-        
-                    chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
-
-                    // transforma o MAP em JSON
-                    String json = new Gson().toJson(chamado);   
-
-                    // retorna o JSON
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write(json);
+                case "carregarViaAjax":
+                    carregarViaAjax(request, response);
                     break;
             }
         } else {
-            mensagem = new Mensagem("Acesso não autorizado !!!");
+            Mensagem mensagem = new Mensagem("Acesso não autorizado !!!");
             mensagem.setTipo("error");
             session = request.getSession();
             session.setAttribute("mensagem", mensagem);
-            rd = getServletContext().getRequestDispatcher("/Login?op=dashboard");
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/Login?op=dashboard");
             rd.forward(request, response);
         }
     }
     
-    private Chamado carregarChamado(HttpServletRequest request) {
+    public void abrirForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Estado> estados = EstadoFacade.buscarTodos();
+
+        request.setAttribute("estados", estados);
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/cliente/abrirchamado.jsp");
+        rd.forward(request, response);
+    }
+    
+    public void abrir(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Chamado chamado = carregarChamado(request);
+        Mensagem mensagem = formValido(request, chamado);
+        HttpSession session = request.getSession(false);
+        Login logado = (Login)session.getAttribute("logado");
+        if (mensagem == null) {
+            chamado.setCliente(logado.getCliente());
+            ChamadoFacade.abrirUm(chamado, getServletContext().getInitParameter("upload.location"));
+            mensagem = new Mensagem("Chamado aberto com sucesso !!!");
+            mensagem.setTipo("success");
+            session.setAttribute("mensagem", mensagem);
+            response.sendRedirect("Chamado?op=meus");
+        } else {
+            mensagem.setTipo("error");
+            session.setAttribute("mensagem", mensagem);
+            request.setAttribute("chamado", chamado);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/Chamado?op=abrirForm");
+            rd.forward(request, response);
+        }
+    }
+    
+    public void meus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        Login logado = (Login)session.getAttribute("logado");
+        List<Chamado> chamados = ChamadoFacade.buscarTodosByCliente(logado.getCliente());
+
+        request.setAttribute("chamadosAbertos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.ABERTO).collect(Collectors.toList()));
+        request.setAttribute("chamadosResolvidos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.RESOLVIDO).collect(Collectors.toList()));
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/cliente/meuschamados.jsp");
+        rd.forward(request, response);
+    }
+    
+    public void carregarViaAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String idChamado = request.getParameter("idChamado");
+        
+        Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
+
+        // transforma o MAP em JSON
+        String json = new Gson().toJson(chamado);   
+
+        // retorna o JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json);
+    }
+    
+    public Chamado carregarChamado(HttpServletRequest request) {
         Chamado chamado = new Chamado();
         
         chamado.setTitulo(request.getParameter("titulo"));
@@ -155,7 +170,7 @@ public class ChamadoServlet extends HttpServlet {
         return chamado;
     }
     
-    private Mensagem formValido(HttpServletRequest request, Chamado chamado) {
+    public Mensagem formValido(HttpServletRequest request, Chamado chamado) {
         Mensagem mensagem = Validator.validarTitulo(chamado.getTitulo());
         if (mensagem == null) {
             mensagem = Validator.validarDescricao(chamado.getDescricao());

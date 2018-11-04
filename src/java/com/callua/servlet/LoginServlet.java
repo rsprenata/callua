@@ -5,21 +5,10 @@
  */
 package com.callua.servlet;
 
-import com.callua.bean.Cliente;
-import com.callua.bean.Estado;
-import com.callua.bean.Pessoa;
-import com.callua.facade.CidadeFacade;
-import com.callua.facade.ClienteFacade;
-import com.callua.facade.EstadoFacade;
 import com.callua.facade.LoginFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -47,83 +36,111 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String op = request.getParameter("op");
-        HttpSession session = request.getSession(false);
-        Mensagem mensagem = null;
-        Login logado = null;
         
-        switch(op) {
-            case "logar":
-                mensagem = formValido(request);
-                if (mensagem == null) {
-                    Login login = LoginFacade.carregarLogin(request.getParameter("cpfCnpj").replaceAll("\\W", "")
-                                                            , request.getParameter("senha"));
-                    if (login != null && (login.getCliente() != null || login.getUsuario() != null)) {
-                        session.setAttribute("logado", login);
-                        if (login.getCliente() != null && login.getUsuario() != null) {
-                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/selecionaacesso.jsp");
-                            rd.forward(request, response);
-                        } else {
-                            response.sendRedirect("Login?op=dashboard");
-                        }
-                    } else {
-                        mensagem = new Mensagem("Usuário não encontrado.");
-                    }
-                } 
-                
-                if (mensagem != null) {
-                    mensagem.setTipo("error");
-                    session.setAttribute("mensagem", mensagem);
-                    RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/view/public/login.jsp");
-                    requestDispatcher.forward(request, response);
-                }
-                break;
-            case "dashboard":
-                logado = (Login)session.getAttribute("logado");
-                if (logado != null && (logado.getCliente() != null || logado.getUsuario() != null)) {
-                    if (logado.getCliente() != null && logado.getUsuario() != null) {
-                        //É CLIENTE E USUÁRIO
-                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/selecionaacesso.jsp");
-                        rd.forward(request, response);
-                    } else if (logado.getCliente() != null) {
-                        //SÓ É CLIENTE
-                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/cliente/dashboardcliente.jsp");
-                        rd.forward(request, response);
-                    } else {
-                        //SÓ É USUÁRIO
-                        if (logado.getUsuario().isAdministrador()) {
-                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/dashboardadmin.jsp");
-                            rd.forward(request, response);
-                        } else {
-                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/tecnico/dashboardtecnico.jsp");
-                            rd.forward(request, response);
-                        }
-                    }
-                } else {
-                    mensagem = new Mensagem("Usuário deve se autenticar para acessar o sistema");
-                    mensagem.setTipo("error");
-                    session.setAttribute("mensagem", mensagem);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/login.jsp");
-                    rd.forward(request, response);
-                }
-                break;
-            case "selecionaAcesso":
-                String acesso = request.getParameter("acesso");
-                logado = (Login)session.getAttribute("logado");
-                if ("cliente".equals(acesso)) {
-                    logado.setUsuario(null);
-                } else {
-                    logado.setCliente(null);
-                }
-                response.sendRedirect("Login?op=dashboard");
-                break;
-            case "logout":
-                if (session != null) session.invalidate();
-                response.sendRedirect("view/public/index.jsp");
-                break;
+        HttpSession session = request.getSession(false);
+        
+        Login logado = null;
+        if (session != null)
+            logado = (Login)session.getAttribute("logado");
+        
+        //Em cima são os links que são publicos, sem validação de login
+        if ("logar".equals(op) ||
+            (session != null && logado != null &&
+                (logado.getCliente() != null || logado.getUsuario() != null)
+            )) {
+            switch(op) {
+                case "logar":
+                    logar(request, response);
+                    break;
+                case "dashboard":
+                    dashboard(request, response);
+                    break;
+                case "selecionaAcesso":
+                    selecionaAcesso(request, response);
+                    break;
+                case "logout":
+                    logout(request, response);
+                    break;
+            }
+        } else {
+            Mensagem mensagem = new Mensagem("Usuário deve se autenticar para acessar o sistema");
+            mensagem.setTipo("error");
+            session = request.getSession();
+            session.setAttribute("mensagem", mensagem);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/login.jsp");
+            rd.forward(request, response);
         }
     }
     
-    private Mensagem formValido(HttpServletRequest request) {
+    public void logar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Mensagem mensagem = formValido(request);
+        HttpSession session = request.getSession(false);
+        if (mensagem == null) {
+            Login login = LoginFacade.carregarLogin(request.getParameter("cpfCnpj").replaceAll("\\W", "")
+                                                    , request.getParameter("senha"));
+            if (login != null && (login.getCliente() != null || login.getUsuario() != null)) {
+                session.setAttribute("logado", login);
+                if (login.getCliente() != null && login.getUsuario() != null) {
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/selecionaacesso.jsp");
+                    rd.forward(request, response);
+                } else {
+                    response.sendRedirect("Login?op=dashboard");
+                }
+            } else {
+                mensagem = new Mensagem("Usuário não encontrado.");
+            }
+        } 
+
+        if (mensagem != null) {
+            mensagem.setTipo("error");
+            session.setAttribute("mensagem", mensagem);
+            RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/view/public/login.jsp");
+            requestDispatcher.forward(request, response);
+        }
+    }
+    
+    public void dashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        Login logado = (Login)session.getAttribute("logado");
+        if (logado.getCliente() != null && logado.getUsuario() != null) {
+            //É CLIENTE E USUÁRIO
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/selecionaacesso.jsp");
+            rd.forward(request, response);
+        } else if (logado.getCliente() != null) {
+            //SÓ É CLIENTE
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/cliente/dashboardcliente.jsp");
+            rd.forward(request, response);
+        } else {
+            //SÓ É USUÁRIO
+            if (logado.getUsuario().isAdministrador()) {
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/dashboardadmin.jsp");
+                rd.forward(request, response);
+            } else {
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/tecnico/dashboardtecnico.jsp");
+                rd.forward(request, response);
+            }
+        }
+    }
+    
+    public void selecionaAcesso(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String acesso = request.getParameter("acesso");
+        HttpSession session = request.getSession(false);
+        Login logado = (Login)session.getAttribute("logado");
+        if ("cliente".equals(acesso)) {
+            logado.setUsuario(null);
+        } else {
+            logado.setCliente(null);
+        }
+        response.sendRedirect("Login?op=dashboard");
+    }
+    
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session != null) session.invalidate();
+        response.sendRedirect("view/public/index.jsp");
+    }
+    
+    public Mensagem formValido(HttpServletRequest request) {
         Mensagem mensagem = null;
         
         if (request.getParameter("cpfCnpj") == null || "".equals(request.getParameter("cpfCnpj"))) {

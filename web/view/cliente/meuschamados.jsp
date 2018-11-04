@@ -206,7 +206,7 @@
                 $.ajax({
                     url : url, // URL da sua Servlet
                     data : {
-                        op: "caregarViaAjax",
+                        op: "carregarViaAjax",
                         idChamado : idChamado
                     }, // Parâmetro passado para a Servlet
                     dataType : 'json',
