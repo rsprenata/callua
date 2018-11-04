@@ -60,7 +60,7 @@ public class LoginServlet extends HttpServlet {
                     if (login != null && (login.getCliente() != null || login.getUsuario() != null)) {
                         session.setAttribute("logado", login);
                         if (login.getCliente() != null && login.getUsuario() != null) {
-                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/selecionaacesso.jsp");
+                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/selecionaacesso.jsp");
                             rd.forward(request, response);
                         } else {
                             response.sendRedirect("Login?op=dashboard");
@@ -73,7 +73,7 @@ public class LoginServlet extends HttpServlet {
                 if (mensagem != null) {
                     mensagem.setTipo("error");
                     session.setAttribute("mensagem", mensagem);
-                    RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/view/login.jsp");
+                    RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/view/public/login.jsp");
                     requestDispatcher.forward(request, response);
                 }
                 break;
@@ -82,19 +82,19 @@ public class LoginServlet extends HttpServlet {
                 if (logado != null && (logado.getCliente() != null || logado.getUsuario() != null)) {
                     if (logado.getCliente() != null && logado.getUsuario() != null) {
                         //É CLIENTE E USUÁRIO
-                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/selecionaacesso.jsp");
+                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/selecionaacesso.jsp");
                         rd.forward(request, response);
                     } else if (logado.getCliente() != null) {
                         //SÓ É CLIENTE
-                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/dashboardcliente.jsp");
+                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/cliente/dashboardcliente.jsp");
                         rd.forward(request, response);
                     } else {
                         //SÓ É USUÁRIO
                         if (logado.getUsuario().isAdministrador()) {
-                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/dashboardadmin.jsp");
+                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/dashboardadmin.jsp");
                             rd.forward(request, response);
                         } else {
-                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/dashboardtecnico.jsp");
+                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/tecnico/dashboardtecnico.jsp");
                             rd.forward(request, response);
                         }
                     }
@@ -102,7 +102,7 @@ public class LoginServlet extends HttpServlet {
                     mensagem = new Mensagem("Usuário deve se autenticar para acessar o sistema");
                     mensagem.setTipo("error");
                     session.setAttribute("mensagem", mensagem);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/login.jsp");
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/login.jsp");
                     rd.forward(request, response);
                 }
                 break;
@@ -118,7 +118,7 @@ public class LoginServlet extends HttpServlet {
                 break;
             case "logout":
                 if (session != null) session.invalidate();
-                response.sendRedirect("view/index.jsp");
+                response.sendRedirect("view/public/index.jsp");
                 break;
         }
     }

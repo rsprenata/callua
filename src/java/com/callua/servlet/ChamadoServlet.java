@@ -72,7 +72,7 @@ public class ChamadoServlet extends HttpServlet {
                     List<Estado> estados = EstadoFacade.buscarTodos();
 
                     request.setAttribute("estados", estados);
-                    rd = getServletContext().getRequestDispatcher("/view/abrirchamado.jsp");
+                    rd = getServletContext().getRequestDispatcher("/view/cliente/abrirchamado.jsp");
                     rd.forward(request, response);
                     break;
                 case "abrir":
@@ -100,7 +100,7 @@ public class ChamadoServlet extends HttpServlet {
 
                     request.setAttribute("chamadosAbertos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.ABERTO).collect(Collectors.toList()));
                     request.setAttribute("chamadosResolvidos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.RESOLVIDO).collect(Collectors.toList()));
-                    rd = getServletContext().getRequestDispatcher("/view/meuschamados.jsp");
+                    rd = getServletContext().getRequestDispatcher("/view/cliente/meuschamados.jsp");
                     rd.forward(request, response);
                     break;
                 case "caregarViaAjax":

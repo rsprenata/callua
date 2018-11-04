@@ -11,10 +11,10 @@
     </session-config>
     <error-page>
   	<error-code>500</error-code>
-        <location>/view/erro.jsp</location>
+        <location>/view/public/erro.jsp</location>
     </error-page>
     <welcome-file-list>
-        <welcome-file>/view/index.jsp</welcome-file>
+        <welcome-file>/view/public/index.jsp</welcome-file>
     </welcome-file-list>
     <context-param>
         <param-name>upload.location</param-name>

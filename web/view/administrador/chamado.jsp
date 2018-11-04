@@ -4,7 +4,7 @@
     Author     : renata
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="erro.jsp"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="../public/erro.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:if test="${sessionScope.logado == null || sessionScope.logado.usuario == null}">
     <jsp:useBean id="mensagem" class="com.callua.util.Mensagem">

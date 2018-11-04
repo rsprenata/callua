@@ -4,7 +4,7 @@
     Author     : renata
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="erro.jsp"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="../public/erro.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:if test="${sessionScope.logado == null || sessionScope.logado.usuario == null || !sessionScope.logado.usuario.administrador}">
     <jsp:useBean id="mensagem" class="com.callua.util.Mensagem">
@@ -24,7 +24,7 @@
         <title>Callua - Novo Técnico</title>
     </head>
     <body>
-        <div id="header"><%@ include file="header.jsp" %></div>
+        <div id="header"><%@ include file="../public/header.jsp" %></div>
         <main role="main">
             <div class="py-5 bg-light">
                 <div class="container">
@@ -64,7 +64,7 @@
                 </div>
             </div>
         </main>
-        <div id="footer"><%@ include file="footer.jsp" %></div>
+        <div id="footer"><%@ include file="../public/footer.jsp" %></div>
         
         <script src="${pageContext.request.contextPath}/resources/jquery-3.3.1/jquery-3.3.1.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/popper.js/popper.min.js"></script>

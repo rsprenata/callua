@@ -4,7 +4,7 @@
     Author     : renata
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="erro.jsp"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="../public/erro.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
