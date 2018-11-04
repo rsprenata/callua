@@ -85,7 +85,7 @@ public class ChamadoServlet extends HttpServlet {
                         mensagem.setTipo("success");
                         session = request.getSession();
                         session.setAttribute("mensagem", mensagem);
-                        response.sendRedirect("Login?op=dashboard");
+                        response.sendRedirect("Chamado?op=list");
                     } else {
                         mensagem.setTipo("error");
                         session = request.getSession();

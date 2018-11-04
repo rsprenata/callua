@@ -27,7 +27,7 @@ public class ChamadoDao {
         try {
             connection.setAutoCommit(false);
             stmt = connection.prepareStatement("INSERT INTO Chamado (titulo, descricao, endereco, cep, idCidade, status, idCliente) VALUES "
-                + "(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                + "(?, ?, ?, ?, ?, ?::StatusChamado, ?)", Statement.RETURN_GENERATED_KEYS);
             
             stmt.setString(1, chamado.getTitulo());
             stmt.setString(2, chamado.getDescricao());

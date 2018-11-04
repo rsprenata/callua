@@ -49,6 +49,7 @@ public class LoginServlet extends HttpServlet {
         String op = request.getParameter("op");
         HttpSession session = request.getSession(false);
         Mensagem mensagem = null;
+        Login logado = null;
         
         switch(op) {
             case "logar":
@@ -58,7 +59,12 @@ public class LoginServlet extends HttpServlet {
                                                             , request.getParameter("senha"));
                     if (login != null && (login.getCliente() != null || login.getUsuario() != null)) {
                         session.setAttribute("logado", login);
-                        response.sendRedirect("Login?op=dashboard");
+                        if (login.getCliente() != null && login.getUsuario() != null) {
+                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/selecionaacesso.jsp");
+                            rd.forward(request, response);
+                        } else {
+                            response.sendRedirect("Login?op=dashboard");
+                        }
                     } else {
                         mensagem = new Mensagem("Usuário não encontrado.");
                     }
@@ -72,16 +78,25 @@ public class LoginServlet extends HttpServlet {
                 }
                 break;
             case "dashboard":
-                Login logado = (Login)session.getAttribute("logado");
+                logado = (Login)session.getAttribute("logado");
                 if (logado != null && (logado.getCliente() != null || logado.getUsuario() != null)) {
                     if (logado.getCliente() != null && logado.getUsuario() != null) {
                         //É CLIENTE E USUÁRIO
+                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/selecionaacesso.jsp");
+                        rd.forward(request, response);
                     } else if (logado.getCliente() != null) {
                         //SÓ É CLIENTE
                         RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/dashboardcliente.jsp");
                         rd.forward(request, response);
                     } else {
                         //SÓ É USUÁRIO
+                        if (logado.getUsuario().isAdministrador()) {
+                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/dashboardadmin.jsp");
+                            rd.forward(request, response);
+                        } else {
+                            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/dashboardtecnico.jsp");
+                            rd.forward(request, response);
+                        }
                     }
                 } else {
                     mensagem = new Mensagem("Usuário deve se autenticar para acessar o sistema");
@@ -90,6 +105,16 @@ public class LoginServlet extends HttpServlet {
                     RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/login.jsp");
                     rd.forward(request, response);
                 }
+                break;
+            case "selecionaAcesso":
+                String acesso = request.getParameter("acesso");
+                logado = (Login)session.getAttribute("logado");
+                if ("cliente".equals(acesso)) {
+                    logado.setUsuario(null);
+                } else {
+                    logado.setCliente(null);
+                }
+                response.sendRedirect("Login?op=dashboard");
                 break;
             case "logout":
                 if (session != null) session.invalidate();
