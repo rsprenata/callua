@@ -4,6 +4,7 @@ import com.callua.bean.Chamado;
 import com.callua.bean.Cliente;
 import com.callua.bean.Endereco;
 import com.callua.bean.StatusChamado;
+import com.callua.bean.Usuario;
 import com.callua.facade.CidadeFacade;
 import com.callua.facade.ClienteFacade;
 import java.io.File;
@@ -143,6 +144,52 @@ public class ChamadoDao {
         return chamados;
     }
     
+    public List<Chamado> buscarTodosByTecnico(Usuario tecnico) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Chamado> chamados = new ArrayList<Chamado>();
+        
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM Chamado WHERE idTecnico = ?");
+            stmt.setInt(1, tecnico.getId());
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Chamado chamado = new Chamado();
+                
+                chamado.setId(rs.getInt("id"));
+                chamado.setTitulo(rs.getString("titulo"));
+                chamado.setDescricao(rs.getString("descricao"));
+                Endereco endereco = new Endereco();
+                endereco.setEndereco(rs.getString("endereco"));
+                endereco.setCep(rs.getString("cep"));
+                endereco.setCidade(CidadeFacade.carregarUma(rs.getInt("idCidade")));
+                chamado.setEndereco(endereco);
+                chamado.setStatus(StatusChamado.valueOf(rs.getString("status")));
+                chamado.setCliente(ClienteFacade.carregarUm(rs.getInt("idCliente")));
+                chamado.setTecnico(tecnico);
+                
+                chamados.add(chamado);
+            }
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return chamados;
+    }
+    
     public Chamado carregarById(Integer id) {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
@@ -184,5 +231,29 @@ public class ChamadoDao {
         }
         
         return chamado;
+    }
+    
+    public void fecharUm(Chamado chamado) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = connection.prepareStatement("UPDATE Chamado SET status = ? WHERE id = ?");
+            
+            stmt.setString(1, "RESOLVIDO");
+            stmt.setInt(2, chamado.getId());
+            
+            stmt.executeUpdate();
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
     }
 }

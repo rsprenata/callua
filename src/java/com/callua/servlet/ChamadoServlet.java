@@ -63,7 +63,7 @@ public class ChamadoServlet extends HttpServlet {
         if (session != null)
             logado = (Login)session.getAttribute("logado");
         
-        if (logado != null && logado.getCliente() != null) {
+        if (logado != null && (logado.getCliente() != null || logado.getUsuario() != null)) {
             switch(op) {
                 case "abrirForm":
                     abrirForm(request, response);
@@ -76,6 +76,11 @@ public class ChamadoServlet extends HttpServlet {
                     break;
                 case "carregarViaAjax":
                     carregarViaAjax(request, response);
+                case "visualizar":
+                    visualizar(request, response);
+                case "fechar":
+                    if (logado.getUsuario() != null)
+                        fechar(request, response);
                     break;
             }
         } else {
@@ -140,6 +145,25 @@ public class ChamadoServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json);
+    }
+    
+    public void visualizar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String idChamado = request.getParameter("idChamado");
+        Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
+        
+        request.setAttribute("chamado", chamado);
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/chamado.jsp");
+        rd.forward(request, response);
+    }
+    
+    public void fechar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String idChamado = request.getParameter("idChamado");
+        Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
+        ChamadoFacade.fecharUm(chamado);
+        
+        request.setAttribute("chamado", chamado);
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/chamado.jsp");
+        rd.forward(request, response);
     }
     
     public Chamado carregarChamado(HttpServletRequest request) {

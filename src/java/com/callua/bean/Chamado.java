@@ -20,6 +20,7 @@ public class Chamado implements java.io.Serializable {
     private List <Part> partArquivos;
     private StatusChamado status;
     private Cliente cliente;
+    private Usuario tecnico;
     
     public Chamado() {}
 
@@ -77,5 +78,13 @@ public class Chamado implements java.io.Serializable {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public Usuario getTecnico() {
+        return tecnico;
+    }
+
+    public void setTecnico(Usuario tecnico) {
+        this.tecnico = tecnico;
     }
 }

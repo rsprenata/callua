@@ -5,10 +5,15 @@
  */
 package com.callua.servlet;
 
+import com.callua.bean.Chamado;
+import com.callua.bean.StatusChamado;
+import com.callua.facade.ChamadoFacade;
 import com.callua.facade.LoginFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -116,6 +121,10 @@ public class LoginServlet extends HttpServlet {
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/dashboardadmin.jsp");
                 rd.forward(request, response);
             } else {
+                List<Chamado> chamados = ChamadoFacade.buscarTodosByTecnico(logado.getUsuario());
+                request.setAttribute("chamadosAbertos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.ABERTO).collect(Collectors.toList()));
+                request.setAttribute("chamadosResolvidos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.RESOLVIDO).collect(Collectors.toList()));
+        
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/tecnico/dashboardtecnico.jsp");
                 rd.forward(request, response);
             }

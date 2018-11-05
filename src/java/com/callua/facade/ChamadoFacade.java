@@ -2,6 +2,7 @@ package com.callua.facade;
 
 import com.callua.bean.Chamado;
 import com.callua.bean.Cliente;
+import com.callua.bean.Usuario;
 import com.callua.dao.ChamadoDao;
 import java.util.List;
 
@@ -17,7 +18,15 @@ public class ChamadoFacade {
         return CDAO.buscarTodosByCliente(cliente);
     }
 
+    public static List<Chamado> buscarTodosByTecnico(Usuario tecnico) {
+        return CDAO.buscarTodosByTecnico(tecnico);
+    }
+
     public static Chamado carregarById(Integer id) {
         return CDAO.carregarById(id);
+    }
+
+    public static void fecharUm(Chamado chamado) {
+        CDAO.fecharUm(chamado);
     }
 }
