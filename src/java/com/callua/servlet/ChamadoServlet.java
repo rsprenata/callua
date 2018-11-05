@@ -58,6 +58,7 @@ public class ChamadoServlet extends HttpServlet {
         
         String op = request.getParameter("op");
         HttpSession session = request.getSession(false);
+        System.out.println("a");
         
         Login logado = null;
         if (session != null)
@@ -76,8 +77,10 @@ public class ChamadoServlet extends HttpServlet {
                     break;
                 case "carregarViaAjax":
                     carregarViaAjax(request, response);
+                    break;
                 case "visualizar":
                     visualizar(request, response);
+                    break;
                 case "fechar":
                     if (logado.getUsuario() != null)
                         fechar(request, response);

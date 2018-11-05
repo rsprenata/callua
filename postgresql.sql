@@ -65,13 +65,11 @@ ALTER TABLE Chamado ADD COLUMN status StatusChamado;
 UPDATE Chamado SET status = 'ABERTO';
 
 ALTER TABLE Chamado ADD COLUMN idCliente INT NOT NULL;
-UPDATE Chamado SET idCliente = 1;
 
-/*ALTER TABLE Chamado ADD CONSTRAINT Chamado_Cliente_FK FOREIGN KEY (id) REFERENCES Cliente(id);*/
+ALTER TABLE Chamado ADD FOREIGN KEY (idCliente) REFERENCES Cliente(id);
 
 ALTER TABLE Chamado ADD COLUMN idTecnico INT;
 
-UPDATE Chamado SET idTecnico = 1;
 
 ALTER TABLE Chamado ADD FOREIGN KEY (idTecnico) REFERENCES Usuario(id);
 
