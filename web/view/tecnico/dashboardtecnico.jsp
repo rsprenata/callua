@@ -48,7 +48,7 @@
                                 <div class="offset-md-2 col-md-5">
                                     <h5 class="card-title">Chamado resolvidos</h5>
                                     <c:forEach items="${chamadosResolvidos}" var="chamado">
-                                        <a class="btn btn-light btn-block btn-lg" data-toggle="tooltip" data-placement="right" title="Clique no chamado para abrir e ter mais opções">
+                                        <a href="${pageContext.request.contextPath}/Chamado?op=visualizar&idChamado=${chamado.id}" class="btn btn-light btn-block btn-lg" data-toggle="tooltip" data-placement="right" title="Clique no chamado para abrir e ter mais opções">
                                             <h5 class="card-title">Chamado ${chamado.id}</h5>
                                             <h6 class="card-subtitle mb-2 text-muted">${chamado.titulo}</h6>
                                             <h6 class="card-text">Cliente: ${chamado.cliente.nome}</h6>
@@ -78,7 +78,7 @@
         <script> 
             $(function(){
                 setTimeout(() => {
-                    $('header .titulo-header').text('Olá, técnico ${logado.usuario.nome}');
+                    $('header .titulo-header').text('Olá, Técnico ${logado.usuario.nome}');
                 }, 100);
             });
         </script>

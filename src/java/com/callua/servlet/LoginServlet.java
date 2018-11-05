@@ -118,6 +118,10 @@ public class LoginServlet extends HttpServlet {
         } else {
             //SÓ É USUÁRIO
             if (logado.getUsuario().isAdministrador()) {
+                List<Chamado> chamados = ChamadoFacade.buscarTodos();
+                request.setAttribute("chamadosAbertos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.ABERTO).collect(Collectors.toList()));
+                request.setAttribute("chamadosResolvidos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.RESOLVIDO).collect(Collectors.toList()));
+        
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/dashboardadmin.jsp");
                 rd.forward(request, response);
             } else {

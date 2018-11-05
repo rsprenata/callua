@@ -190,6 +190,50 @@ public class ChamadoDao {
         return chamados;
     }
     
+    public List<Chamado> buscarTodos() {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Chamado> chamados = new ArrayList<Chamado>();
+        
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM Chamado");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Chamado chamado = new Chamado();
+                
+                chamado.setId(rs.getInt("id"));
+                chamado.setTitulo(rs.getString("titulo"));
+                chamado.setDescricao(rs.getString("descricao"));
+                Endereco endereco = new Endereco();
+                endereco.setEndereco(rs.getString("endereco"));
+                endereco.setCep(rs.getString("cep"));
+                endereco.setCidade(CidadeFacade.carregarUma(rs.getInt("idCidade")));
+                chamado.setEndereco(endereco);
+                chamado.setStatus(StatusChamado.valueOf(rs.getString("status")));
+                chamado.setCliente(ClienteFacade.carregarUm(rs.getInt("idCliente")));
+                
+                chamados.add(chamado);
+            }
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return chamados;
+    }
+    
     public Chamado carregarById(Integer id) {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
@@ -239,7 +283,7 @@ public class ChamadoDao {
         PreparedStatement stmt = null;
         
         try {
-            stmt = connection.prepareStatement("UPDATE Chamado SET status = ? WHERE id = ?");
+            stmt = connection.prepareStatement("UPDATE Chamado SET status = ?::StatusChamado WHERE id = ?");
             
             stmt.setString(1, "RESOLVIDO");
             stmt.setInt(2, chamado.getId());

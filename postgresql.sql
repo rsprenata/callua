@@ -73,6 +73,13 @@ ALTER TABLE Chamado ADD COLUMN idTecnico INT;
 
 ALTER TABLE Chamado ADD FOREIGN KEY (idTecnico) REFERENCES Usuario(id);
 
+CREATE TABLE TecnicoCriarSenhaToken (
+	idTecnico INT,
+	token VARCHAR(128),
+
+	FOREIGN KEY (idTecnico) REFERENCES Usuario (id)
+);
+
 /*********************
 * INSERÇÃO DOS DADOS *
 **********************/

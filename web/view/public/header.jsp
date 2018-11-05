@@ -38,6 +38,16 @@
                     </li>
                 </ul>
             </c:when>
+            <c:when test="${sessionScope.logado.usuario != null && sessionScope.logado.usuario.administrador}">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="logadoDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${logado.usuario.nome}</a>
+                        <div class="dropdown-menu" aria-labelledby="logadoDropdown">
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/Login?op=logout">Sair</a>
+                        </div>
+                    </li>
+                </ul>
+            </c:when>
         </c:choose>
     </div>
     </div>

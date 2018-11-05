@@ -57,13 +57,13 @@
                             </div>
                             <div class="col-md-5">
                                 <c:if test="${logado.usuario.administrador == true}">
-                                    <div class="row">
-                                        <div class="col-md-4 offset-md-8">
-                                            <div class="form-group">
-                                                <button type="button" class="btn btn-warning btn-block">Atribuir</button>
-                                            </div>
+                                <div class="row">
+                                    <div class="col-md-4 offset-md-8">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-warning btn-block">Atribuir</button>
                                         </div>
                                     </div>
+                                </div>
                                 </c:if>
                                 <div class="row">
                                     <div class="col-md-4 offset-md-8">
@@ -72,13 +72,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <c:if test="${chamado.status != 'RESOLVIDO'}">
                                 <div class="row">
                                     <div class="col-md-4 offset-md-8">
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-success btn-block">Fechar</button>
+                                            <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#modalFecharChamado">Fechar</button>
                                         </div>
                                     </div>
                                 </div>
+                                </c:if>
                             </div>
                             </div>
                             <div class="row">
@@ -194,14 +196,8 @@
                             <input type="hidden" name="idChamado" value="${chamado.id}"/>
                         </div>
                         <div class="modal-footer">
-                            <div class="col-md-2 offset-md-10">
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-block">Fechar</button>
-                                </div>
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-success btn-block" data-dismiss="modal">CAncelar</button>
-                                </div>
-                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Fechar</button>
                         </div>
                     </div>
                 </div>

@@ -9,21 +9,113 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Callua - Confirmar cadastro</title>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/fontawesome-free-5.4.1-web/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css">
+        <title>Callua</title>
     </head>
-    <!-- essa pagina eh enviada por email, um link eh gerado na hora
-    que o admin cadastra o tecnico-->
     <body>
-        <h1>Confirmar cadastro</h1>
-        <p>CPF: 00000000000</p>
-        <p>Telefone/Celular: 41 00000000</p>
-        <p>E-mail: fulaninho@callua.com</p>
-        <form>
-            Senha:
-            <input type="text" name="senha"><br>
-            Confirme:
-            <input type="text" name="confirmesenha"><br>
-            <input type="submit" value="Salvar">
-        </form>
+        <div id="header"><%@ include file="../public/header.jsp" %></div>
+        <main role="main">
+            <div class="py-5 bg-light">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 order-md-1">
+                            <div class="card">
+                                <div class="card-body">
+                                    <form id="formCadastro" action="${pageContext.request.contextPath}/Tecnico?op=criarSenha" method="POST">
+                                        <input type="hidden" name="idTecnico" value="${tecnico.id}" />
+                                        <input type="hidden" name="token" value="${token}" />
+                                        <fieldset>
+                                            <div class="row">
+                                                <div class=" col-md-12">
+                                                    <b>Nome: </b><p class="d-inline">${tecnico.nome}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class=" col-md-12">
+                                                    <b>CPF/CNPJ: </b><p class="d-inline cpfCnpj">${tecnico.cpfCnpj}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class=" col-md-12">
+                                                    <b>Telefone/Celular: </b><p class="d-inline telefoneCelular">${tecnico.telefoneCelular}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class=" col-md-12">
+                                                    <b>Email: </b><p class="d-inline">${tecnico.email}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="senha">Senha</label>
+                                                    <input type="password" id="senha" name="senha" class="form-control" placeholder="Senha">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="senha">Confirmação de senha</label>
+                                                    <input type="password" name="confirmacaoSenha" class="form-control" placeholder="Confirmação de senha">
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-success float-right" id="cadastrar" name="cadastrar">Cadastrar</button>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div id="footer"><%@ include file="../public/footer.jsp" %></div>
+        
+        <script src="${pageContext.request.contextPath}/resources/jquery-3.3.1/jquery-3.3.1.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/popper.js/popper.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/js/bootstrap.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/jquery-validation-1.17.0/dist/jquery.validate.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/customValidations.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/masks.js"></script>
+        <%@ include file="../public/initializeJS.jsp" %>
+        <script> 
+            $(function(){
+                setTimeout(() => {
+                    $('header .titulo-header').text('Confirmar cadastro');
+                }, 100);
+            });
+            
+            $(document).ready(function(){
+                $("#formCadastro").validate({
+                    rules: {
+                        senha: {
+                            required: true,
+                            maxlength: 128
+                        },
+                        confirmacaoSenha: {
+                            equalTo: "#senha",
+                            required: true,
+                            maxlength: 128
+                        }
+                    },
+                    messages: {
+                        senha: {
+                            required: "Senha é obrigatória !!!",
+                            maxlength: "No máximo 128 caracteres na senha !!!"
+                        },
+                        confirmacaoSenha: {
+                            equalTo: "Senha e confirmação diferentes !!!",
+                            required: "Confirmação de senha é obrigatória !!!",
+                            maxlength: "No máximo 128 caracteres na confirmação da senha !!!"
+                        }
+                    },
+                    submitHandler: function(form) {
+                        form.submit();
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
+

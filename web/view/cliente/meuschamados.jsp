@@ -34,7 +34,7 @@
                 <div class="col-md-12 order-md-1">
                     <!-- <h4 class="mb-3">Novo Chamado</h4> -->
                     <div class="form-group">
-                        <a type="button" class="btn btn-success" href="${pageContext.request.contextPath}/Chamado?op=abrirForm">Abrir chamado</a>
+                        <a class="btn btn-success" href="${pageContext.request.contextPath}/Chamado?op=abrirForm">Abrir chamado</a>
                     </div>
                     <div class="card">
                         <div class="card-body">

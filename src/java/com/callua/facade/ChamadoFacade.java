@@ -22,6 +22,10 @@ public class ChamadoFacade {
         return CDAO.buscarTodosByTecnico(tecnico);
     }
 
+    public static List<Chamado> buscarTodos() {
+        return CDAO.buscarTodos();
+    }
+
     public static Chamado carregarById(Integer id) {
         return CDAO.carregarById(id);
     }

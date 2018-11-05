@@ -58,7 +58,6 @@ public class ChamadoServlet extends HttpServlet {
         
         String op = request.getParameter("op");
         HttpSession session = request.getSession(false);
-        System.out.println("a");
         
         Login logado = null;
         if (session != null)
@@ -160,13 +159,16 @@ public class ChamadoServlet extends HttpServlet {
     }
     
     public void fechar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
         String idChamado = request.getParameter("idChamado");
         Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
         ChamadoFacade.fecharUm(chamado);
         
-        request.setAttribute("chamado", chamado);
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/chamado.jsp");
-        rd.forward(request, response);
+        Mensagem mensagem = new Mensagem("Chamado fechado com sucesso !!!");
+        mensagem.setTipo("success");
+        session.setAttribute("mensagem", mensagem);
+        
+        response.sendRedirect("Login?op=dashboard");
     }
     
     public Chamado carregarChamado(HttpServletRequest request) {
