@@ -113,7 +113,7 @@ public class LoginServlet extends HttpServlet {
             rd.forward(request, response);
         } else if (logado.getCliente() != null) {
             //SÓ É CLIENTE
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/cliente/dashboardcliente.jsp");
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/Chamado?op=meus");
             rd.forward(request, response);
         } else {
             //SÓ É USUÁRIO

@@ -18,6 +18,6 @@
     </welcome-file-list>
     <context-param>
         <param-name>upload.location</param-name>
-        <param-value>/home/juniorrek/calluaArquivos/</param-value>
+        <param-value>/Users/renata/calluaArquivos/</param-value>
     </context-param>
 </web-app>

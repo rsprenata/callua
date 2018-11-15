@@ -175,7 +175,7 @@
                                     <button type="button" class="btn btn-primary btn-block">Comentar</button>
                                 </div>
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-success btn-block" data-dismiss="modal">Fechar</button>
+                                    <button type="button" class="btn btn-success btn-block" data-dismiss="modal">Voltar</button>
                                 </div>
                             </div>
                     </div>
