@@ -30,7 +30,7 @@
                                 <button type="button" class="btn btn-light"><i class="fab fa-3x fa-apple"></i>Assistencia Apple</button>
                             </div>
                             <div class="row menu-options abrir-chamado">
-                                <button type="button" class="btn btn-secondary" id="abrir" name="abrir">Abrir chamado</button>
+                                <button type="button" class="btn" style="background-color: #b4a7d6" id="abrir" name="abrir">Abrir chamado</button>
                             </div>
                         </div>
                     </div>
