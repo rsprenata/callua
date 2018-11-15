@@ -80,6 +80,14 @@ CREATE TABLE TecnicoCriarSenhaToken (
 	FOREIGN KEY (idTecnico) REFERENCES Usuario (id)
 );
 
+CREATE TABLE RelChamadoProduto (
+	idChamado INT,
+	idProduto INT,
+
+	PRIMARY KEY (idChamado, idProduto),
+	FOREIGN KEY (idChamado) REFERENCES Chamado(id)
+);
+
 /*********************
 * INSERÇÃO DOS DADOS *
 **********************/

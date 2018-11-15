@@ -8,17 +8,17 @@ package com.callua.servlet;
 import com.callua.bean.Chamado;
 import com.callua.bean.Endereco;
 import com.callua.bean.Estado;
+import com.callua.bean.Produto;
 import com.callua.bean.StatusChamado;
 import com.callua.facade.ChamadoFacade;
 import com.callua.facade.CidadeFacade;
 import com.callua.facade.EstadoFacade;
+import com.callua.facade.ProdutoFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
 import com.google.gson.Gson;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 /**
  *
@@ -83,6 +82,12 @@ public class ChamadoServlet extends HttpServlet {
                 case "fechar":
                     if (logado.getUsuario() != null)
                         fechar(request, response);
+                    break;
+                case "adicionarProduto":
+                    adicionarProduto(request, response);
+                    break;
+                case "removerProduto":
+                    removerProduto(request, response);
                     break;
             }
         } else {
@@ -152,8 +157,11 @@ public class ChamadoServlet extends HttpServlet {
     public void visualizar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idChamado = request.getParameter("idChamado");
         Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
+        List<Produto> produtos = ProdutoFacade.carregarTodos();
+        produtos.removeAll(chamado.getProdutos());
         
         request.setAttribute("chamado", chamado);
+        request.setAttribute("produtos", produtos);
         RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/chamado.jsp");
         rd.forward(request, response);
     }
@@ -169,6 +177,36 @@ public class ChamadoServlet extends HttpServlet {
         session.setAttribute("mensagem", mensagem);
         
         response.sendRedirect("Login?op=dashboard");
+    }
+    
+    public void adicionarProduto(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        String idChamado = request.getParameter("idChamado");
+        Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
+        String idProduto = request.getParameter("produto");
+        Produto produto = ProdutoFacade.carregarUm(Integer.parseInt(idProduto));
+        ChamadoFacade.adicionarProduto(chamado, produto);
+        
+        Mensagem mensagem = new Mensagem("Produto adicionado com sucesso !!!");
+        mensagem.setTipo("success");
+        session.setAttribute("mensagem", mensagem);
+        
+        response.sendRedirect("Chamado?op=visualizar&idChamado=" + chamado.getId());
+    }
+    
+    public void removerProduto(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        Chamado chamado = new Chamado();
+        chamado.setId(Integer.parseInt(request.getParameter("idChamado")));
+        Produto produto = new Produto();
+        produto.setId(Integer.parseInt(request.getParameter("idProduto")));
+        ChamadoFacade.removerProduto(chamado, produto);
+        
+        Mensagem mensagem = new Mensagem("Produto removido com sucesso !!!");
+        mensagem.setTipo("success");
+        session.setAttribute("mensagem", mensagem);
+        
+        response.sendRedirect("Chamado?op=visualizar&idChamado=" + chamado.getId());
     }
     
     public Chamado carregarChamado(HttpServletRequest request) {
