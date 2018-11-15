@@ -2,6 +2,7 @@ package com.callua.facade;
 
 import com.callua.bean.Chamado;
 import com.callua.bean.Cliente;
+import com.callua.bean.Produto;
 import com.callua.bean.Usuario;
 import com.callua.dao.ChamadoDao;
 import java.util.List;
@@ -32,5 +33,13 @@ public class ChamadoFacade {
 
     public static void fecharUm(Chamado chamado) {
         CDAO.fecharUm(chamado);
+    }
+
+    public static void adicionarProduto(Chamado chamado, Produto produto) {
+        CDAO.adicionarProduto(chamado, produto);
+    }
+
+    public static void removerProduto(Chamado chamado, Produto produto) {
+        CDAO.removerProduto(chamado, produto);
     }
 }
