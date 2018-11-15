@@ -80,6 +80,18 @@ CREATE TABLE TecnicoCriarSenhaToken (
 	FOREIGN KEY (idTecnico) REFERENCES Usuario (id)
 );
 
+
+
+
+
+/* NOVO CAMPO, ADICIONADO DIA 15/11/2018 */
+
+alter table chamado add column data timestamp;
+
+
+
+
+
 /*********************
 * INSERÇÃO DOS DADOS *
 **********************/

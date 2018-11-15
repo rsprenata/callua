@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,8 +28,8 @@ public class ChamadoDao {
         File uploadFolder = null;
         try {
             connection.setAutoCommit(false);
-            stmt = connection.prepareStatement("INSERT INTO Chamado (titulo, descricao, endereco, cep, idCidade, status, idCliente) VALUES "
-                + "(?, ?, ?, ?, ?, ?::StatusChamado, ?)", Statement.RETURN_GENERATED_KEYS);
+            stmt = connection.prepareStatement("INSERT INTO Chamado (titulo, descricao, endereco, cep, idCidade, status, idCliente, data) VALUES "
+                + "(?, ?, ?, ?, ?, ?::StatusChamado, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             
             stmt.setString(1, chamado.getTitulo());
             stmt.setString(2, chamado.getDescricao());
@@ -37,6 +38,7 @@ public class ChamadoDao {
             stmt.setInt(5, chamado.getEndereco().getCidade().getId());
             stmt.setString(6, "ABERTO");
             stmt.setInt(7, chamado.getCliente().getId());
+            stmt.setTimestamp(8, new Timestamp(chamado.getData().getTime()));
             
             int affectedRows = stmt.executeUpdate();
 

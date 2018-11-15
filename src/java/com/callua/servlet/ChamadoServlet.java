@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -110,6 +111,7 @@ public class ChamadoServlet extends HttpServlet {
         Login logado = (Login)session.getAttribute("logado");
         if (mensagem == null) {
             chamado.setCliente(logado.getCliente());
+            chamado.setData(new Date());
             ChamadoFacade.abrirUm(chamado, getServletContext().getInitParameter("upload.location"));
             mensagem = new Mensagem("Chamado aberto com sucesso !!!");
             mensagem.setTipo("success");

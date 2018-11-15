@@ -5,6 +5,7 @@
  */
 package com.callua.bean;
 
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.Part;
 
@@ -21,6 +22,7 @@ public class Chamado implements java.io.Serializable {
     private StatusChamado status;
     private Cliente cliente;
     private Usuario tecnico;
+    private Date data;
     
     public Chamado() {}
 
@@ -87,4 +89,14 @@ public class Chamado implements java.io.Serializable {
     public void setTecnico(Usuario tecnico) {
         this.tecnico = tecnico;
     }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+    
+    
 }
