@@ -74,7 +74,9 @@ public class UsuarioDao {
             stmt.executeUpdate();
             
             //ENVIAR O EMAIL PARA O TÉCNICO
+            //https://stackoverflow.com/questions/27721408/authentication-error-in-java-mail-program-on-openshift
             Email e = new SimpleEmail();
+            e.setDebug(true);
             e.setHostName("smtp.googlemail.com");
             e.setSmtpPort(465);
             e.setAuthenticator(new DefaultAuthenticator("calluasystems@gmail.com", "callua@)!*"));

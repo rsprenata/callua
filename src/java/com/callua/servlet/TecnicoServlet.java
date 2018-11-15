@@ -110,7 +110,7 @@ public class TecnicoServlet extends HttpServlet {
             mensagem.setTipo("success");
             HttpSession session = request.getSession();
             session.setAttribute("mensagem", mensagem);
-            response.sendRedirect("Login?op?=dashboard");
+            response.sendRedirect("Login?op=dashboard");
         } else {
             mensagem.setTipo("error");
             HttpSession session = request.getSession();

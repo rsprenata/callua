@@ -5,7 +5,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <header>
-    <div class="navbar navbar-expand-sm navbar-dark bg-secondary shadow-sm">
+    <div class="navbar navbar-expand-sm shadow-sm" style="background-color: #b4a7d6">
     <div class="container d-flex justify-content-between">
         <a href="${sessionScope.logado == null ? pageContext.request.contextPath.concat('/view/public/index.jsp') : 'Login?op=dashboard'}" class="navbar-brand d-flex align-items-center">
             <strong>Callua System</strong>
@@ -13,7 +13,7 @@
         <span class="navbar-text titulo-header"></span>
         <c:choose>
             <c:when test="${sessionScope.logado == null}">
-                <a class="btn btn-outline-light" href="${pageContext.request.contextPath}/view/public/login.jsp">Entrar</a>
+                <a class="btn" style="font-weight: bold;" href="${pageContext.request.contextPath}/view/public/login.jsp">Entrar</a>
             </c:when>
             <c:when test="${sessionScope.logado.cliente != null}">
                 <ul class="navbar-nav ml-auto">
