@@ -88,6 +88,17 @@ CREATE TABLE RelChamadoProduto (
 	FOREIGN KEY (idChamado) REFERENCES Chamado(id)
 );
 
+
+
+
+/* NOVO CAMPO, ADICIONADO DIA 15/11/2018 */
+
+alter table chamado add column data timestamp;
+
+
+
+
+
 /*********************
 * INSERÇÃO DOS DADOS *
 **********************/
