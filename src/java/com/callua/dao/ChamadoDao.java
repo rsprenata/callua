@@ -9,6 +9,7 @@ import com.callua.bean.Usuario;
 import com.callua.facade.CidadeFacade;
 import com.callua.facade.ClienteFacade;
 import com.callua.facade.ProdutoFacade;
+import com.callua.facade.UsuarioFacade;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -146,7 +147,7 @@ public class ChamadoDao {
         return chamados;
     }
     
-    public List<Chamado> buscarTodosByTecnico(Usuario tecnico) {
+    public List<Chamado> buscarTodosByUsuario(Usuario usuario) {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -154,8 +155,8 @@ public class ChamadoDao {
         List<Chamado> chamados = new ArrayList<Chamado>();
         
         try {
-            stmt = connection.prepareStatement("SELECT * FROM Chamado WHERE idTecnico = ?");
-            stmt.setInt(1, tecnico.getId());
+            stmt = connection.prepareStatement("SELECT * FROM Chamado WHERE idUsuario = ?");
+            stmt.setInt(1, usuario.getId());
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -171,7 +172,7 @@ public class ChamadoDao {
                 chamado.setEndereco(endereco);
                 chamado.setStatus(StatusChamado.valueOf(rs.getString("status")));
                 chamado.setCliente(ClienteFacade.carregarUm(rs.getInt("idCliente")));
-                chamado.setTecnico(tecnico);
+                chamado.setUsuario(usuario);
                 
                 chamados.add(chamado);
             }
@@ -262,6 +263,7 @@ public class ChamadoDao {
                 chamado.setStatus(StatusChamado.valueOf(rs.getString("status")));
                 chamado.setCliente(ClienteFacade.carregarUm(rs.getInt("idCliente")));
                 chamado.setProdutos(ProdutoFacade.carregarByChamado(chamado.getId()));
+                chamado.setUsuario(UsuarioFacade.carregarUm(rs.getInt("idUsuario")));
             }
         } catch (Exception exception) {
             throw new RuntimeException("Erro. Origem="+exception.getMessage());
@@ -336,6 +338,29 @@ public class ChamadoDao {
             stmt = connection.prepareStatement("DELETE FROM RelChamadoProduto WHERE idChamado = ? AND idProduto = ?");
             stmt.setInt(1, chamado.getId());
             stmt.setInt(2, produto.getId());
+            
+            stmt.executeUpdate();
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
+    
+    public void atribuirUsuario(Chamado chamado, Usuario usuario) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = connection.prepareStatement("UPDATE Chamado SET idUsuario = ? WHERE id = ?");
+            stmt.setInt(1, usuario.getId());
+            stmt.setInt(2, chamado.getId());
             
             stmt.executeUpdate();
         } catch (Exception exception) {

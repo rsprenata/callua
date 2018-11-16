@@ -5,28 +5,12 @@
  */
 package com.callua.servlet;
 
-import com.callua.bean.Chamado;
-import com.callua.bean.Cliente;
-import com.callua.bean.Endereco;
-import com.callua.bean.Estado;
-import com.callua.bean.StatusChamado;
 import com.callua.bean.Usuario;
-import com.callua.facade.ChamadoFacade;
-import com.callua.facade.CidadeFacade;
-import com.callua.facade.ClienteFacade;
-import com.callua.facade.EstadoFacade;
 import com.callua.facade.UsuarioFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
-import com.google.gson.Gson;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -35,7 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 /**
  *

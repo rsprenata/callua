@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +18,45 @@ import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 
 public class UsuarioDao {
+    public List<Usuario> carregar() {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Usuario> usuarios = new ArrayList<Usuario>();
+        
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM Usuario");
+            rs = stmt.executeQuery();
+                
+            while (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setId(rs.getInt("id"));
+                usuario.setNome(rs.getString("nome"));
+                usuario.setCpfCnpj(rs.getString("cpfCnpj"));
+                usuario.setTelefoneCelular(rs.getString("telefoneCelular"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setAdministrador(rs.getBoolean("administrador"));
+                
+                usuarios.add(usuario);
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return usuarios;
+    }
+    
     public Usuario carregarUm(Integer id) {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();

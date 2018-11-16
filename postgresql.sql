@@ -68,10 +68,10 @@ ALTER TABLE Chamado ADD COLUMN idCliente INT NOT NULL;
 
 ALTER TABLE Chamado ADD FOREIGN KEY (idCliente) REFERENCES Cliente(id);
 
-ALTER TABLE Chamado ADD COLUMN idTecnico INT;
+ALTER TABLE Chamado ADD COLUMN idUsuario INT;
 
 
-ALTER TABLE Chamado ADD FOREIGN KEY (idTecnico) REFERENCES Usuario(id);
+ALTER TABLE Chamado ADD FOREIGN KEY (idUsuario) REFERENCES Usuario(id);
 
 CREATE TABLE TecnicoCriarSenhaToken (
 	idTecnico INT,

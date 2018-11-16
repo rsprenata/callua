@@ -10,10 +10,12 @@ import com.callua.bean.Endereco;
 import com.callua.bean.Estado;
 import com.callua.bean.Produto;
 import com.callua.bean.StatusChamado;
+import com.callua.bean.Usuario;
 import com.callua.facade.ChamadoFacade;
 import com.callua.facade.CidadeFacade;
 import com.callua.facade.EstadoFacade;
 import com.callua.facade.ProdutoFacade;
+import com.callua.facade.UsuarioFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
@@ -89,6 +91,9 @@ public class ChamadoServlet extends HttpServlet {
                 case "removerProduto":
                     removerProduto(request, response);
                     break;
+                case "atribuirUsuario":
+                    atribuirUsuario(request, response);
+                    break;
             }
         } else {
             Mensagem mensagem = new Mensagem("Acesso não autorizado !!!");
@@ -159,7 +164,9 @@ public class ChamadoServlet extends HttpServlet {
         Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
         List<Produto> produtos = ProdutoFacade.carregarTodos();
         produtos.removeAll(chamado.getProdutos());
+        List<Usuario> usuarios = UsuarioFacade.carregar();
         
+        request.setAttribute("usuarios", usuarios);
         request.setAttribute("chamado", chamado);
         request.setAttribute("produtos", produtos);
         RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/chamado.jsp");
@@ -203,6 +210,21 @@ public class ChamadoServlet extends HttpServlet {
         ChamadoFacade.removerProduto(chamado, produto);
         
         Mensagem mensagem = new Mensagem("Produto removido com sucesso !!!");
+        mensagem.setTipo("success");
+        session.setAttribute("mensagem", mensagem);
+        
+        response.sendRedirect("Chamado?op=visualizar&idChamado=" + chamado.getId());
+    }
+    
+    public void atribuirUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        String idChamado = request.getParameter("idChamado");
+        Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
+        String idUsuario = request.getParameter("usuario");
+        Usuario usuario = UsuarioFacade.carregarUm(Integer.parseInt(idUsuario));
+        ChamadoFacade.atribuirUsuario(chamado, usuario);
+        
+        Mensagem mensagem = new Mensagem("Usuario atribuido com sucesso !!!");
         mensagem.setTipo("success");
         session.setAttribute("mensagem", mensagem);
         

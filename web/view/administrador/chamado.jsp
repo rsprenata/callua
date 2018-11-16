@@ -46,9 +46,14 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class=" col-md-12">
+                                    <div class=" col-md-6">
                                         <b>Título: </b><p class="d-inline">${chamado.titulo}</p>
                                     </div>
+                                    <c:if test="${not empty chamado.usuario}">
+                                    <div class="col-md-6">
+                                        <b>Usuário: </b><p class="d-inline">${chamado.usuario.nome}</p>
+                                    </div>
+                                    </c:if>
                                 </div>
                                 <div class="row">
                                     <div class=" col-md-12">
@@ -61,7 +66,7 @@
                                 <div class="row">
                                     <div class="col-md-4 offset-md-8">
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-warning btn-block">Atribuir</button>
+                                            <button type="button" class="btn btn-warning btn-block" data-toggle="modal" data-target="#modalAtribuirUsuario">Atribuir</button>
                                         </div>
                                     </div>
                                 </div>
@@ -277,6 +282,41 @@
                 </div>
             </div>
         </form>
+                        
+        <form action="${pageContext.request.contextPath}/Chamado?op=atribuirUsuario" method="POST">
+            <div class="modal fade" id="modalAtribuirUsuario" tabindex="-1" role="dialog" aria-labelledby="modalAtribuirUsuarioLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAtribuirUsuarioLabel">Atribuir usuário ao chamado</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idChamado" value="${chamado.id}" />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="">Usuário</label>
+                                        <select class="form-control select2" style="width: 100%;" id="usuario" name="usuario">
+                                            <option value="">Selecione o usuário...</option>
+                                            <c:forEach items="${usuarios}" var="usuario">
+                                                <option value="${usuario.id}" ${usuario.id == chamado.usuario.id ? 'selected' : ''}>${usuario.nome}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Atribuir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
                     
         <div id="footer"><%@ include file="../public/footer.jsp" %></div>
         
@@ -295,6 +335,12 @@
                 setTimeout(() => {
                     $('header .titulo-header').text('Chamado ${chamado.id}');
                 }, 100);
+                $('#produto').select2({
+                    dropdownParent: $('#modalAdicionarProduto')
+                });
+                $('#usuario').select2({
+                    dropdownParent: $('#modalAtribuirUsuario')
+                });
             });
             
             function confirmarRemoverProduto(idProduto) {

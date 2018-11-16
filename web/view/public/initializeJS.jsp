@@ -10,6 +10,5 @@
             <c:remove var="mensagem" scope="session" />
         </c:if>
         $('[data-toggle="tooltip"]').tooltip();
-        $('.select2').select2({ width: 'resolve' });
     });
 </script>

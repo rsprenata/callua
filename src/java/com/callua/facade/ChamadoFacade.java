@@ -19,8 +19,8 @@ public class ChamadoFacade {
         return CDAO.buscarTodosByCliente(cliente);
     }
 
-    public static List<Chamado> buscarTodosByTecnico(Usuario tecnico) {
-        return CDAO.buscarTodosByTecnico(tecnico);
+    public static List<Chamado> buscarTodosByUsuario(Usuario tecnico) {
+        return CDAO.buscarTodosByUsuario(tecnico);
     }
 
     public static List<Chamado> buscarTodos() {
@@ -41,5 +41,9 @@ public class ChamadoFacade {
 
     public static void removerProduto(Chamado chamado, Produto produto) {
         CDAO.removerProduto(chamado, produto);
+    }
+
+    public static void atribuirUsuario(Chamado chamado, Usuario usuario) {
+        CDAO.atribuirUsuario(chamado, usuario);
     }
 }
