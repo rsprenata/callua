@@ -19,9 +19,10 @@ import com.callua.facade.UsuarioFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
-import com.google.gson.Gson;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,6 +36,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 /**
  *
  * @author renata
@@ -91,6 +93,15 @@ public class ChamadoServlet extends HttpServlet {
                     break;
                 case "atribuirUsuario":
                     atribuirUsuario(request, response);
+                    break;
+                case "downloadArquivo":
+                    downloadArquivo(request, response);
+                    break;
+                case "removerArquivo":
+                    removerArquivo(request, response);
+                    break;
+                case "anexarArquivos":
+                    anexarArquivos(request, response);
                     break;
             }
         } else {
@@ -214,6 +225,48 @@ public class ChamadoServlet extends HttpServlet {
         session.setAttribute("mensagem", mensagem);
         
         response.sendRedirect("Chamado?op=visualizar&idChamado=" + chamado.getId());
+    }
+    
+    public void downloadArquivo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        InputStream is = null;
+        String filePath = request.getParameter("filePath");
+        try {
+            // get your file as InputStream
+            File file = new File(filePath);
+            is = new FileInputStream(file);
+            // copy it to response's OutputStream
+            org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException ex) {
+            Logger.getLogger(ChamadoServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ex1) {
+                    Logger.getLogger(ChamadoServlet.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+            }
+        }
+    }
+    
+    public void removerArquivo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String absolutePath = request.getParameter("absolutePath");
+        java.io.File dest = new java.io.File(absolutePath);
+        dest.delete();
+        
+        response.sendRedirect("Chamado?op=visualizar&idChamado=" + request.getParameter("chamadoId"));
+    }
+    
+    public void anexarArquivos(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String uploadLocation = getServletContext().getInitParameter("upload.location");
+        Integer chamadoId = Integer.parseInt(request.getParameter("chamadoId"));
+        Chamado chamado = ChamadoFacade.carregarById(chamadoId);
+        List<Part> partArquivos = request.getParts().stream().filter(part -> "arquivos".equals(part.getName()) && !"".equals(part.getSubmittedFileName())).collect(Collectors.toList());
+        
+        ChamadoFacade.anexarArquivos(chamado, partArquivos, uploadLocation);
+        
+        response.sendRedirect("Chamado?op=visualizar&idChamado=" + request.getParameter("chamadoId"));
     }
     
     public Chamado carregarChamado(HttpServletRequest request) {

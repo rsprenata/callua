@@ -46,7 +46,7 @@
                                         <textarea type="text" id="descricao" name="descricao" class="form-control" placeholder="Descrição" rows="3">${chamado.descricao}</textarea>
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleFormControlFile1">Example file input</label>
+                                        <label for="exampleFormControlFile1">Arquivos</label>
                                         <input type="file" name="arquivos" class="form-control-file" id="exampleFormControlFile1" multiple>
                                         <small class="text-info">Segure CTRL e selecione os arquivos</small>
                                     </div>

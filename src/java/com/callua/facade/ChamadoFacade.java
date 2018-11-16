@@ -6,6 +6,7 @@ import com.callua.bean.Produto;
 import com.callua.bean.Usuario;
 import com.callua.dao.ChamadoDao;
 import java.util.List;
+import javax.servlet.http.Part;
 
 
 public class ChamadoFacade {
@@ -45,5 +46,9 @@ public class ChamadoFacade {
 
     public static void atribuirUsuario(Chamado chamado, Usuario usuario) {
         CDAO.atribuirUsuario(chamado, usuario);
+    }
+
+    public static void anexarArquivos(Chamado chamado, List <Part> partArquivos, String uploadLocation) {
+        CDAO.anexarArquivos(chamado, partArquivos, uploadLocation);
     }
 }

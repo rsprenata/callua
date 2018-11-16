@@ -129,24 +129,62 @@
                                 </div>
                             </div>
                             <div class="col-md-5">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Materiais utilizados</h5>
-                                        <c:if test="${not empty logado.usuario}">
-                                        <div class="row text-center">
-                                            <div class="col-md-12">
-                                                <button type="button" class="card-link btn btn-primary" data-toggle="modal" data-target="#modalAdicionarProduto">Adicionar material</button>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Materiais utilizados</h5>
+                                                <c:if test="${not empty logado.usuario}">
+                                                <div class="row text-center">
+                                                    <div class="col-md-12">
+                                                        <button type="button" class="card-link btn btn-primary" data-toggle="modal" data-target="#modalAdicionarProduto">Adicionar material</button>
+                                                    </div>
+                                                </div>
+                                                </c:if>
+                                                <br/>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <ul class="list-group">
+                                                            <c:forEach items="${chamado.produtos}" var="produto">
+                                                                <li class="list-group-item">${produto.descricao} <c:if test="${not empty logado.usuario}"><button class="btn btn-link float-right" onclick="confirmarRemoverProduto('${produto.id}')"><i class="fas fa-trash"></i></button></c:if></li>
+                                                            </c:forEach>
+                                                        </ul>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        </c:if>
-                                        <br/>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <ul class="list-group">
-                                                    <c:forEach items="${chamado.produtos}" var="produto">
-                                                        <li class="list-group-item">${produto.descricao} <c:if test="${not empty logado.usuario}"><button class="btn btn-link float-right" onclick="confirmarRemoverProduto('${produto.id}')"><i class="fas fa-trash"></i></button></c:if></li>
-                                                    </c:forEach>
-                                                </ul>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Arquivos anexados</h5>
+                                                <c:if test="${not empty logado.cliente && chamado.status != 'RESOLVIDO'}">
+                                                <div class="row text-center">
+                                                    <div class="col-md-12">
+                                                        <button type="button" class="card-link btn btn-primary" data-toggle="modal" data-target="#modalAnexarArquivos">Anexar arquivo</button>
+                                                    </div>
+                                                </div>
+                                                </c:if>
+                                                <br/>
+                                                <c:if test="${chamado.arquivos.size() > 0}">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <ul class="list-group">
+                                                            <c:forEach items="${chamado.arquivos}" var="arquivo">
+                                                                <li class="list-group-item">${arquivo.name} 
+                                                                <c:if test="${not empty logado.cliente && chamado.status != 'RESOLVIDO'}">
+                                                                    <button class="btn btn-link float-right" onclick="confirmarRemoverArquivo('${arquivo.absolutePath}')"><i class="fas fa-trash"></i></button>
+                                                                </c:if>
+                                                                <a target="_blank" href="${pageContext.request.contextPath}/Chamado?op=downloadArquivo&filePath=${arquivo.absolutePath}" class="btn btn-link float-right" style="color: #0056b3;"><i class="fas fa-download"></i></a>
+                                                                </li>
+                                                            </c:forEach>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                </c:if>
                                             </div>
                                         </div>
                                     </div>
@@ -278,6 +316,57 @@
                 </div>
             </div>
         </form>
+                            
+        <form action="${pageContext.request.contextPath}/Chamado?op=removerArquivo" method="POST">
+            <div class="modal fade" id="modalRemoverArquivo" tabindex="-1" role="dialog" aria-labelledby="modalRemoverArquivoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalRemoverArquivoLabel">Confirmar</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="chamadoId" value="${chamado.id}" />
+                            <input type="hidden" name="absolutePath" id="absolutePath" />
+                            Deseja realmente remover este arquivo?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+                            
+        <form action="${pageContext.request.contextPath}/Chamado?op=anexarArquivos" method="POST" enctype="multipart/form-data">
+            <div class="modal fade" id="modalAnexarArquivos" tabindex="-1" role="dialog" aria-labelledby="modalAnexarArquivosLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAnexarArquivos">Anexar Arquivo(s)</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="chamadoId" value="${chamado.id}" />
+                            <div class="form-group">
+                                <label for="arquivos">Arquivos</label>
+                                <input type="file" name="arquivos" class="form-control-file" id="arquivos" multiple>
+                                <small class="text-info">Segure CTRL e selecione os arquivos</small>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Anexar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
                     
         <div id="footer"><%@ include file="../public/footer.jsp" %></div>
         
@@ -321,6 +410,11 @@
             function confirmarRemoverProduto(idProduto) {
                 $("#idProdutoRemover").val(idProduto);
                 $("#modalRemoverProduto").modal("show");
+            }
+            
+            function confirmarRemoverArquivo(absolutePath) {
+                $("#absolutePath").val(absolutePath);
+                $("#modalRemoverArquivo").modal("show");
             }
         </script>
     </body>
