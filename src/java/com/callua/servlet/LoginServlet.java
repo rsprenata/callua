@@ -150,7 +150,7 @@ public class LoginServlet extends HttpServlet {
     public void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session != null) session.invalidate();
-        response.sendRedirect("view/public/login.jsp");
+        response.sendRedirect("view/public/apresentacao.jsp");
     }
     
     public Mensagem formValido(HttpServletRequest request) {
