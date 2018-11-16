@@ -36,7 +36,16 @@ public class UsuarioFacade {
         UDAO.editar(usuario);
     }
 
+    //necessário pois atualiza os dados e senha e não o nivel acesso.
+    public static void editarDados(Usuario usuario) {
+        UDAO.editarDados(usuario);
+    }
+
     public static void remover(Integer usuarioId) {
         UDAO.remover(usuarioId);
+    }
+
+    public static boolean senhaAtualValida(Usuario usuario, String senhaAtual) {
+        return UDAO.senhaAtualValida(usuario, senhaAtual);
     }
 }

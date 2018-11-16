@@ -83,6 +83,12 @@ public class TecnicoServlet extends HttpServlet {
                     if (logado.getUsuario().isAdministrador())
                         remover(request, response);
                     break;
+                case "dadosForm":
+                    dadosForm(request, response);
+                    break;
+                case "editarDados":
+                    editarDados(request, response);
+                    break;
             }
         } else {
             Mensagem mensagem = new Mensagem("Acesso não autorizado !!!");
@@ -218,6 +224,45 @@ public class TecnicoServlet extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("mensagem", mensagem);
         response.sendRedirect("Tecnico?op=listar");
+    }
+    
+    public void dadosForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        Login logado = (Login)session.getAttribute("logado");
+        
+        logado.setUsuario(UsuarioFacade.carregarUm(logado.getUsuario().getId()));//Atualiza o usuario pro mais atual
+        session = request.getSession();
+        session.setAttribute("logado", logado);
+        
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/tecnico/dadostecnico.jsp");
+        rd.forward(request, response);
+    }
+    
+    public void editarDados(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Usuario usuario = carregarTecnico(request);
+        usuario.setSenha(request.getParameter("senha"));
+        Mensagem mensagem = formValido(request, usuario);
+        HttpSession session = request.getSession();
+        Login logado = (Login)session.getAttribute("logado");
+        if (request.getParameter("senhaAtual") != null && request.getParameter("senhaAtual").length() >= 1) {//Se preencheu senha atual, então quer alterar senha
+            mensagem = Validator.validarSenhaAtual(logado.getUsuario(), request.getParameter("senhaAtual"));
+            if (mensagem == null)
+                mensagem = Validator.validarSenha(usuario.getSenha(), request.getParameter("confirmacaoSenha"));
+        } else usuario.setSenha("");//Seta senha vazia, pra não cair no update de senha la na frente, ou seja, só vai editar senha se passar pelo teste de senha atual acima.
+        if (mensagem == null) {
+            usuario.setId(logado.getUsuario().getId());
+            UsuarioFacade.editarDados(usuario);
+            mensagem = new Mensagem("Editado com sucesso !!!");
+            mensagem.setTipo("success");
+            session.setAttribute("mensagem", mensagem);
+            response.sendRedirect("Tecnico?op=dadosForm");
+        } else {
+            mensagem.setTipo("error");
+            session.setAttribute("mensagem", mensagem);
+            request.setAttribute("usuario", usuario);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/Tecnico?op=dadosForm");
+            rd.forward(request, response);
+        }
     }
     
     public Usuario carregarTecnico(HttpServletRequest request) {
