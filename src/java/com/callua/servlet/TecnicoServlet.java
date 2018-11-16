@@ -119,7 +119,7 @@ public class TecnicoServlet extends HttpServlet {
             mensagem.setTipo("error");
             HttpSession session = request.getSession();
             session.setAttribute("mensagem", mensagem);
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/index.jsp");
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/login.jsp");
             rd.forward(request, response);
         }
     }
