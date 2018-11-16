@@ -22,7 +22,7 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/fontawesome-free-5.4.1-web/css/all.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css">
-        <title>Callua - Novo Cliente</title>
+        <title>Callua - Técnico</title>
     </head>
     <body>
         <div id="header"><%@ include file="../public/header.jsp" %></div>
@@ -33,7 +33,10 @@
                         <div class="col-md-12 order-md-1">
                             <div class="card">
                                 <div class="card-body">
-                                    <form id="formCadastro" action="${pageContext.request.contextPath}/Tecnico?op=cadastrar" method="POST">
+                                    <form id="formCadastro" action="${pageContext.request.contextPath}/Tecnico?op=${form == 'editar' ? 'editar' : 'cadastrar' }" method="POST">
+                                        <c:if test="${form == 'editar'}">
+                                            <input type="hidden" name="usuarioId" value="${tecnico.id}" />
+                                        </c:if>
                                         <fieldset>
                                             <div class="form-group">
                                                 <label for="nome">Nome</label>
@@ -55,10 +58,11 @@
                                             </div>
                                                 <div class="form-group">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="checkadministrador" name="administrador">
+                                                    <input class="form-check-input" type="checkbox" id="checkadministrador" name="administrador" ${tecnico.administrador ? 'checked' : ''}>
                                                     <label class="form-check-label" for="checkadministrador">Administrador</label>
                                                 </div>
-                                                </div>
+                                                </div>    
+                                            <a href="${pageContext.request.contextPath}/Tecnico?op=listar" class="btn btn-secondary float-left">Voltar</a>
                                             <button type="submit" class="btn btn-success float-right" id="cadastrar" name="cadastrar">Salvar</button>
                                         </fieldset>
                                     </form>
@@ -83,7 +87,7 @@
         <script> 
             $(function(){
                 setTimeout(() => {
-                    $('header .titulo-header').text('Novo Técnico');
+                    $('header .titulo-header').text('${form == 'editar' ? 'Editar' : 'Novo' } Técnico');
                 }, 100);
             });
             

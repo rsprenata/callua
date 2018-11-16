@@ -11,6 +11,7 @@ import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -67,6 +68,21 @@ public class TecnicoServlet extends HttpServlet {
                 case "criarSenha":
                     criarSenha(request, response);
                     break;
+                case "listar":
+                    listar(request, response);
+                    break;
+                case "editarForm":
+                    if (logado.getUsuario().isAdministrador())
+                        editarForm(request, response);
+                    break;
+                case "editar":
+                    if (logado.getUsuario().isAdministrador())
+                        editar(request, response);
+                    break;
+                case "remover":
+                    if (logado.getUsuario().isAdministrador())
+                        remover(request, response);
+                    break;
             }
         } else {
             Mensagem mensagem = new Mensagem("Acesso não autorizado !!!");
@@ -79,7 +95,7 @@ public class TecnicoServlet extends HttpServlet {
     }
     
     public void cadastrarForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/cadastrartecnico.jsp");
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/tecnicoForm.jsp");
         rd.forward(request, response);
     }
     
@@ -93,7 +109,7 @@ public class TecnicoServlet extends HttpServlet {
             mensagem.setTipo("success");
             HttpSession session = request.getSession();
             session.setAttribute("mensagem", mensagem);
-            response.sendRedirect("Login?op=dashboard");
+            response.sendRedirect("Tecnico?op=listar");
         } else {
             mensagem.setTipo("error");
             HttpSession session = request.getSession();
@@ -148,6 +164,60 @@ public class TecnicoServlet extends HttpServlet {
                                                                                 + tecnico.getId());
             rd.forward(request, response);
         }
+    }
+    
+    public void listar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Login logado = (Login)session.getAttribute("logado");
+        List<Usuario> usuarios = UsuarioFacade.carregarMenosUm(logado.getUsuario());
+        
+        request.setAttribute("usuarios", usuarios);
+        
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/usuariosListar.jsp");
+        rd.forward(request, response);
+    }
+    
+    public void editarForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer usuarioId = Integer.parseInt(request.getParameter("usuarioId"));
+        Usuario usuario = UsuarioFacade.carregarUm(usuarioId);
+        
+        request.setAttribute("tecnico", usuario);
+        request.setAttribute("form", "editar");
+        
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/tecnicoForm.jsp");
+        rd.forward(request, response);
+    }
+    
+    public void editar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Usuario tecnico = carregarTecnico(request);
+        Mensagem mensagem = formValido(request, tecnico);
+        Integer usuarioId = Integer.parseInt(request.getParameter("usuarioId"));
+        tecnico.setId(usuarioId);
+        if (mensagem == null) {
+            UsuarioFacade.editar(tecnico);
+            mensagem = new Mensagem("Editado com sucesso !!!");
+            mensagem.setTipo("success");
+            HttpSession session = request.getSession();
+            session.setAttribute("mensagem", mensagem);
+            response.sendRedirect("Tecnico?op=listar");
+        } else {
+            mensagem.setTipo("error");
+            HttpSession session = request.getSession();
+            session.setAttribute("mensagem", mensagem);
+            request.setAttribute("tecnico", tecnico);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/Tecnico?op=cadastrarForm");
+            rd.forward(request, response);
+        }
+    }
+    
+    public void remover(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer usuarioId = Integer.parseInt(request.getParameter("usuarioId"));
+        UsuarioFacade.remover(usuarioId);
+        Mensagem mensagem = new Mensagem("Removido com sucesso !!!");
+        mensagem.setTipo("success");
+        HttpSession session = request.getSession();
+        session.setAttribute("mensagem", mensagem);
+        response.sendRedirect("Tecnico?op=listar");
     }
     
     public Usuario carregarTecnico(HttpServletRequest request) {

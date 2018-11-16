@@ -63,7 +63,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <a class="btn btn-warning btn-block" href="${pageContext.request.contextPath}/Tecnico?op=cadastrarForm">Cadastrar técnico</a>
+                                <a class="btn btn-warning btn-block" href="${pageContext.request.contextPath}/Tecnico?op=listar">Técnicos</a>
                             </div>
                         </div>
                     </div>

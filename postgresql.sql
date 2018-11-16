@@ -107,6 +107,21 @@ CREATE TABLE MensagemChamado (
 	tabelaPessoa TabelaPessoa
 );
 
+/*ADICIONADO DIA 16/11/2018*/
+
+alter table TecnicoCriarSenhaToken
+drop column idTecnico;
+alter table TecnicoCriarSenhaToken
+add column idTecnico INT;
+alter table TecnicoCriarSenhaToken
+add foreign key (idTecnico) REFERENCES Usuario(id) ON DELETE CASCADE;
+alter table Chamado
+drop column idUsuario;
+alter table Chamado
+add column idUsuario INT;
+alter table Chamado
+add foreign key (idUsuario) REFERENCES Usuario(id) ON DELETE SET NULL;
+
 
 /*********************
 * INSERÇÃO DOS DADOS *

@@ -12,6 +12,10 @@ public class UsuarioFacade {
         return UDAO.carregar();
     }
     
+    public static List<Usuario> carregarMenosUm(Usuario usuario) {
+        return UDAO.carregarMenosUm(usuario);
+    }
+    
     public static Usuario carregarUm(Integer id) {
         return UDAO.carregarUm(id);
     }
@@ -26,5 +30,13 @@ public class UsuarioFacade {
 
     public static void criarSenhaTecnico(Usuario tecnico) {
         UDAO.criarSenhaTecnico(tecnico);
+    }
+
+    public static void editar(Usuario usuario) {
+        UDAO.editar(usuario);
+    }
+
+    public static void remover(Integer usuarioId) {
+        UDAO.remover(usuarioId);
     }
 }
