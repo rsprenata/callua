@@ -12,7 +12,7 @@
         <jsp:setProperty name="mensagem" property="tipo" value="error"/>
     </jsp:useBean>
     <c:set var="mensagem" value="${mensagem}" scope="session" />
-    <jsp:forward page="Login?op=dashboard" />
+    <jsp:forward page="/Login?op=dashboard" />
 </c:if>
 <!DOCTYPE html>
 <html>

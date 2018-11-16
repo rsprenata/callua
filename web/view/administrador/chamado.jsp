@@ -6,13 +6,13 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8" errorPage="../public/erro.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:if test="${sessionScope.logado == null || sessionScope.logado.usuario == null}">
+<c:if test="${sessionScope.logado == null}">
     <jsp:useBean id="mensagem" class="com.callua.util.Mensagem">
         <jsp:setProperty name="mensagem" property="texto" value="Acesso não autorizado"/>
         <jsp:setProperty name="mensagem" property="tipo" value="error"/>
     </jsp:useBean>
     <c:set var="mensagem" value="${mensagem}" scope="session" />
-    <jsp:forward page="Login?op=dashboard" />
+    <jsp:forward page="/Login?op=dashboard" />
 </c:if>
 <!DOCTYPE html>
 <html>
@@ -62,6 +62,7 @@
                                 </div>
                             </div>
                             <div class="col-md-5">
+                                <c:if test="${not empty logado.usuario}">
                                 <c:if test="${logado.usuario.administrador == true}">
                                 <div class="row">
                                     <div class="col-md-4 offset-md-8">
@@ -87,6 +88,7 @@
                                     </div>
                                 </div>
                                 </c:if>
+                                </c:if>
                             </div>
                             </div>
                             <div class="row">
@@ -105,55 +107,12 @@
                                             <div class="messaging">
                                                 <div class="inbox_msg">
                                                     <div class="mesgs">
-                                                        <div class="msg_history">
-                                                            <div class="incoming_msg">
-                                                                <div class="incoming_msg_img"> <img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" alt="sunil"> </div>
-                                                                <div class="received_msg">
-                                                                    <div class="received_withd_msg">
-                                                                        <strong>Renata</strong>
-                                                                        <p>Quer um torrim amendoado?</p>
-                                                                        <span class="time_date"> 11:01 AM    |    June 9</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="outgoing_msg">
-                                                                <div class="sent_msg">
-                                                                    <strong>Belchior</strong>
-                                                                    <p>Não, obrigado, eu sou apenas um rapaz latinoamericano.</p>
-                                                                    <span class="time_date"> 11:01 AM    |    June 9</span>
-                                                                </div>
-                                                           </div>
-                                                            <div class="incoming_msg">
-                                                                <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                                                                <div class="received_msg">
-                                                                    <div class="received_withd_msg">
-                                                                        <strong>Renata</strong>
-                                                                        <p>Mas se depois de cantar?</p>
-                                                                        <span class="time_date"> 11:01 AM    |    Yesterday</span>
-                                                                    </div>
-                                                                </div>select2-4.0.5/dist/css/select2.min.css
-                                                            </div>
-                                                            <div class="outgoing_msg">
-                                                                <div class="sent_msg">
-                                                                    <strong>Belchior</strong>
-                                                                    <p>Você ainda quiser me atirar?</p>
-                                                                    <span class="time_date"> 11:01 AM    |    Today</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="incoming_msg">
-                                                                <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                                                                <div class="received_msg">
-                                                                    <div class="received_withd_msg">
-                                                                        <strong>Renata</strong>
-                                                                        <p>Mate me logo pois a tarde as três</p>
-                                                                        <span class="time_date"> 11:01 AM    |    Today</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                        <div class="msg_history" id="chatChamado">
+                                                            
                                                         </div>
                                                         <div class="type_msg">
                                                             <div class="input_msg_write">
-                                                                <input type="text" class="write_msg" placeholder="Escreva o comentário" />
+                                                                <input type="text" id="msg-chat" class="write_msg" placeholder="Escreva o comentário" />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -162,7 +121,7 @@
                                             <br/>
                                             <div class="col-md-4 offset-md-8">
                                                 <div class="form-group">
-                                                    <button type="button" class="btn btn-primary btn-block">Comentar</button>
+                                                    <button type="button" class="btn btn-primary btn-block" id="btn-chat">Comentar</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -173,17 +132,19 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title">Materiais utilizados</h5>
+                                        <c:if test="${not empty logado.usuario}">
                                         <div class="row text-center">
                                             <div class="col-md-12">
                                                 <button type="button" class="card-link btn btn-primary" data-toggle="modal" data-target="#modalAdicionarProduto">Adicionar material</button>
                                             </div>
                                         </div>
+                                        </c:if>
                                         <br/>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <ul class="list-group">
                                                     <c:forEach items="${chamado.produtos}" var="produto">
-                                                    <li class="list-group-item">${produto.descricao} <button class="btn btn-link float-right" onclick="confirmarRemoverProduto('${produto.id}')"><i class="fas fa-trash"></i></button></li>
+                                                        <li class="list-group-item">${produto.descricao} <c:if test="${not empty logado.usuario}"><button class="btn btn-link float-right" onclick="confirmarRemoverProduto('${produto.id}')"><i class="fas fa-trash"></i></button></c:if></li>
                                                     </c:forEach>
                                                 </ul>
                                             </div>
@@ -328,7 +289,9 @@
         <script src="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/select2-4.0.5/dist/js/select2.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/js/customValidations.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/moment.js/moment-with-locales.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/js/masks.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/chatChamado.js"></script>
         <%@ include file="../public/initializeJS.jsp" %>
         <script> 
             $(function(){
@@ -340,6 +303,18 @@
                 });
                 $('#usuario').select2({
                     dropdownParent: $('#modalAtribuirUsuario')
+                });
+                
+                //CHAT
+                var contextPath = '<%=request.getContextPath()%>';
+                var chamadoId = '${chamado.id}';
+                var logadoPessoa = '${not empty logado.cliente ? 'CLIENTE' : 'USUARIO'}';
+                var logadoId = '${not empty logado.cliente ? logado.cliente.id : logado.usuario.id}';
+                var scroll = true;
+                loopChat(contextPath, chamadoId, logadoPessoa, logadoId);
+                $("#btn-chat").click(function () {
+                    var mensagem = $('#msg-chat').val();
+                    enviarMensagem(contextPath, chamadoId, logadoPessoa, logadoId, mensagem);
                 });
             });
             

@@ -76,9 +76,6 @@ public class ChamadoServlet extends HttpServlet {
                 case "meus":
                     meus(request, response);
                     break;
-                case "carregarViaAjax":
-                    carregarViaAjax(request, response);
-                    break;
                 case "visualizar":
                     visualizar(request, response);
                     break;
@@ -145,20 +142,6 @@ public class ChamadoServlet extends HttpServlet {
         request.setAttribute("chamadosResolvidos", chamados.stream().filter(c -> c.getStatus() == StatusChamado.RESOLVIDO).collect(Collectors.toList()));
         RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/cliente/meuschamados.jsp");
         rd.forward(request, response);
-    }
-    
-    public void carregarViaAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String idChamado = request.getParameter("idChamado");
-        
-        Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
-
-        // transforma o MAP em JSON
-        String json = new Gson().toJson(chamado);   
-
-        // retorna o JSON
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
     }
     
     public void visualizar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

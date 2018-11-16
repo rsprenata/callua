@@ -8,6 +8,7 @@ import com.callua.bean.StatusChamado;
 import com.callua.bean.Usuario;
 import com.callua.facade.CidadeFacade;
 import com.callua.facade.ClienteFacade;
+import com.callua.facade.MensagemChamadoFacade;
 import com.callua.facade.ProdutoFacade;
 import com.callua.facade.UsuarioFacade;
 import java.io.File;

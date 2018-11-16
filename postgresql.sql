@@ -97,6 +97,15 @@ alter table chamado add column data timestamp;
 
 
 
+CREATE TYPE TabelaPessoa AS ENUM ('CLIENTE', 'USUARIO');
+CREATE TABLE MensagemChamado (
+	id SERIAL,
+	idPessoa INT,
+	idChamado INT,
+	mensagem VARCHAR(1024),
+	data TIMESTAMP,
+	tabelaPessoa TabelaPessoa
+);
 
 
 /*********************

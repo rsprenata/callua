@@ -24,6 +24,7 @@ public class Chamado implements java.io.Serializable {
     private Usuario usuario;
     private List<Produto> produtos;
     private Date data;
+    private List<MensagemChamado> mensagens;
     
     public Chamado() {}
 
@@ -105,6 +106,12 @@ public class Chamado implements java.io.Serializable {
     public void setData(Date data) {
         this.data = data;
     }
-    
-    
+
+    public List<MensagemChamado> getMensagens() {
+        return mensagens;
+    }
+
+    public void setMensagens(List<MensagemChamado> mensagens) {
+        this.mensagens = mensagens;
+    }
 }
