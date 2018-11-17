@@ -6,6 +6,7 @@
 package com.callua.servlet;
 
 import com.callua.bean.Chamado;
+import com.callua.bean.Cliente;
 import com.callua.bean.Endereco;
 import com.callua.bean.Estado;
 import com.callua.bean.MensagemChamado;
@@ -123,8 +124,10 @@ public class ChamadoServlet extends HttpServlet {
     
     public void abrirForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Estado> estados = EstadoFacade.buscarTodos();
+        List<Cliente> clientes = ClienteFacade.carregar();
 
         request.setAttribute("estados", estados);
+        request.setAttribute("clientes", clientes);
         RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/cliente/abrirchamado.jsp");
         rd.forward(request, response);
     }
@@ -135,13 +138,20 @@ public class ChamadoServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         Login logado = (Login)session.getAttribute("logado");
         if (mensagem == null) {
-            chamado.setCliente(logado.getCliente());
+            if (logado.getCliente() == null) {
+                Integer clienteId = Integer.parseInt(request.getParameter("cliente"));
+                chamado.setCliente(ClienteFacade.carregarUm(clienteId));
+            } else chamado.setCliente(logado.getCliente());
             chamado.setData(new Date());
             ChamadoFacade.abrirUm(chamado, getServletContext().getInitParameter("upload.location"));
             mensagem = new Mensagem("Chamado aberto com sucesso !!!");
             mensagem.setTipo("success");
             session.setAttribute("mensagem", mensagem);
-            response.sendRedirect("Chamado?op=meus");
+            if (logado.getCliente() == null) {
+                response.sendRedirect("Login?op=dashboard");
+            } else {
+                response.sendRedirect("Chamado?op=meus");
+            }
         } else {
             mensagem.setTipo("error");
             session.setAttribute("mensagem", mensagem);

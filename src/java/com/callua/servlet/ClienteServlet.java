@@ -14,6 +14,7 @@ import com.callua.facade.EstadoFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
@@ -53,8 +54,7 @@ public class ClienteServlet extends HttpServlet {
         
         //Em cima são os links que são publicos, sem validação de login
         if ("cadastrarForm".equals(op) || "cadastrar".equals(op) ||
-            logado != null && 
-                logado.getCliente() != null) {
+            logado != null) {
             switch(op) {
                 case "cadastrarForm":
                     cadastrarForm(request, response);
@@ -67,6 +67,9 @@ public class ClienteServlet extends HttpServlet {
                     break;
                 case "editarDados":
                     editarDados(request, response);
+                    break;
+                case "carregarAjax":
+                    carregarAjax(request, response);
                     break;
             }
         } else {
@@ -146,6 +149,21 @@ public class ClienteServlet extends HttpServlet {
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/Cliente?op=dadosForm");
             rd.forward(request, response);
         }
+    }
+    
+    public void carregarAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String clienteId = request.getParameter("clienteId");
+        
+        // Vai no BD buscar todas as cidades deste estado, em uma lista
+        Cliente cliente = ClienteFacade.carregarUm(Integer.parseInt(clienteId));
+       
+        // transforma o MAP em JSON
+        String json = new Gson().toJson(cliente);   
+
+        // retorna o JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json);
     }
     
     public Cliente carregarCliente(HttpServletRequest request) {

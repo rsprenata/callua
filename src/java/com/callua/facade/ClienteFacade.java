@@ -2,6 +2,7 @@ package com.callua.facade;
 
 import com.callua.bean.Cliente;
 import com.callua.dao.ClienteDao;
+import java.util.List;
 
 
 public class ClienteFacade {
@@ -9,6 +10,10 @@ public class ClienteFacade {
 
     public static void adicionarUm(Cliente cliente) {
         CDAO.adicionarUm(cliente);
+    }
+
+    public static List<Cliente> carregar() {
+        return CDAO.carregar();
     }
 
     public static Cliente carregarUm(Integer id) {

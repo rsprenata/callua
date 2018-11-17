@@ -186,7 +186,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <h5 class="card-title">Arquivos anexados</h5>
-                                                <c:if test="${not empty logado.cliente && chamado.status != 'RESOLVIDO'}">
+                                                <c:if test="${(not empty logado.cliente || logado.usuario.administrador) && chamado.status != 'RESOLVIDO'}">
                                                 <div class="row text-center">
                                                     <div class="col-md-12">
                                                         <button type="button" class="card-link btn btn-primary" data-toggle="modal" data-target="#modalAnexarArquivos">Anexar arquivo</button>
@@ -200,7 +200,7 @@
                                                         <ul class="list-group">
                                                             <c:forEach items="${chamado.arquivos}" var="arquivo">
                                                                 <li class="list-group-item">${arquivo.name} 
-                                                                <c:if test="${not empty logado.cliente && chamado.status != 'RESOLVIDO'}">
+                                                                <c:if test="${(not empty logado.cliente || logado.usuario.administrador)  && chamado.status != 'RESOLVIDO'}">
                                                                     <button class="btn btn-link float-right" onclick="confirmarRemoverArquivo('${arquivo.absolutePath}')"><i class="fas fa-trash"></i></button>
                                                                 </c:if>
                                                                 <a target="_blank" href="${pageContext.request.contextPath}/Chamado?op=downloadArquivo&filePath=${arquivo.absolutePath}" class="btn btn-link float-right" style="color: #0056b3;"><i class="fas fa-download"></i></a>

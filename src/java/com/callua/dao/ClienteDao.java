@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClienteDao {
     public void adicionarUm(Cliente cliente) {
@@ -43,6 +45,48 @@ public class ClienteDao {
                 try { connection.close(); }
                 catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
         }
+    }
+    
+    public List<Cliente> carregar() {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Cliente> clientes = new ArrayList<Cliente>();
+        
+        try {stmt = connection.prepareStatement("SELECT * FROM Cliente");
+            rs = stmt.executeQuery();
+                
+            while (rs.next()) {
+                Cliente cliente = new Cliente();
+                cliente.setId(rs.getInt("id"));
+                cliente.setNome(rs.getString("nome"));
+                cliente.setCpfCnpj(rs.getString("cpfCnpj"));
+                cliente.setTelefoneCelular(rs.getString("telefoneCelular"));
+                cliente.setEmail(rs.getString("email"));
+                Endereco endereco = new Endereco();
+                endereco.setEndereco(rs.getString("endereco"));
+                endereco.setCep(rs.getString("cep"));
+                endereco.setCidade(CidadeFacade.carregarUma(rs.getInt("idCidade")));
+                cliente.setEndereco(endereco);
+                
+                clientes.add(cliente);
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return clientes;
     }
     
     public Cliente carregarUm(Integer id) {

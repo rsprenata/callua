@@ -32,6 +32,9 @@
             <div class="container">
                 <div class="row">
                 <div class="col-md-10 order-md-1">
+                    <div class="form-group">
+                        <a class="btn" style="background-color: #93c47d; font-weight: 500;" href="${pageContext.request.contextPath}/Chamado?op=abrirForm">Abrir chamado</a>
+                    </div>
                     <div class="card">
                         <div class="card-body">
                             <div class="row text-center">

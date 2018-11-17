@@ -21,6 +21,7 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/fontawesome-free-5.4.1-web/css/all.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/select2-4.0.5/dist/css/select2.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css">
         <title>Callua - Novo chamado</title>
     </head>
@@ -50,6 +51,17 @@
                                         <input type="file" name="arquivos" class="form-control-file" id="exampleFormControlFile1" multiple>
                                         <small class="text-info">Segure CTRL e selecione os arquivos</small>
                                     </div>
+                                    <c:if test="${not empty logado.usuario}">
+                                    <div class="form-group">
+                                        <label for="">Cliente</label>
+                                        <select class="form-control select2" style="width: 100%;" id="cliente" name="cliente">
+                                            <option value="">Selecione o cliente...</option>
+                                            <c:forEach items="${clientes}" var="cliente">
+                                                <option value="${cliente.id}">${cliente.nome}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    </c:if>
                                     <div class="form-group">
                                         <label for="endereco">Endereço do serviço</label>
                                         <div class="form-check float-right">
@@ -101,37 +113,86 @@
         <script src="${pageContext.request.contextPath}/resources/js/customValidations.js"></script>
         <script src="${pageContext.request.contextPath}/resources/js/masks.js"></script>
         <script src="${pageContext.request.contextPath}/resources/js/formUfCidades.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/select2-4.0.5/dist/js/select2.min.js"></script>
         <%@ include file="../public/initializeJS.jsp" %>
         <script> 
             $(function(){
                 setTimeout(() => {
                     $('header .titulo-header').text('Novo Chamado');
                 }, 100);
+                
+                $('#cliente').select2();
             });
             
             getCidades('${not empty chamado.endereco.cidade.id ? chamado.endereco.cidade.id: 0}');
             
             $(document).ready(function(){
-                $('#checkendereco').change(function() {
-                    if ($(this).is(':checked')) {
-                        $("#endereco").val('${logado.cliente.endereco.endereco}');
-                        $("#cep").val('${logado.cliente.endereco.cep}').trigger('input');
-                        $("#uf").val('${logado.cliente.endereco.cidade.estado.id}');
-                        getCidades('${logado.cliente.endereco.cidade.id}');
-                        /*setTimeout(() => {
-                            $("#cidade").val('${logado.cliente.endereco.cidade.id}');
-                        }, 100);*/
-                        $('#endereco').attr('readonly', true);
-                        $('#cep').attr('readonly', true);
-                        $('#uf').attr('readonly', true);
-                        $('#cidade').attr('readonly', true);
-                    } else {
-                        $('#endereco').attr('readonly', false);
-                        $('#cep').attr('readonly', false);
-                        $('#uf').attr('readonly', false);
-                        $('#cidade').attr('readonly', false);
-                    }
-                });
+                <c:if test="${not empty logado.usuario}">
+                    $('#checkendereco').change(function() {
+                        if ($(this).is(':checked')) {
+                            var clienteId = $("#cliente").val();
+                            if (clienteId === "") {
+                                swal({
+                                    title: 'Erro!',
+                                    text: 'Selecione um cliente',
+                                    type: 'error',
+                                    confirmButtonText: 'Ok'
+                                });
+                                $('#checkendereco').prop('checked', false);
+                            } else {
+                                $.ajax({
+                                    url : '${pageContext.request.contextPath}/Cliente?op=carregarAjax', // URL da sua Servlet
+                                    data : {
+                                        clienteId : clienteId
+                                    }, // Parâmetro passado para a Servlet
+                                    dataType : 'json',
+                                    async: true,
+                                    success : function(cliente) {
+                                        $("#endereco").val(cliente.endereco.endereco);
+                                        $("#cep").val(cliente.endereco.cep).trigger('input');
+                                        $("#uf").val(cliente.endereco.cidade.estado.id);
+                                        getCidades(cliente.endereco.cidade.id);
+                                    },
+                                    error : function(request, textStatus, errorThrown) {
+                                        alert(request.status + ', Error: ' + request.statusText);
+                                         // Erro
+                                    }
+                                });
+                                $('#endereco').attr('readonly', true);
+                                $('#cep').attr('readonly', true);
+                                $('#uf').attr('readonly', true);
+                                $('#cidade').attr('readonly', true);
+                            }
+                        } else {
+                            $('#endereco').attr('readonly', false);
+                            $('#cep').attr('readonly', false);
+                            $('#uf').attr('readonly', false);
+                            $('#cidade').attr('readonly', false);
+                        }
+                    });
+                </c:if>
+                <c:if test="${empty logado.usuario}">
+                    $('#checkendereco').change(function() {
+                        if ($(this).is(':checked')) {
+                            $("#endereco").val('${logado.cliente.endereco.endereco}');
+                            $("#cep").val('${logado.cliente.endereco.cep}').trigger('input');
+                            $("#uf").val('${logado.cliente.endereco.cidade.estado.id}');
+                            getCidades('${logado.cliente.endereco.cidade.id}');
+                            /*setTimeout(() => {
+                                $("#cidade").val('${logado.cliente.endereco.cidade.id}');
+                            }, 100);*/
+                            $('#endereco').attr('readonly', true);
+                            $('#cep').attr('readonly', true);
+                            $('#uf').attr('readonly', true);
+                            $('#cidade').attr('readonly', true);
+                        } else {
+                            $('#endereco').attr('readonly', false);
+                            $('#cep').attr('readonly', false);
+                            $('#uf').attr('readonly', false);
+                            $('#cidade').attr('readonly', false);
+                        }
+                    });
+                </c:if>
                 
                 $("#formAbrirChamado").validate({
                     rules: {
