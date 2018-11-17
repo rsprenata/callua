@@ -40,23 +40,35 @@
                             <div class="row text-center">
                                 <div class="col-md-5">
                                     <h5 class="card-title">Chamados em aberto</h5>
-                                    <c:forEach items="${chamadosAbertos}" var="chamado">
-                                        <a href="${pageContext.request.contextPath}/Chamado?op=visualizar&idChamado=${chamado.id}" class="btn btn-light btn-block btn-lg" data-toggle="tooltip" data-placement="right" title="Clique no chamado para abrir e ter mais opções">
-                                            <h5 class="card-title">Chamado ${chamado.id}</h5>
-                                            <h6 class="card-subtitle mb-2 text-muted">${chamado.titulo}</h6>
-                                            <h6 class="card-text">Cliente: ${chamado.cliente.nome}</h6>
-                                        </a>
-                                    </c:forEach>
+                                    <div id="chamadosAbertos">
+                                        <input class="search form-group" placeholder="Filtrar" />
+                                        <ul class="list">
+                                        <c:forEach items="${chamadosAbertos}" var="chamado">
+                                            <li>
+                                            <a href="${pageContext.request.contextPath}/Chamado?op=visualizar&idChamado=${chamado.id}" class="btn btn-light btn-block btn-lg" data-toggle="tooltip" data-placement="right" title="Clique no chamado para abrir e ter mais opções">
+                                                <h5 class="card-title id">Chamado ${chamado.id}</h5>
+                                                <h6 class="card-subtitle mb-2 text-muted titulo">${chamado.titulo}</h6>
+                                                <h6 class="card-text clienteNome">Cliente: ${chamado.cliente.nome}</h6>
+                                            </a>
+                                            </li>
+                                        </c:forEach>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div class="offset-md-2 col-md-5">
                                     <h5 class="card-title">Chamado resolvidos</h5>
-                                    <c:forEach items="${chamadosResolvidos}" var="chamado">
-                                        <a href="${pageContext.request.contextPath}/Chamado?op=visualizar&idChamado=${chamado.id}" class="btn btn-light btn-block btn-lg" data-toggle="tooltip" data-placement="right" title="Clique no chamado para abrir e ter mais opções">
-                                            <h5 class="card-title">Chamado ${chamado.id}</h5>
-                                            <h6 class="card-subtitle mb-2 text-muted">${chamado.titulo}</h6>
-                                            <h6 class="card-text">Cliente: ${chamado.cliente.nome}</h6>
-                                        </a>
-                                    </c:forEach>
+                                    <div id="chamadosResolvidos">
+                                        <input class="search form-group" placeholder="Filtrar" />
+                                        <ul class="list">
+                                        <c:forEach items="${chamadosResolvidos}" var="chamado">
+                                            <a href="${pageContext.request.contextPath}/Chamado?op=visualizar&idChamado=${chamado.id}" class="btn btn-light btn-block btn-lg" data-toggle="tooltip" data-placement="right" title="Clique no chamado para abrir e ter mais opções">
+                                                <h5 class="card-title id">Chamado ${chamado.id}</h5>
+                                                <h6 class="card-subtitle mb-2 text-muted titulo">${chamado.titulo}</h6>
+                                                <h6 class="card-text clienteNome">Cliente: ${chamado.cliente.nome}</h6>
+                                            </a>
+                                        </c:forEach>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -92,6 +104,7 @@
         <script src="${pageContext.request.contextPath}/resources/jquery-validation-1.17.0/dist/jquery.validate.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/js/customValidations.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/list.js/list.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/js/masks.js"></script>
         <%@ include file="../public/initializeJS.jsp" %>
         <script> 
@@ -99,6 +112,12 @@
                 setTimeout(() => {
                     $('header .titulo-header').text('Olá, Administrador ${logado.usuario.nome}');
                 }, 100);
+                
+                var options = {
+                    valueNames: ['id', 'titulo', 'clienteNome']
+                };
+                new List('chamadosAbertos', options);
+                new List('chamadosResolvidos', options);
             });
         </script>
     </body>

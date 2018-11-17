@@ -185,3 +185,8 @@ img{ max-width:100%;}
   overflow-y: auto;
   word-wrap: break-word;
 }
+
+ul.list li {
+    margin-top: .5rem;
+    list-style: none;
+}
