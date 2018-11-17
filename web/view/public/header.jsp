@@ -47,6 +47,7 @@
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/Chamado?op=abrirForm">Abrir chamado</a>
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/Tecnico?op=dadosForm">Dados cadastrais</a>
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/Tecnico?op=listar">Técnicos</a>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/Relatorio?op=listar">Relatórios</a>
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/Login?op=logout">Sair</a>
                         </div>
                     </li>

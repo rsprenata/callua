@@ -85,7 +85,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <button type="button" class="btn btn-primary btn-block">Relatórios</button>
+                                <a class="btn btn-primary btn-block"href="${pageContext.request.contextPath}/Relatorio?op=listar">Relatórios</a>
                             </div>
                         </div>
                     </div>
