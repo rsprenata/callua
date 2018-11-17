@@ -21,13 +21,13 @@
             <div class="col-md-4 offset-md-4">
                 <div class="row">
                     <div class="col-md-4">
-                        <a href="#"><i class="fab fa-facebook-square fa-2x"></i></a>
+                        <a href="https://www.facebook.com/Callua-936566083205883/?modal=admin_todo_tour"><i class="fab fa-facebook-square fa-2x"></i></a>
                     </div>
                     <div class="col-md-4">
-                        <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="https://www.instagram.com/calluasystems/"><i class="fab fa-instagram fa-2x"></i></a>
                     </div>
                     <div class="col-md-4">
-                        <a href="#"><i class="fab fa-twitter-square fa-2x"></i></a>
+                        <a href="https://twitter.com/Callua2"><i class="fab fa-twitter-square fa-2x"></i></a>
                     </div>
                 </div>
             </div>
