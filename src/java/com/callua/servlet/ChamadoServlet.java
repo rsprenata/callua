@@ -111,6 +111,9 @@ public class ChamadoServlet extends HttpServlet {
                 case "enviarMensagem":
                     enviarMensagem(request, response);
                     break;
+                case "reabrir":
+                    reabrir(request, response);
+                    break;
             }
         } else {
             Mensagem mensagem = new Mensagem("Acesso não autorizado !!!");
@@ -306,6 +309,19 @@ public class ChamadoServlet extends HttpServlet {
         MensagemChamadoFacade.enviar(chamado, mensagem);
         
         response.sendRedirect("Chamado?op=visualizar&idChamado=" + chamadoId);
+    }
+    
+    public void reabrir(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        String idChamado = request.getParameter("idChamado");
+        Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
+        ChamadoFacade.reabrir(chamado);
+        
+        Mensagem mensagem = new Mensagem("Chamado reaberto com sucesso !!!");
+        mensagem.setTipo("success");
+        session.setAttribute("mensagem", mensagem);
+        
+        response.sendRedirect("Login?op=dashboard");
     }
     
     public Chamado carregarChamado(HttpServletRequest request) {

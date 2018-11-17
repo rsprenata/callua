@@ -84,6 +84,16 @@
                                 </div>
                                 </c:if>
                                 </c:if>
+                                
+                                <c:if test="${chamado.status == 'RESOLVIDO' && not empty logado.usuario}">
+                                    <div class="row">
+                                        <div class="col-md-4 offset-md-8">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#modalReabrirChamado">Reabrir</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:if>
                             </div>
                             </div>
                             <div class="row">
@@ -159,7 +169,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <h5 class="card-title">Materiais utilizados</h5>
-                                                <c:if test="${not empty logado.usuario}">
+                                                <c:if test="${not empty logado.usuario && chamado.status != 'RESOLVIDO'}">
                                                 <div class="row text-center">
                                                     <div class="col-md-12">
                                                         <button type="button" class="card-link btn btn-primary" data-toggle="modal" data-target="#modalAdicionarProduto">Adicionar material</button>
@@ -171,7 +181,7 @@
                                                     <div class="col-md-12">
                                                         <ul class="list-group">
                                                             <c:forEach items="${chamado.produtos}" var="produto">
-                                                                <li class="list-group-item">${produto.descricao} <c:if test="${not empty logado.usuario}"><button class="btn btn-link float-right" onclick="confirmarRemoverProduto('${produto.id}')"><i class="fas fa-trash"></i></button></c:if></li>
+                                                                <li class="list-group-item">${produto.descricao} <c:if test="${not empty logado.usuario && chamado.status != 'RESOLVIDO'}"><button class="btn btn-link float-right" onclick="confirmarRemoverProduto('${produto.id}')"><i class="fas fa-trash"></i></button></c:if></li>
                                                             </c:forEach>
                                                         </ul>
                                                     </div>
@@ -242,6 +252,29 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-success">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+               
+        <form action="${pageContext.request.contextPath}/Chamado?op=reabrir" method="POST">
+            <div class="modal fade" id="modalReabrirChamado" tabindex="-1" role="dialog" aria-labelledby="modalReabrirChamadoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalReabrirChamadoLabel">Confirmação reabrir chamado</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Tem certeza que deseja reabrir o chamado?
+                            <input type="hidden" name="idChamado" value="${chamado.id}"/>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Reabrir</button>
                         </div>
                     </div>
                 </div>

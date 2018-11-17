@@ -33,7 +33,11 @@ public class ChamadoFacade {
     }
 
     public static void fecharUm(Chamado chamado) {
-        CDAO.fecharUm(chamado);
+        CDAO.alterarStatus(chamado, "RESOLVIDO");
+    }
+
+    public static void reabrir(Chamado chamado) {
+        CDAO.alterarStatus(chamado, "ABERTO");
     }
 
     public static void adicionarProduto(Chamado chamado, Produto produto) {

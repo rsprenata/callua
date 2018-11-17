@@ -298,30 +298,6 @@ public class ChamadoDao {
         return chamado;
     }
     
-    public void fecharUm(Chamado chamado) {
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        Connection connection = connectionFactory.getConnection();
-        PreparedStatement stmt = null;
-        
-        try {
-            stmt = connection.prepareStatement("UPDATE Chamado SET status = ?::StatusChamado WHERE id = ?");
-            
-            stmt.setString(1, "RESOLVIDO");
-            stmt.setInt(2, chamado.getId());
-            
-            stmt.executeUpdate();
-        } catch (Exception exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
-        } finally {
-            if (stmt != null)
-                try { stmt.close(); }
-                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
-            if (connection != null)
-                try { connection.close(); }
-                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
-        }
-    }
-    
     public void adicionarProduto(Chamado chamado, Produto produto) {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
@@ -432,6 +408,30 @@ public class ChamadoDao {
             if (uploadFolder != null) {
                 uploadFolder.delete();
             }
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
+    
+    public void alterarStatus(Chamado chamado, String status) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = connection.prepareStatement("UPDATE Chamado SET status = ?::StatusChamado WHERE id = ?");
+            
+            stmt.setString(1, status);
+            stmt.setInt(2, chamado.getId());
+            
+            stmt.executeUpdate();
+        } catch (Exception exception) {
             throw new RuntimeException("Erro. Origem="+exception.getMessage());
         } finally {
             if (stmt != null)
