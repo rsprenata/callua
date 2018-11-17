@@ -68,10 +68,10 @@ ALTER TABLE Chamado ADD COLUMN idCliente INT NOT NULL;
 
 ALTER TABLE Chamado ADD FOREIGN KEY (idCliente) REFERENCES Cliente(id);
 
-ALTER TABLE Chamado ADD COLUMN idTecnico INT;
+ALTER TABLE Chamado ADD COLUMN idUsuario INT;
 
 
-ALTER TABLE Chamado ADD FOREIGN KEY (idTecnico) REFERENCES Usuario(id);
+ALTER TABLE Chamado ADD FOREIGN KEY (idUsuario) REFERENCES Usuario(id);
 
 CREATE TABLE TecnicoCriarSenhaToken (
 	idTecnico INT,
@@ -97,6 +97,30 @@ alter table chamado add column data timestamp;
 
 
 
+CREATE TYPE TabelaPessoa AS ENUM ('CLIENTE', 'USUARIO');
+CREATE TABLE MensagemChamado (
+	id SERIAL,
+	idPessoa INT,
+	idChamado INT,
+	mensagem VARCHAR(1024),
+	data TIMESTAMP,
+	tabelaPessoa TabelaPessoa
+);
+
+/*ADICIONADO DIA 16/11/2018*/
+
+alter table TecnicoCriarSenhaToken
+drop column idTecnico;
+alter table TecnicoCriarSenhaToken
+add column idTecnico INT;
+alter table TecnicoCriarSenhaToken
+add foreign key (idTecnico) REFERENCES Usuario(id) ON DELETE CASCADE;
+alter table Chamado
+drop column idUsuario;
+alter table Chamado
+add column idUsuario INT;
+alter table Chamado
+add foreign key (idUsuario) REFERENCES Usuario(id) ON DELETE SET NULL;
 
 
 /*********************

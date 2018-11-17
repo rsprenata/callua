@@ -183,4 +183,5 @@ img{ max-width:100%;}
 .msg_history {
   height: 250px;
   overflow-y: auto;
+  word-wrap: break-word;
 }

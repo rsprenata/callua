@@ -36,7 +36,7 @@
                                     <form id="formCadastro" action="${pageContext.request.contextPath}/Cliente?op=editarDados" method="POST">
                                         <fieldset>
                                             <div class="form-group">
-                                                <label for="nome">Nome${logado.cliente.id}</label>
+                                                <label for="nome">Nome</label>
                                                 <input type="text" name="nome" class="form-control" placeholder="Nome" value="${logado.cliente.nome}" autofocus>
                                             </div>
                                             <div class="row">

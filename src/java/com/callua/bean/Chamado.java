@@ -5,6 +5,7 @@
  */
 package com.callua.bean;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.Part;
@@ -19,11 +20,13 @@ public class Chamado implements java.io.Serializable {
     private String descricao;
     private Endereco endereco;
     private List <Part> partArquivos;
+    private List<File> arquivos;
     private StatusChamado status;
     private Cliente cliente;
-    private Usuario tecnico;
+    private Usuario usuario;
     private List<Produto> produtos;
     private Date data;
+    private List<MensagemChamado> mensagens;
     
     public Chamado() {}
 
@@ -67,6 +70,14 @@ public class Chamado implements java.io.Serializable {
         this.partArquivos = partArquivos;
     }
 
+    public List<File> getArquivos() {
+        return arquivos;
+    }
+
+    public void setArquivos(List<File> arquivos) {
+        this.arquivos = arquivos;
+    }
+
     public StatusChamado getStatus() {
         return status;
     }
@@ -83,12 +94,12 @@ public class Chamado implements java.io.Serializable {
         this.cliente = cliente;
     }
 
-    public Usuario getTecnico() {
-        return tecnico;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setTecnico(Usuario tecnico) {
-        this.tecnico = tecnico;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public List<Produto> getProdutos() {
@@ -105,6 +116,12 @@ public class Chamado implements java.io.Serializable {
     public void setData(Date data) {
         this.data = data;
     }
-    
-    
+
+    public List<MensagemChamado> getMensagens() {
+        return mensagens;
+    }
+
+    public void setMensagens(List<MensagemChamado> mensagens) {
+        this.mensagens = mensagens;
+    }
 }

@@ -12,7 +12,7 @@
         <jsp:setProperty name="mensagem" property="tipo" value="error"/>
     </jsp:useBean>
     <c:set var="mensagem" value="${mensagem}" scope="session" />
-    <jsp:forward page="Login?op=dashboard" />
+    <jsp:forward page="/Login?op=dashboard" />
 </c:if>
 <!DOCTYPE html>
 <html>
@@ -63,7 +63,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <a class="btn btn-warning btn-block" href="${pageContext.request.contextPath}/Tecnico?op=cadastrarForm">Cadastrar técnico</a>
+                                <a class="btn btn-warning btn-block" href="${pageContext.request.contextPath}/Tecnico?op=listar">Técnicos</a>
                             </div>
                         </div>
                     </div>

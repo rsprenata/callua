@@ -8,7 +8,9 @@ import com.callua.bean.StatusChamado;
 import com.callua.bean.Usuario;
 import com.callua.facade.CidadeFacade;
 import com.callua.facade.ClienteFacade;
+import com.callua.facade.MensagemChamadoFacade;
 import com.callua.facade.ProdutoFacade;
+import com.callua.facade.UsuarioFacade;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -148,7 +150,7 @@ public class ChamadoDao {
         return chamados;
     }
     
-    public List<Chamado> buscarTodosByTecnico(Usuario tecnico) {
+    public List<Chamado> buscarTodosByUsuario(Usuario usuario) {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -156,8 +158,8 @@ public class ChamadoDao {
         List<Chamado> chamados = new ArrayList<Chamado>();
         
         try {
-            stmt = connection.prepareStatement("SELECT * FROM Chamado WHERE idTecnico = ?");
-            stmt.setInt(1, tecnico.getId());
+            stmt = connection.prepareStatement("SELECT * FROM Chamado WHERE idUsuario = ?");
+            stmt.setInt(1, usuario.getId());
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -173,7 +175,7 @@ public class ChamadoDao {
                 chamado.setEndereco(endereco);
                 chamado.setStatus(StatusChamado.valueOf(rs.getString("status")));
                 chamado.setCliente(ClienteFacade.carregarUm(rs.getInt("idCliente")));
-                chamado.setTecnico(tecnico);
+                chamado.setUsuario(usuario);
                 
                 chamados.add(chamado);
             }
@@ -264,6 +266,16 @@ public class ChamadoDao {
                 chamado.setStatus(StatusChamado.valueOf(rs.getString("status")));
                 chamado.setCliente(ClienteFacade.carregarUm(rs.getInt("idCliente")));
                 chamado.setProdutos(ProdutoFacade.carregarByChamado(chamado.getId()));
+                chamado.setUsuario(UsuarioFacade.carregarUm(rs.getInt("idUsuario")));
+                
+                File folder = new File(rs.getString("files_path"));
+                List<File> arquivos = new ArrayList<File>();
+                if (folder.listFiles() != null) {
+                    for (File f : folder.listFiles()) {
+                        arquivos.add(f);
+                    }
+                }
+                chamado.setArquivos(arquivos);
             }
         } catch (Exception exception) {
             throw new RuntimeException("Erro. Origem="+exception.getMessage());
@@ -341,6 +353,81 @@ public class ChamadoDao {
             
             stmt.executeUpdate();
         } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
+    
+    public void atribuirUsuario(Chamado chamado, Usuario usuario) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = connection.prepareStatement("UPDATE Chamado SET idUsuario = ? WHERE id = ?");
+            stmt.setInt(1, usuario.getId());
+            stmt.setInt(2, chamado.getId());
+            
+            stmt.executeUpdate();
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
+    public void anexarArquivos(Chamado chamado, List <Part> partArquivos, String uploadLocation) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        File uploadFolder = null;
+        try {
+            connection.setAutoCommit(false);
+            if (partArquivos != null && partArquivos.size() > 0) {
+                // constructs path of the directory to save uploaded file
+                String uploadFilePath = uploadLocation + File.separator + "uploads" + File.separator + "chamados" + File.separator + chamado.getId();
+                // creates upload folder if it does not exists
+                uploadFolder = new File(uploadFilePath);
+                if (!uploadFolder.exists()) {
+                    uploadFolder.mkdirs();
+                }
+                
+                stmt = connection.prepareStatement("UPDATE Chamado SET files_path = ? WHERE id = ?");
+                stmt.setString(1, uploadFilePath);
+                stmt.setInt(2, chamado.getId());
+                stmt.executeUpdate();
+                
+                // write all files in upload folder
+                for (Part part : partArquivos) {
+                        if (part != null && part.getSize() > 0) {
+                                String fileName = part.getSubmittedFileName();
+                                String contentType = part.getContentType();
+
+                                part.write(uploadFilePath + File.separator + fileName);
+
+                        }
+                }
+            }
+            connection.commit();
+        } catch (Exception exception) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                Logger.getLogger(ChamadoDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (uploadFolder != null) {
+                uploadFolder.delete();
+            }
             throw new RuntimeException("Erro. Origem="+exception.getMessage());
         } finally {
             if (stmt != null)

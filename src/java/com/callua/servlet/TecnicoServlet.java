@@ -5,28 +5,13 @@
  */
 package com.callua.servlet;
 
-import com.callua.bean.Chamado;
-import com.callua.bean.Cliente;
-import com.callua.bean.Endereco;
-import com.callua.bean.Estado;
-import com.callua.bean.StatusChamado;
 import com.callua.bean.Usuario;
-import com.callua.facade.ChamadoFacade;
-import com.callua.facade.CidadeFacade;
-import com.callua.facade.ClienteFacade;
-import com.callua.facade.EstadoFacade;
 import com.callua.facade.UsuarioFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
-import com.google.gson.Gson;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -35,7 +20,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 /**
  *
@@ -84,6 +68,27 @@ public class TecnicoServlet extends HttpServlet {
                 case "criarSenha":
                     criarSenha(request, response);
                     break;
+                case "listar":
+                    listar(request, response);
+                    break;
+                case "editarForm":
+                    if (logado.getUsuario().isAdministrador())
+                        editarForm(request, response);
+                    break;
+                case "editar":
+                    if (logado.getUsuario().isAdministrador())
+                        editar(request, response);
+                    break;
+                case "remover":
+                    if (logado.getUsuario().isAdministrador())
+                        remover(request, response);
+                    break;
+                case "dadosForm":
+                    dadosForm(request, response);
+                    break;
+                case "editarDados":
+                    editarDados(request, response);
+                    break;
             }
         } else {
             Mensagem mensagem = new Mensagem("Acesso não autorizado !!!");
@@ -96,7 +101,7 @@ public class TecnicoServlet extends HttpServlet {
     }
     
     public void cadastrarForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/cadastrartecnico.jsp");
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/tecnicoForm.jsp");
         rd.forward(request, response);
     }
     
@@ -110,7 +115,7 @@ public class TecnicoServlet extends HttpServlet {
             mensagem.setTipo("success");
             HttpSession session = request.getSession();
             session.setAttribute("mensagem", mensagem);
-            response.sendRedirect("Login?op=dashboard");
+            response.sendRedirect("Tecnico?op=listar");
         } else {
             mensagem.setTipo("error");
             HttpSession session = request.getSession();
@@ -136,7 +141,7 @@ public class TecnicoServlet extends HttpServlet {
             mensagem.setTipo("error");
             HttpSession session = request.getSession();
             session.setAttribute("mensagem", mensagem);
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/index.jsp");
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/public/login.jsp");
             rd.forward(request, response);
         }
     }
@@ -163,6 +168,99 @@ public class TecnicoServlet extends HttpServlet {
                                                                                 + request.getParameter("token") 
                                                                                 + "&idTecnico="
                                                                                 + tecnico.getId());
+            rd.forward(request, response);
+        }
+    }
+    
+    public void listar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Login logado = (Login)session.getAttribute("logado");
+        List<Usuario> usuarios = UsuarioFacade.carregarMenosUm(logado.getUsuario());
+        
+        request.setAttribute("usuarios", usuarios);
+        
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/usuariosListar.jsp");
+        rd.forward(request, response);
+    }
+    
+    public void editarForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer usuarioId = Integer.parseInt(request.getParameter("usuarioId"));
+        Usuario usuario = UsuarioFacade.carregarUm(usuarioId);
+        
+        request.setAttribute("tecnico", usuario);
+        request.setAttribute("form", "editar");
+        
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/administrador/tecnicoForm.jsp");
+        rd.forward(request, response);
+    }
+    
+    public void editar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Usuario tecnico = carregarTecnico(request);
+        Mensagem mensagem = formValido(request, tecnico);
+        Integer usuarioId = Integer.parseInt(request.getParameter("usuarioId"));
+        tecnico.setId(usuarioId);
+        if (mensagem == null) {
+            UsuarioFacade.editar(tecnico);
+            mensagem = new Mensagem("Editado com sucesso !!!");
+            mensagem.setTipo("success");
+            HttpSession session = request.getSession();
+            session.setAttribute("mensagem", mensagem);
+            response.sendRedirect("Tecnico?op=listar");
+        } else {
+            mensagem.setTipo("error");
+            HttpSession session = request.getSession();
+            session.setAttribute("mensagem", mensagem);
+            request.setAttribute("tecnico", tecnico);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/Tecnico?op=cadastrarForm");
+            rd.forward(request, response);
+        }
+    }
+    
+    public void remover(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer usuarioId = Integer.parseInt(request.getParameter("usuarioId"));
+        UsuarioFacade.remover(usuarioId);
+        Mensagem mensagem = new Mensagem("Removido com sucesso !!!");
+        mensagem.setTipo("success");
+        HttpSession session = request.getSession();
+        session.setAttribute("mensagem", mensagem);
+        response.sendRedirect("Tecnico?op=listar");
+    }
+    
+    public void dadosForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        Login logado = (Login)session.getAttribute("logado");
+        
+        logado.setUsuario(UsuarioFacade.carregarUm(logado.getUsuario().getId()));//Atualiza o usuario pro mais atual
+        session = request.getSession();
+        session.setAttribute("logado", logado);
+        
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/tecnico/dadostecnico.jsp");
+        rd.forward(request, response);
+    }
+    
+    public void editarDados(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Usuario usuario = carregarTecnico(request);
+        usuario.setSenha(request.getParameter("senha"));
+        Mensagem mensagem = formValido(request, usuario);
+        HttpSession session = request.getSession();
+        Login logado = (Login)session.getAttribute("logado");
+        if (request.getParameter("senhaAtual") != null && request.getParameter("senhaAtual").length() >= 1) {//Se preencheu senha atual, então quer alterar senha
+            mensagem = Validator.validarSenhaAtual(logado.getUsuario(), request.getParameter("senhaAtual"));
+            if (mensagem == null)
+                mensagem = Validator.validarSenha(usuario.getSenha(), request.getParameter("confirmacaoSenha"));
+        } else usuario.setSenha("");//Seta senha vazia, pra não cair no update de senha la na frente, ou seja, só vai editar senha se passar pelo teste de senha atual acima.
+        if (mensagem == null) {
+            usuario.setId(logado.getUsuario().getId());
+            UsuarioFacade.editarDados(usuario);
+            mensagem = new Mensagem("Editado com sucesso !!!");
+            mensagem.setTipo("success");
+            session.setAttribute("mensagem", mensagem);
+            response.sendRedirect("Tecnico?op=dadosForm");
+        } else {
+            mensagem.setTipo("error");
+            session.setAttribute("mensagem", mensagem);
+            request.setAttribute("usuario", usuario);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/Tecnico?op=dadosForm");
             rd.forward(request, response);
         }
     }

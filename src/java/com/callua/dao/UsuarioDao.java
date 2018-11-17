@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +18,86 @@ import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 
 public class UsuarioDao {
+    public List<Usuario> carregar() {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Usuario> usuarios = new ArrayList<Usuario>();
+        
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM Usuario");
+            rs = stmt.executeQuery();
+                
+            while (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setId(rs.getInt("id"));
+                usuario.setNome(rs.getString("nome"));
+                usuario.setCpfCnpj(rs.getString("cpfCnpj"));
+                usuario.setTelefoneCelular(rs.getString("telefoneCelular"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setAdministrador(rs.getBoolean("administrador"));
+                
+                usuarios.add(usuario);
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return usuarios;
+    }
+    
+    
+    public List<Usuario> carregarMenosUm(Usuario u) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Usuario> usuarios = new ArrayList<Usuario>();
+        
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM Usuario WHERE id != ?");
+            stmt.setInt(1, u.getId());
+            rs = stmt.executeQuery();
+                
+            while (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setId(rs.getInt("id"));
+                usuario.setNome(rs.getString("nome"));
+                usuario.setCpfCnpj(rs.getString("cpfCnpj"));
+                usuario.setTelefoneCelular(rs.getString("telefoneCelular"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setAdministrador(rs.getBoolean("administrador"));
+                
+                usuarios.add(usuario);
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return usuarios;
+    }
+    
     public Usuario carregarUm(Integer id) {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
@@ -199,6 +281,121 @@ public class UsuarioDao {
             if (stmt != null)
                 try { stmt.close(); }
                 catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
+    
+    public void editar(Usuario usuario) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = connection.prepareStatement("UPDATE Usuario SET nome = ?, cpfCnpj = ?,"
+                    + "telefoneCelular = ?, email = ?, administrador = ? WHERE id = ?");
+            stmt.setString(1, usuario.getNome());
+            stmt.setString(2, usuario.getCpfCnpj());
+            stmt.setString(3, usuario.getTelefoneCelular());
+            stmt.setString(4, usuario.getEmail());
+            stmt.setBoolean(5, usuario.isAdministrador());
+            stmt.setInt(6, usuario.getId());
+            stmt.executeUpdate();
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
+    
+    public void remover(Integer usuarioId) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = connection.prepareStatement("DELETE FROM Usuario WHERE id = ?");
+            stmt.setInt(1, usuarioId);
+            stmt.executeUpdate();
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
+    
+    public boolean senhaAtualValida(Usuario usuario, String senhaAtual) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(senhaAtual.getBytes(), 0, senhaAtual.length());
+            senhaAtual= new BigInteger(1, md.digest()).toString(16);
+            
+            stmt = connection.prepareStatement("SELECT * FROM Usuario WHERE id = ? AND senha = ?");
+            stmt.setInt(1, usuario.getId());
+            stmt.setString(2, senhaAtual);
+            rs = stmt.executeQuery();
+                
+            return rs.next();
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
+    
+    
+    
+    public void editarDados(Usuario usuario) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            if (!"".equals(usuario.getSenha())) {
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                md.update(usuario.getSenha().getBytes(), 0, usuario.getSenha().length());
+                usuario.setSenha(new BigInteger(1, md.digest()).toString(16));
+            
+                stmt = connection.prepareStatement("UPDATE Usuario SET nome = ?, cpfCnpj = ?,"
+                        + "telefoneCelular = ?, email = ?, senha = ? WHERE id = ?");
+                stmt.setString(1, usuario.getNome());
+                stmt.setString(2, usuario.getCpfCnpj());
+                stmt.setString(3, usuario.getTelefoneCelular());
+                stmt.setString(4, usuario.getEmail());
+                stmt.setString(5, usuario.getSenha());
+                stmt.setInt(6, usuario.getId());
+                stmt.executeUpdate();
+            } else {
+                stmt = connection.prepareStatement("UPDATE Usuario SET nome = ?, cpfCnpj = ?,"
+                        + "telefoneCelular = ?, email = ?, WHERE id = ?");
+                stmt.setString(1, usuario.getNome());
+                stmt.setString(2, usuario.getCpfCnpj());
+                stmt.setString(3, usuario.getTelefoneCelular());
+                stmt.setString(4, usuario.getEmail());
+                stmt.setInt(5, usuario.getId());
+                stmt.executeUpdate();
+            }
+        } catch (Exception exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
             if (connection != null)
                 try { connection.close(); }
                 catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
