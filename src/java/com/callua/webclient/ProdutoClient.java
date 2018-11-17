@@ -9,6 +9,7 @@ import com.callua.bean.Produto;
 import java.util.List;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,5 +42,15 @@ public class ProdutoClient {
                           .request(MediaType.APPLICATION_JSON)
                           .get(Produto.class);
         return produto;
+    }
+    
+    public static Response utilizar(Produto produto) {
+        Client client = ClientBuilder.newClient();
+        
+        Response response = client.target(enderecoServidor + "/produtos/utilizar/" + produto.getId())
+                          .request()
+                          .put(Entity.json(produto));
+        
+        return response;
     }
 }

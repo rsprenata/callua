@@ -11,6 +11,7 @@ import com.callua.facade.ClienteFacade;
 import com.callua.facade.MensagemChamadoFacade;
 import com.callua.facade.ProdutoFacade;
 import com.callua.facade.UsuarioFacade;
+import com.callua.webclient.ProdutoClient;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.Part;
+import javax.ws.rs.core.Response;
 
 public class ChamadoDao {
     public void abrirUm(Chamado chamado, String applicationPath) {
@@ -298,19 +300,39 @@ public class ChamadoDao {
         return chamado;
     }
     
-    public void adicionarProduto(Chamado chamado, Produto produto) {
+    public void adicionarProduto(Chamado chamado, Produto produto) throws Exception {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
+        Boolean recolocar = true;
         
         try {
-            stmt = connection.prepareStatement("INSERT INTO RelChamadoProduto (idChamado, idProduto) VALUES (?, ?)");
+            Response response = ProdutoClient.utilizar(produto);
+            
+            if (response.getStatus() != 200) {
+                recolocar = false;
+                if (response.getStatus() == 405) throw new Exception("Quantidade do produto indisponível !!!");
+                else throw new Exception("Erro ao adicionar produto !!!");
+            }
+            
+            stmt = connection.prepareStatement("INSERT INTO RelChamadoProduto (idChamado, idProduto, quantidade) "
+                    + "VALUES (?, ?, ?) "
+                    + "ON CONFLICT (idChamado, idProduto) DO UPDATE "
+                    + "SET quantidade = EXCLUDED.quantidade + ? WHERE EXCLUDED.idChamado = ? AND EXCLUDED.idProduto = ?");
             stmt.setInt(1, chamado.getId());
             stmt.setInt(2, produto.getId());
+            stmt.setInt(3, produto.getQuantidade());
+            stmt.setInt(4, produto.getQuantidade());
+            stmt.setInt(5, chamado.getId());
+            stmt.setInt(6, produto.getId());
             
             stmt.executeUpdate();
         } catch (Exception exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+            if (recolocar) {
+                produto.setQuantidade(produto.getQuantidade() * -1);
+                ProdutoClient.utilizar(produto);
+            }
+            throw exception;
         } finally {
             if (stmt != null)
                 try { stmt.close(); }
@@ -321,20 +343,56 @@ public class ChamadoDao {
         }
     }
     
-    public void removerProduto(Chamado chamado, Produto produto) {
+    public void removerProduto(Chamado chamado, Produto produto) throws Exception {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Boolean recolocar = true;
         
         try {
-            stmt = connection.prepareStatement("DELETE FROM RelChamadoProduto WHERE idChamado = ? AND idProduto = ?");
+            stmt = connection.prepareStatement("SELECT * FROM RelChamadoProduto WHERE idChamado = ? AND idProduto = ?");
             stmt.setInt(1, chamado.getId());
             stmt.setInt(2, produto.getId());
             
-            stmt.executeUpdate();
+            rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                //VERIFICA SE A QUANTIDADE A SER REMOVIDA É MAIOR QUE A QUE TEM, SE FOR, ENTAO SETA PRA REMOVER TUDO OQ TEM
+                if (produto.getQuantidade() > rs.getInt("quantidade")) produto.setQuantidade(rs.getInt("quantidade"));
+                produto.setQuantidade(produto.getQuantidade() * -1);
+                Response response = ProdutoClient.utilizar(produto);
+                produto.setQuantidade(produto.getQuantidade() * -1);
+                
+                if (response.getStatus() != 200) {
+                    recolocar = false;
+                    throw new Exception("Erro ao remover produto !!!");
+                }
+                
+                //SE QUERO REMOVER MAIS QUE TEM ENTAO DELETE, SENAO UPDATE
+                if (produto.getQuantidade() >= rs.getInt("quantidade")) {
+                    stmt = connection.prepareStatement("DELETE FROM RelChamadoProduto WHERE idChamado = ? AND idProduto = ?");
+                    stmt.setInt(1, chamado.getId());
+                    stmt.setInt(2, produto.getId());
+                } else {
+                    stmt = connection.prepareStatement("UPDATE RelChamadoProduto SET quantidade = quantidade - ? WHERE idChamado = ? AND idProduto = ?");
+                    stmt.setInt(1, produto.getQuantidade());
+                    stmt.setInt(2, chamado.getId());
+                    stmt.setInt(3, produto.getId());
+                }
+
+                stmt.executeUpdate();
+            }
         } catch (Exception exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+            if (recolocar) {
+                produto.setQuantidade(produto.getQuantidade() * -1);
+                ProdutoClient.utilizar(produto);
+            }
+            throw exception;
         } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
             if (stmt != null)
                 try { stmt.close(); }
                 catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }

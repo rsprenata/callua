@@ -25,6 +25,7 @@ public class ProdutoDao {
 
             while (rs.next()) {
                 Produto produto = ProdutoClient.getProduto(rs.getInt("idProduto"));
+                produto.setQuantidade(rs.getInt("quantidade"));
                 
                 produtos.add(produto);
             }

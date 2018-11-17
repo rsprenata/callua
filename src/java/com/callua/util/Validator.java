@@ -20,6 +20,18 @@ import java.util.regex.Pattern;
  * Classe auxiliar para fazer as validações back-end do sistema
  */
 public class Validator {
+    public static Mensagem validarQuantidade(Integer quantidade) {
+        Mensagem mensagem = null;
+        
+        if (quantidade == null) {
+            mensagem = new Mensagem("Quantidade é obrigatória !!!");
+        } else if (quantidade < 0) {
+            mensagem = new Mensagem("Quantidade deve ser maior que 0 !!!");
+        }
+        
+        return mensagem;
+    }
+    
     public static Mensagem validarDescricao(String descricao) {
         Mensagem mensagem = null;
         

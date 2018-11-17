@@ -181,7 +181,7 @@
                                                     <div class="col-md-12">
                                                         <ul class="list-group">
                                                             <c:forEach items="${chamado.produtos}" var="produto">
-                                                                <li class="list-group-item">${produto.descricao} <c:if test="${not empty logado.usuario && chamado.status != 'RESOLVIDO'}"><button class="btn btn-link float-right" onclick="confirmarRemoverProduto('${produto.id}')"><i class="fas fa-trash"></i></button></c:if></li>
+                                                                <li class="list-group-item"><small>${produto.quantidade}x</small> ${produto.descricao} <c:if test="${not empty logado.usuario && chamado.status != 'RESOLVIDO'}"><button class="btn btn-link float-right" onclick="confirmarRemoverProduto('${produto.id}')"><i class="fas fa-trash"></i></button></c:if></li>
                                                             </c:forEach>
                                                         </ul>
                                                     </div>
@@ -297,12 +297,20 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="produto">Produto</label>
-                                        <select class="form-control select2" style="width: 100%;" id="produto" name="produto">
+                                        <select class="form-control select2" style="width: 100%;" id="produto" name="produto" required>
                                             <option value="">Selecione o produto...</option>
                                             <c:forEach items="${produtos}" var="produto">
-                                                <option value="${produto.id}">${produto.descricao}</option>
+                                                <option value="${produto.id}">${produto.descricao} / Quantidade disponível:${produto.quantidade}</option>
                                             </c:forEach>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class=" col-md-12">
+                                    <div class="form-group">
+                                        <label for="quantidade">Quantidade</label>
+                                        <input type="number" id="quantidade" name="quantidade" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
@@ -330,6 +338,15 @@
                             <input type="hidden" name="idChamado" value="${chamado.id}" />
                             <input type="hidden" name="idProduto" id="idProdutoRemover" />
                             Deseja realmente remover este produto?
+                            
+                            <div class="row">
+                                <div class=" col-md-12">
+                                    <div class="form-group">
+                                        <label for="quantidade">Quantidade</label>
+                                        <input type="number" name="quantidade" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -356,7 +373,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="">Usuário</label>
-                                        <select class="form-control select2" style="width: 100%;" id="usuario" name="usuario">
+                                        <select class="form-control select2" style="width: 100%;" id="usuario" name="usuario" required>
                                             <option value="">Selecione o usuário...</option>
                                             <c:forEach items="${usuarios}" var="usuario">
                                                 <option value="${usuario.id}" ${usuario.id == chamado.usuario.id ? 'selected' : ''}>${usuario.nome}</option>

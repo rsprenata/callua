@@ -122,6 +122,9 @@ add column idUsuario INT;
 alter table Chamado
 add foreign key (idUsuario) REFERENCES Usuario(id) ON DELETE SET NULL;
 
+/*COLOCADO AQUI DIA 16/11/2018*/
+alter table RelChamadoProduto add column quantidade int;
+
 
 /*********************
 * INSERÇÃO DOS DADOS *

@@ -40,11 +40,11 @@ public class ChamadoFacade {
         CDAO.alterarStatus(chamado, "ABERTO");
     }
 
-    public static void adicionarProduto(Chamado chamado, Produto produto) {
+    public static void adicionarProduto(Chamado chamado, Produto produto) throws Exception {
         CDAO.adicionarProduto(chamado, produto);
     }
 
-    public static void removerProduto(Chamado chamado, Produto produto) {
+    public static void removerProduto(Chamado chamado, Produto produto) throws Exception {
         CDAO.removerProduto(chamado, produto);
     }
 

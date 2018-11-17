@@ -24,6 +24,7 @@ import com.callua.facade.UsuarioFacade;
 import com.callua.util.Login;
 import com.callua.util.Mensagem;
 import com.callua.util.Validator;
+import com.callua.webclient.ProdutoClient;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -179,7 +180,6 @@ public class ChamadoServlet extends HttpServlet {
         String idChamado = request.getParameter("idChamado");
         Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
         List<Produto> produtos = ProdutoFacade.carregarTodos();
-        produtos.removeAll(chamado.getProdutos());
         List<Usuario> usuarios = UsuarioFacade.carregar();
         
         request.setAttribute("usuarios", usuarios);
@@ -208,12 +208,22 @@ public class ChamadoServlet extends HttpServlet {
         Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(idChamado));
         String idProduto = request.getParameter("produto");
         Produto produto = ProdutoFacade.carregarUm(Integer.parseInt(idProduto));
-        ChamadoFacade.adicionarProduto(chamado, produto);
+        Integer quantidade = Integer.parseInt(request.getParameter("quantidade"));
+        produto.setQuantidade(quantidade);
+        Mensagem mensagem = Validator.validarQuantidade(quantidade);
+        try {
+            if (mensagem != null)  throw new Exception(mensagem.getTexto());
+            ChamadoFacade.adicionarProduto(chamado, produto);
         
-        Mensagem mensagem = new Mensagem("Produto adicionado com sucesso !!!");
-        mensagem.setTipo("success");
+            mensagem = new Mensagem("Produto adicionado com sucesso !!!");
+            mensagem.setTipo("success");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            mensagem = new Mensagem(ex.getMessage());
+            mensagem.setTipo("error");
+        }
         session.setAttribute("mensagem", mensagem);
-        
+
         response.sendRedirect("Chamado?op=visualizar&idChamado=" + chamado.getId());
     }
     
@@ -221,12 +231,21 @@ public class ChamadoServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         Chamado chamado = new Chamado();
         chamado.setId(Integer.parseInt(request.getParameter("idChamado")));
-        Produto produto = new Produto();
-        produto.setId(Integer.parseInt(request.getParameter("idProduto")));
-        ChamadoFacade.removerProduto(chamado, produto);
+        Produto produto = ProdutoClient.getProduto(Integer.parseInt(request.getParameter("idProduto")));
+        Integer quantidade = Integer.parseInt(request.getParameter("quantidade"));
+        produto.setQuantidade(quantidade);
+        Mensagem mensagem = Validator.validarQuantidade(quantidade);
+        try {
+            if (mensagem != null)  throw new Exception(mensagem.getTexto());
+            ChamadoFacade.removerProduto(chamado, produto);
+            mensagem = new Mensagem("Produto removido com sucesso !!!");
+            mensagem.setTipo("success");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            mensagem = new Mensagem(ex.getMessage());
+            mensagem.setTipo("error");
+        }
         
-        Mensagem mensagem = new Mensagem("Produto removido com sucesso !!!");
-        mensagem.setTipo("success");
         session.setAttribute("mensagem", mensagem);
         
         response.sendRedirect("Chamado?op=visualizar&idChamado=" + chamado.getId());
