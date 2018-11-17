@@ -8,12 +8,16 @@ package com.callua.servlet;
 import com.callua.bean.Chamado;
 import com.callua.bean.Endereco;
 import com.callua.bean.Estado;
+import com.callua.bean.MensagemChamado;
 import com.callua.bean.Produto;
 import com.callua.bean.StatusChamado;
+import com.callua.bean.TabelaPessoa;
 import com.callua.bean.Usuario;
 import com.callua.facade.ChamadoFacade;
 import com.callua.facade.CidadeFacade;
+import com.callua.facade.ClienteFacade;
 import com.callua.facade.EstadoFacade;
+import com.callua.facade.MensagemChamadoFacade;
 import com.callua.facade.ProdutoFacade;
 import com.callua.facade.UsuarioFacade;
 import com.callua.util.Login;
@@ -102,6 +106,9 @@ public class ChamadoServlet extends HttpServlet {
                     break;
                 case "anexarArquivos":
                     anexarArquivos(request, response);
+                    break;
+                case "enviarMensagem":
+                    enviarMensagem(request, response);
                     break;
             }
         } else {
@@ -267,6 +274,28 @@ public class ChamadoServlet extends HttpServlet {
         ChamadoFacade.anexarArquivos(chamado, partArquivos, uploadLocation);
         
         response.sendRedirect("Chamado?op=visualizar&idChamado=" + request.getParameter("chamadoId"));
+    }
+    
+    public void enviarMensagem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Login logado = (Login)session.getAttribute("logado");
+        String chamadoId = request.getParameter("chamadoId");
+        MensagemChamado mensagem = new MensagemChamado();
+        mensagem.setMensagem(request.getParameter("mensagem"));
+        mensagem.setData(new Date());
+        if (logado.getCliente() != null) {
+            mensagem.setCliente(logado.getCliente());
+            mensagem.setTabelaPessoa(TabelaPessoa.CLIENTE);
+        } else {
+            mensagem.setUsuario(logado.getUsuario());
+            mensagem.setTabelaPessoa(TabelaPessoa.USUARIO);
+        }
+        
+        Chamado chamado = ChamadoFacade.carregarById(Integer.parseInt(chamadoId));
+        
+        MensagemChamadoFacade.enviar(chamado, mensagem);
+        
+        response.sendRedirect("Chamado?op=visualizar&idChamado=" + chamadoId);
     }
     
     public Chamado carregarChamado(HttpServletRequest request) {

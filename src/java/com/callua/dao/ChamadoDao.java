@@ -268,11 +268,15 @@ public class ChamadoDao {
                 chamado.setProdutos(ProdutoFacade.carregarByChamado(chamado.getId()));
                 chamado.setUsuario(UsuarioFacade.carregarUm(rs.getInt("idUsuario")));
                 
-                File folder = new File(rs.getString("files_path"));
+                chamado.setMensagens(MensagemChamadoFacade.carregar(chamado));
+                
                 List<File> arquivos = new ArrayList<File>();
-                if (folder.listFiles() != null) {
-                    for (File f : folder.listFiles()) {
-                        arquivos.add(f);
+                if (rs.getString("files_path") != null) {
+                    File folder = new File(rs.getString("files_path"));
+                    if (folder.listFiles() != null) {
+                        for (File f : folder.listFiles()) {
+                            arquivos.add(f);
+                        }
                     }
                 }
                 chamado.setArquivos(arquivos);

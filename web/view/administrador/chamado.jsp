@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8" errorPage="../public/erro.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <c:if test="${sessionScope.logado == null}">
     <jsp:useBean id="mensagem" class="com.callua.util.Mensagem">
         <jsp:setProperty name="mensagem" property="texto" value="Acesso não autorizado"/>
@@ -103,16 +104,45 @@
                                 </div>
                                 <div class="row">
                                     <div class=" col-md-12">
+                                        <form action="${pageContext.request.contextPath}/Chamado?op=enviarMensagem" method="POST">
+                                            <input type="hidden" name="chamadoId" value="${chamado.id}"/>
                                         <div class="form-group">
                                             <div class="messaging">
                                                 <div class="inbox_msg">
                                                     <div class="mesgs">
                                                         <div class="msg_history" id="chatChamado">
-                                                            
+                                                            <c:forEach items="${chamado.mensagens}" var="mensagem">
+                                                                <c:choose>
+                                                                <c:when test="${(not empty logado.cliente && not empty mensagem.cliente && logado.cliente.id == mensagem.cliente.id) || 
+                                                                                (not empty logado.usuario && not empty mensagem.usuario && logado.usuario.id == mensagem.usuario.id)}">
+                                                                    <div class="outgoing_msg">
+                                                                        <div class="sent_msg">
+                                                                            <strong>${not empty mensagem.cliente ? mensagem.cliente.nome : mensagem.usuario.nome}</strong>
+                                                                            <p>${mensagem.mensagem}</p>
+                                                                            <span class="time_date"><fmt:formatDate pattern = "dd/MM/yyyy kk:mm" value = "${mensagem.data}" /></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <div class="incoming_msg">
+                                                                        <div class="incoming_msg_img"> 
+                                                                            <img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" alt="sunil">
+                                                                        </div>
+                                                                        <div class="received_msg">
+                                                                            <div class="received_withd_msg">
+                                                                                <strong>${not empty mensagem.cliente ? mensagem.cliente.nome : mensagem.usuario.nome}</strong>
+                                                                                <p>${mensagem.mensagem}</p>
+                                                                                <span class="time_date"><fmt:formatDate pattern = "dd/MM/yyyy kk:mm" value = "${mensagem.data}" /></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </c:otherwise>
+                                                                </c:choose>
+                                                            </c:forEach>
                                                         </div>
                                                         <div class="type_msg">
                                                             <div class="input_msg_write">
-                                                                <input type="text" id="msg-chat" class="write_msg" placeholder="Escreva o comentário" />
+                                                                <input type="text" name="mensagem" class="write_msg" placeholder="Escreva o comentário" />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -121,10 +151,11 @@
                                             <br/>
                                             <div class="col-md-4 offset-md-8">
                                                 <div class="form-group">
-                                                    <button type="button" class="btn btn-primary btn-block" id="btn-chat">Comentar</button>
+                                                    <button type="submit" class="btn btn-primary btn-block">Comentar</button>
                                                 </div>
                                             </div>
                                         </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -378,9 +409,7 @@
         <script src="${pageContext.request.contextPath}/resources/sweetalert2-7.28.8/dist/sweetalert2.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/select2-4.0.5/dist/js/select2.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/js/customValidations.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/moment.js/moment-with-locales.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/js/masks.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/js/chatChamado.js"></script>
         <%@ include file="../public/initializeJS.jsp" %>
         <script> 
             $(function(){
@@ -393,18 +422,7 @@
                 $('#usuario').select2({
                     dropdownParent: $('#modalAtribuirUsuario')
                 });
-                
-                //CHAT
-                var contextPath = '<%=request.getContextPath()%>';
-                var chamadoId = '${chamado.id}';
-                var logadoPessoa = '${not empty logado.cliente ? 'CLIENTE' : 'USUARIO'}';
-                var logadoId = '${not empty logado.cliente ? logado.cliente.id : logado.usuario.id}';
-                var scroll = true;
-                loopChat(contextPath, chamadoId, logadoPessoa, logadoId);
-                $("#btn-chat").click(function () {
-                    var mensagem = $('#msg-chat').val();
-                    enviarMensagem(contextPath, chamadoId, logadoPessoa, logadoId, mensagem);
-                });
+                $("#chatChamado").scrollTop($("#chatChamado")[0].scrollHeight);
             });
             
             function confirmarRemoverProduto(idProduto) {

@@ -9,7 +9,7 @@ import java.util.List;
 public class MensagemChamadoFacade {
     private static final MensagemChamadoDao MCDAO = new MensagemChamadoDao();
     
-    public static List<MensagemChamado> buscar(Chamado chamado) {
+    public static List<MensagemChamado> carregar(Chamado chamado) {
         return MCDAO.carregar(chamado);
     }
     
