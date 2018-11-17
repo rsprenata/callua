@@ -57,6 +57,7 @@
                                 </div>
                             </div>
                             <div class="col-md-5">
+                                <c:if test="${chamado.status != 'RESOLVIDO'}">
                                 <c:if test="${logado.usuario.administrador == true}">
                                 <div class="row">
                                     <div class="col-md-4 offset-md-8">
@@ -66,18 +67,11 @@
                                     </div>
                                 </div>
                                 </c:if>
+                                
                                 <div class="row">
                                     <div class="col-md-4 offset-md-8">
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-info btn-block">Atender</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <c:if test="${chamado.status != 'RESOLVIDO'}">
-                                <div class="row">
-                                    <div class="col-md-4 offset-md-8">
-                                        <div class="form-group">
-                                            <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#modalFecharChamado">Fechar</button>
+                                            <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#modalFecharChamado">Resolver</button>
                                         </div>
                                     </div>
                                 </div>
