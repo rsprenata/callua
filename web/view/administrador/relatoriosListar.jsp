@@ -30,6 +30,9 @@
                         <select class="form-control" id="selectRelatorio">
                             <option value="">Selecione o relatório</option>
                             <option value="1">Chamados por data</option>
+                            <option value="2">Chamados resolvidos</option>
+                            <option value="3">Clientes</option>
+                            <option value="4">Técnicos</option>
                         </select>
                     </div>
                 </div>
@@ -51,6 +54,42 @@
                                 </div>
                             </div>
                         </div>
+                        <br/>
+                        <div class="row col-md-12 text-center">
+                            <button class="btn btn-lg btn-success" type="submit">
+                                 Gerar <i class="fa fa-file-pdf pull-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                        
+                <div id="parametrosRelatorio2" class="row col-md-12 parametrizacao" style="display: none;">
+                    <form action="${pageContext.request.contextPath}/Relatorio?op=gerar" method="POST" target="_blank">
+                        <input type="hidden" value="chamadosResolvidos" name="relatorio" />
+                        <br/>
+                        <div class="row col-md-12 text-center">
+                            <button class="btn btn-lg btn-success" type="submit">
+                                 Gerar <i class="fa fa-file-pdf pull-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="parametrosRelatorio3" class="row col-md-12 parametrizacao" style="display: none;">
+                    <form action="${pageContext.request.contextPath}/Relatorio?op=gerar" method="POST" target="_blank">
+                        <input type="hidden" value="clientes" name="relatorio" />
+                        <br/>
+                        <div class="row col-md-12 text-center">
+                            <button class="btn btn-lg btn-success" type="submit">
+                                 Gerar <i class="fa fa-file-pdf pull-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                        
+                <div id="parametrosRelatorio4" class="row col-md-12 parametrizacao" style="display: none;">
+                    <form action="${pageContext.request.contextPath}/Relatorio?op=gerar" method="POST" target="_blank">
+                        <input type="hidden" value="tecnicos" name="relatorio" />
                         <br/>
                         <div class="row col-md-12 text-center">
                             <button class="btn btn-lg btn-success" type="submit">

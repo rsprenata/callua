@@ -139,7 +139,7 @@ public class Validator {
         
         if (telefoneCelular== null || "".equals(telefoneCelular)) {
             mensagem = new Mensagem("Telefone/Celular é obrigatório !!!");
-        } else if (telefoneCelular.length() != 11  || !Validator.ehInteiro(telefoneCelular)) {
+        } else if (telefoneCelular.length() < 10  || !Validator.ehInteiro(telefoneCelular)) {
             mensagem = new Mensagem("Telefone/Celular inválido !!!");
         }
         

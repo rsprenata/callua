@@ -23,14 +23,29 @@
                     <div class="row">
                         <div class="col-md-12 order-md-1">
                             <h4 class="mb-3">Serviços oferecidos:</h4>
-                            <div class="row menu-options">
-                                <button type="button" class="btn btn-light"><i class="fas fa-3x fa-mobile-alt"></i>Troca de tela de celular</button>
-                            </div>
-                            <div class="row menu-options">
-                                <button type="button" class="btn btn-light"><i class="fab fa-3x fa-apple"></i>Assistencia Apple</button>
-                            </div>
-                            <div class="row menu-options abrir-chamado">
-                                <button type="button" class="btn" style="background-color: #b4a7d6" id="abrir" name="abrir">Abrir chamado</button>
+                            <div class="row">
+                                <div class="col-sm-6" style="text-align: -webkit-center;">
+                                    <div class="card" style="width: 18rem;">
+                                        <div style="text-align: center; margin-top: 50px;">
+                                            <i class="fas fa-8x fa-mobile-alt"></i>    
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">Troca de tela de celular</h5>
+                                            <p class="card-text">Substituição de tela quebrada causada por qualquer tipo de acidente com o seu celular.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6" style="text-align: -webkit-center;">
+                                    <div class="card" style="width: 18rem;">
+                                        <div style="text-align: center; margin-top: 50px;">
+                                            <i class="fab fa-8x fa-apple"></i>    
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">Assistencia Apple</h5>
+                                            <p class="card-text" style="margin-bottom: 23px;">Assistência Técnica Especializada em Reparos de Smartphones, Tablets e outros produtos Apple.</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

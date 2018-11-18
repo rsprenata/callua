@@ -105,7 +105,7 @@
                         },
                         telefoneCelular : {
                             required: true,
-                            minlength: 16,
+                            minlength: 14,
                             maxlength: 16
                         },
                         email:  {
